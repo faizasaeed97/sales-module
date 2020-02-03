@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+      <record model="ir.ui.view" id="inherit_projectform">
+        <field name="name">project.project.formt</field>
+        <field name="model">project.project</field>
+        <field name="inherit_id" ref="project.edit_project"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//sheet/div[1]/button[1]" position="before">
+               <button width="200px" class="oe_stat_button" name="view_rev_history" type="object" icon="fa-file-text-o">
+                     <field string="Costsheet revisions" name="cost_sheet_revision_count" widget="statinfo"/>
+               </button>
+                <button width="200px" class="oe_stat_button" name="view_additional_history" type="object" icon="fa-file-text-o">
+                     <field string="Additonal costsheet revisions" name="additional_costsheet_count" widget="statinfo"/>
+               </button>
+             </xpath>
+        </field>
+
+     </record>
+</odoo>

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record model="ir.ui.view" id="inherit_crms">
+        <field name="name">crm.lead.form.inherits</field>
+        <field name="model">cost.sheet.crm</field>
+        <field name="inherit_id" ref="cost_sheet_quotations.costsheet_form"/>
+        <field name="arch" type="xml">
+
+            <data>
+                <button class="oe_stat_button" position='after'>
+                    <!--               <button name="create_revision"   attrs="{'invisible': [('is_revisison_generated','!=',False)]}"-->
+                    <!--                                 class="btn-primary" string="Create Revision" type="object"/>-->
+
+                    <button
+                            attrs="{'invisible':[('number_of_revision','=',0)]}"
+                            type="object" name="view_cs_revision_history"
+                            class="oe_stat_button" icon="fa-eye">
+                        <field name="number_of_revision" widget="statinfo"
+                               string="Revision History"/>
+                    </button>
+                </button>
+
+                <xpath expr="//button[@name='create_quotation']" position="after">
+                    <button name="create_revision" type="object"
+                            string="Create New Revision"
+                    />
+                    <!--						attrs="{'invisible': ['|','|', ('state', '!=', 'cancel'), ('is_revision', '=', True), ('is_confirmed', '=', True)]}" />-->
+                </xpath>
+
+
+
+                <!--             </xpath>-->
+                <xpath expr="//field[@name='name']" position="after">
+                    <span style="color: white">-</span>
+                    <field name="rev_number"/>
+                </xpath>
+            </data>
+        </field>
+    </record>
+<!--    <record id="action_costsheet_revision" model="ir.actions.act_window">-->
+<!--        <field name="name">Sales Orderss</field>-->
+<!--        <field name="type">ir.actions.act_window</field>-->
+<!--        <field name="res_model">cost.sheet.crm</field>-->
+<!--        <field name="view_mode">tree,form</field>-->
+<!--        &lt;!&ndash;            <field name="search_view_id" ref="sale.sale_order_view_search_inherit_sale"/>&ndash;&gt;-->
+<!--        <field name="domain">[('cost_sheet_rev_id', '=', active_id)]</field>-->
+<!--        &lt;!&ndash;            <field name="context">{'search_default_cost_sheet_id': active_id, 'default_cost_sheet_id': active_id}</field>&ndash;&gt;-->
+<!--        <field name="help" type="html">-->
+<!--            <p class="o_view_nocontent_smiling_face">-->
+<!--                Create a new quotation, the first step of a new sale!-->
+<!--            </p>-->
+<!--            <p>-->
+<!--                Once the quotation is confirmed, it becomes a sales order.-->
+<!--                <br/>-->
+<!--                You will be able to create an invoice and collect the payment.-->
+<!--            </p>-->
+<!--        </field>-->
+<!--    </record>-->
+
+    		<record id="cost_sheets_tree_so_revision" model="ir.ui.view">
+			<field name="name">cost.sheet.crm.tree_sorevision</field>
+			<field name="model">cost.sheet.crm</field>
+			<field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+					<field name="rev_number" />
+                </tree>
+			</field>
+		</record>
+
+
+</odoo>

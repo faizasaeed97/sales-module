@@ -1,0 +1,78 @@
+<?xml version="1.0"?>
+<odoo>
+	<data>
+		<!-- Fields in Sale Order -->
+		<record id="sale_order_form_so_revision" model="ir.ui.view">
+			<field name="name">sale.order.form_sorevision</field>
+			<field name="model">sale.order</field>
+			<field name="inherit_id" ref="sale.view_order_form" />
+			<field name="arch" type="xml">
+				<data>
+					<button name="action_view_invoice" position='after'>
+						<button
+							attrs="{'invisible':[('number_of_revision','=',0)]}"
+							type="object" name="view_so_revision_history"
+							class="oe_stat_button" icon="fa-eye">
+							<field name="number_of_revision" widget="statinfo"
+								string="Revision History" />
+						</button>
+					</button>
+					<xpath expr="//button[@name='action_draft']"
+						position="replace">
+						<button name="action_draft" type="object"
+							string="Set to Quotation"
+							attrs="{'invisible': ['|',('is_confirmed', '=', False),('state','!=','cancel')]}" />
+					</xpath>
+					<xpath expr="//button[@name='action_draft']" position="after">
+						<button name="action_make_revision" type="object"
+							string="Make New Revision"
+							 />
+<!--						attrs="{'invisible': ['|','|', ('state', '!=', 'cancel'), ('is_revision', '=', True), ('is_confirmed', '=', True)]}" />-->
+					</xpath>
+					<xpath expr="//field[@name='name']" position="after">
+						<span style="color: white">-</span>
+						<field name="rev_number" />
+					</xpath>
+					<xpath expr="//field[@name='amount_total']" position="after">
+						<field name="is_revision" invisible="1" />
+						<field name="is_confirmed" invisible="1" />
+					</xpath>
+				</data>
+			</field>
+		</record>
+
+		<record id="sale_order_tree_soquotation_revision"
+			model="ir.ui.view">
+			<field name="name">sale.order.tree_quotation_sorevision</field>
+			<field name="model">sale.order</field>
+			<field name="inherit_id" ref="sale.view_quotation_tree" />
+			<field name="arch" type="xml">
+				<xpath expr="//field[@name='name']" position="after">
+					<field name="revision_number" />
+				</xpath>
+			</field>
+		</record>
+
+		<record id="sale_order_tree_so_revision" model="ir.ui.view">
+			<field name="name">sale.order.tree_sorevision</field>
+			<field name="model">sale.order</field>
+			<field name="inherit_id" ref="sale.view_order_tree" />
+			<field name="arch" type="xml">
+				<xpath expr="//field[@name='name']" position="after">
+					<field name="rev_number" />
+				</xpath>
+			</field>
+		</record>
+
+		<record id="sale_order_search_so_revision" model="ir.ui.view">
+			<field name="name">sale.order.search_sorevision</field>
+			<field name="model">sale.order</field>
+			<field name="inherit_id" ref="sale.view_sales_order_filter" />
+			<field name="arch" type="xml">
+				<xpath expr="//field[@name='name']" position="after">
+					<field name="rev_number" string='Revision Number' />
+				</xpath>
+			</field>
+		</record>
+	</data>
+</odoo>

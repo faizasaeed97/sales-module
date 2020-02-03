@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+
+
+    <record model="ir.ui.view" id="heemployee_custom_view_form">
+        <field name="name">res.employees.hr.form</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_form"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//field[@name='passport_id']" position="after">
+                <field name="passport_exp_date" groups="hr.group_hr_user"></field>
+
+            </xpath>
+
+            <xpath expr="//field[@name='country_id']" position="after">
+                <field name="bahrain_expact"></field>
+            </xpath>
+
+            <xpath expr="//field[@name='country_id']" position="after">
+                <field name="muslim"></field>
+            </xpath>
+
+            <xpath expr="//field[@name='birthday']" position="after">
+                <field name="age"></field>
+            </xpath>
+
+
+            <xpath expr="//notebook/page[@name='personal_information']//group/group[4]" position="after">
+                <group string="Other Info">
+                    <field name="cpr_no"></field>
+                    <field name="cpr_exp_date"></field>
+                    <field name="rp_exp_date"></field>
+                    <field name="veh_alloted"></field>
+                    <field name="accomodation"></field>
+
+
+                </group>
+            </xpath>
+
+
+        </field>
+    </record>
+
+
+</odoo>

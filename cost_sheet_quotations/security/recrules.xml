@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <record model="ir.module.category" id="Cost_Sheet_cat">
+            <field name="description">Helps you handle your accounting needs, if you are not an accountant, we suggest
+                you to install only the Invoicing.
+            </field>
+            <field name="name">Cost Sheet</field>
+            <field name="sequence">7</field>
+        </record>
+
+        <record id="group_costsheet_user_own" model="res.groups">
+
+            <field name="name">User:Own</field>
+            <field name="category_id" ref="Cost_Sheet_cat"/>
+                        <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+
+        </record>
+
+        <record id="group_costsheet_user_all" model="res.groups">
+            <field name="name">User:All</field>
+            <field name="category_id" ref="Cost_Sheet_cat"/>
+            <field name="implied_ids" eval="[(4, ref('group_costsheet_user_own'))]"/>
+        </record>
+
+        <record id="group_costsheet_user_manager" model="res.groups">
+            <field name="name">Manager</field>
+            <field name="category_id" ref="Cost_Sheet_cat"/>
+            <field name="implied_ids" eval="[(4, ref('group_costsheet_user_all'))]"/>
+                        <field name="users" eval="[(4, ref('base.user_root')), (4, ref('base.user_admin'))]"/>
+
+        </record>
+
+
+
+        <record id="rule_user_user_own" model="ir.rule">
+            <field name="name">User can only see his/her CostSheet</field>
+            <field name="model_id" ref="model_cost_sheet_crm"/>
+            <field name="groups" eval="[(4, ref('group_costsheet_user_own'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="False"/>
+            <field name="domain_force">['|',('sale_person.id','=',user.id),('sale_person.id','=',False)]</field>
+        </record>
+
+
+        <record id="rule_user_manager" model="ir.rule">
+            <field name="name">Manager can see modify all CostSheet</field>
+            <field name="model_id" ref="model_cost_sheet_crm"/>
+            <field name="groups" eval="[(4, ref('group_costsheet_user_manager'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="False"/>
+            <field name="domain_force">[(1,'=',1)]</field>
+        </record>
+
+
+        <record id="rule_user_all" model="ir.rule">
+            <field name="name">User can see modify all CostSheet</field>
+            <field name="model_id" ref="model_cost_sheet_crm"/>
+            <field name="groups" eval="[(4, ref('group_costsheet_user_all'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="False"/>
+            <field name="domain_force">[(1,'=',1)]</field>
+        </record>
+
+
+    </data>
+</odoo>

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+
+
+    <record model="ir.ui.view" id="hrcontract_custom_view_form">
+        <field name="name">hr.contract.form.inherit</field>
+        <field name="model">hr.contract</field>
+        <field name="inherit_id" ref="hr_contract.hr_contract_view_form"/>
+        <field name="arch" type="xml">
+
+            <!--            <xpath expr="//field[@name='passport_id']" position="after">-->
+            <!--                <field name="passport_exp_date" groups="hr.group_hr_user"></field>-->
+
+            <!--            </xpath>-->
+
+            <!--            <xpath expr="//field[@name='country_id']" position="after">-->
+            <!--                <field name="bahrain_expact"></field>-->
+            <!--            </xpath>-->
+
+            <!--            <xpath expr="//field[@name='country_id']" position="after">-->
+            <!--                <field name="muslim"></field>-->
+            <!--            </xpath>-->
+
+            <!--            <xpath expr="//field[@name='birthday']" position="after">-->
+            <!--                <field name="age"></field>-->
+            <!--            </xpath>-->
+
+
+            <xpath expr="//notebook/page[@name='other']//group/group[1]" position="after">
+                <group string="Info">
+                    <field name="housing_allowance"></field>
+                    <field name="travel_allowance"></field>
+                    <field name="increment_Date"></field>
+                    <field name="increment_Amount"></field>
+                    <field name="leave_Status"></field>
+                </group>
+
+                <group string="Other Info">
+                    <field name="leave_due"></field>
+                    <field name="leave_amount"></field>
+                    <field name="total_work_experience"></field>
+                    <field name="indemnity"></field>
+                    <field name="tenure"></field>
+
+                    <field name="sponsorship"></field>
+                    <field name="work_location"></field>
+
+
+                </group>
+
+
+            </xpath>
+
+
+        </field>
+    </record>
+
+
+</odoo>

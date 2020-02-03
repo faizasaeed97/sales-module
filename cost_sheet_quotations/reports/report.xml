@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+         <record id="paper_format_jobcard" model="report.paperformat">
+            <field name="name">A4 JobCard</field>
+<!--            <field name="default" eval="False" />-->
+            <field name="format">A4</field>
+            <field name="page_height">0</field>
+            <field name="page_width">0</field>
+            <field name="orientation">Portrait</field>
+            <field name="margin_top">2</field>
+            <field name="margin_bottom">10</field>
+            <field name="margin_left">5</field>
+            <field name="margin_right">5</field>
+<!--            <field name="header_line" eval="False" />-->
+            <field name="header_spacing">15</field>
+            <field name="dpi">100</field>
+        </record>
+
+		<report
+        id="action_repair_order_print"
+		string="Print Cost Sheet"
+		model ="cost.sheet.crm"
+		report_type="qweb-pdf"
+		name = "cost_sheet_quotations.repair_order_print_template"
+        file="cost_sheet_quotations.repair_order_print_template" />
+<!--        paperformat="paper_format_jobcard"-->
+
+    </data>
+</odoo>

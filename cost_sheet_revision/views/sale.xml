@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+      <record model="ir.ui.view" id="inherit_saleorder">
+        <field name="name">sale.form.inherit</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+             <xpath expr="//button[@name='action_cancel']" position="after">
+                 <field name="is_allmaterial_availbile" invisible="1"/>
+               <button name="create_bom" string="Create Bom"  type="object"
+                       class="btn-primary" attrs="{'invisible':[('is_allmaterial_availbile','=',False)]}"/>
+
+                 <button name="process_material" attrs="{'invisible':[('is_allmaterial_availbile','=',True)]}"
+               class="btn-primary" string="Create Material Requisition" type="object"/>
+             </xpath>
+             <xpath expr="//field[@name='name']" position="after">
+                <field name="cost_sheet_id" invisible="1" />
+             </xpath>
+            <xpath expr="//field[@name='partner_id']" position="after">
+                 <field name="project" attrs="{'invisible':[('project','=',False)]}"/>
+             </xpath>
+        </field>
+     </record>
+</odoo>

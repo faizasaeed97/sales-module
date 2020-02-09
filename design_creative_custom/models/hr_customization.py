@@ -27,6 +27,12 @@ class inherithremploye(models.Model):
 class inheritcontract(models.Model):
     _inherit = 'hr.contract'
 
+
+
+
+
+
+    
     housing_allowance=fields.Float("Housing Allowance",default=0.00)
     travel_allowance=fields.Float("Travel Allowance",default=0.00)
     increment_Date = fields.Date(string="Increment Date")

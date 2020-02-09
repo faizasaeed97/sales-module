@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <odoo>
-
+<data>
 
     <record model="ir.ui.view" id="hrcontract_custom_view_form">
         <field name="name">hr.contract.form.inherit</field>
@@ -8,22 +8,6 @@
         <field name="inherit_id" ref="hr_contract.hr_contract_view_form"/>
         <field name="arch" type="xml">
 
-            <!--            <xpath expr="//field[@name='passport_id']" position="after">-->
-            <!--                <field name="passport_exp_date" groups="hr.group_hr_user"></field>-->
-
-            <!--            </xpath>-->
-
-            <!--            <xpath expr="//field[@name='country_id']" position="after">-->
-            <!--                <field name="bahrain_expact"></field>-->
-            <!--            </xpath>-->
-
-            <!--            <xpath expr="//field[@name='country_id']" position="after">-->
-            <!--                <field name="muslim"></field>-->
-            <!--            </xpath>-->
-
-            <!--            <xpath expr="//field[@name='birthday']" position="after">-->
-            <!--                <field name="age"></field>-->
-            <!--            </xpath>-->
 
 
             <xpath expr="//notebook/page[@name='other']//group/group[1]" position="after">
@@ -55,5 +39,5 @@
         </field>
     </record>
 
-
+</data>
 </odoo>

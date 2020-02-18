@@ -10,9 +10,10 @@
                 <button name="generate_cost_sheet" string="Create Cost Sheet" type="object"
                         attrs="{'invisible': ['|',('is_cost_sheet_generated','!=',False),('type', '!=', 'opportunity')]}"
                         groups="cost_sheet_quotations.group_costsheet_user_own"/>
+
                 <button name="open_cost_sheet" string="Open Cost Sheet" type="object"
                         attrs="{'invisible': ['|',('is_cost_sheet_generated','=',False),('type', '!=', 'opportunity')]}"
-                        groups="cost_sheet_quotations.group_costsheet_user_all,cost_sheet_quotations.group_costsheet_user_own"/>
+                        groups="cost_sheet_quotations.group_costsheet_user_all,cost_sheet_quotations.group_costsheet_user_own,cost_sheet_quotations.group_costsheet_user_manager"/>
 
             </xpath>
 
@@ -47,7 +48,9 @@
                 <header>
                     <field name="is_quotation_generated" invisible="1"/>
                     <button name="create_quotation" attrs="{'invisible': [('is_quotation_generated','!=',False)]}"
-                            class="btn-primary" string="Create Quotation" type="object"/>
+                            class="btn-primary" string="Create Quotation" type="object">
+
+                    </button>
 
                     <button name="create_additional_cost_sheet"
                             class="btn-primary" string="Create Additional Costsheet" type="object"/>
@@ -55,19 +58,20 @@
 
                     <button name="approve_cs"
                             class="btn-primary" string="Approve" type="object"
-                            groups="cost_sheet_quotations.group_costsheet_user_all"
-                    attrs="{'invisible': [('state','in',['Approved'])]}"
+                            groups="cost_sheet_quotations.group_costsheet_user_manager"
+                            attrs="{'invisible': [('state','in',['Approved','Draft'])]}"
                     />
 
 
                     <button name="validate_cs"
                             class="btn-primary" string="Validate" type="object"
-                             attrs="{'invisible': [('state','in',['Validated'])]}"
-                            groups="cost_sheet_quotations.group_costsheet_user_manager"/>
+                            attrs="{'invisible': [('state','in',['Validated'])]}"
+                            groups="cost_sheet_quotations.group_costsheet_user_all"
+                    />
 
                     <button name="reset_todraft"
-                             string="Reset to Draft" type="object"
-                              attrs="{'invisible': [('state','in',['Draft'])]}"
+                            string="Reset to Draft" type="object"
+                            attrs="{'invisible': [('state','in',['Draft'])]}"
                             groups="cost_sheet_quotations.group_costsheet_user_all"/>
 
 
@@ -83,7 +87,7 @@
                                 name="%(cost_sheet_quotations.action_costsheet_quotation)d" type="action"
                                 icon="fa-pencil-square-o">
                             <div class="o_stat_info">
-                                <span class="o_stat_text">Quotation</span>
+                                <field name="quotation_count" widget="statinfo" string="Quotations"/>
                             </div>
                         </button>
                     </div>
@@ -166,6 +170,12 @@
                         </page>
                     </notebook>
                 </sheet>
+
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="activity_ids" widget="mail_activity"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
             </form>
         </field>
     </record>

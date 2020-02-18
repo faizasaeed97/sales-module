@@ -9,6 +9,7 @@ import datetime
 
 class Costsheet(models.Model):
     _name = 'cost.sheet.crm'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
     _rec_name = 'name'
 
     is_quotation_generated = fields.Boolean()
@@ -45,6 +46,8 @@ class Costsheet(models.Model):
         ('Validated', 'Validated'),
         ('Approved', 'Approved'),
     ], string="State", default='Draft', track_visibility='onchange', copy=False, )
+
+    quotation_count = fields.Integer(string="Quotations",)
 
     # def get_user_id(self):
     #     return self.env.user.id
@@ -180,6 +183,7 @@ class Costsheet(models.Model):
                              'product_uom_qty': 1, 'price_unit': self.labor_total + markup_amount_line})
 
                 self.is_quotation_generated = True
+                self.quotation_count+=1
         else:
             raise ValidationError(
                     _("Please Approve the cost sheet by Manager"))

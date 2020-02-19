@@ -284,7 +284,7 @@ class costsheetmaterial(models.Model):
             self.rate = self.product_id.lst_price
 
     @api.onchange('qty', 'rate')
-    def onchange_product(self):
+    def onchange_products(self):
         if self.qty and self.rate:
             self.subtotal = self.qty * self.rate
 
@@ -409,10 +409,9 @@ class saleorder(models.Model):
         if self.order_line and self.cost_sheet_id:
             for rec in self.order_line:
                 if rec.product_id.id in self.cost_sheet_id.material_ids.product_id.ids:
-                    bom_list.append([0, 0, {'product_id': rec.product_id.id, 'product_qty': rec.product_uom_qty
+                    bom_list.append([0, 0, {'product_id': rec.product_id.id, 'product_qty': rec.product_uom_qty,'product_uom_id':rec.product_uom.id
 
                                             }])
-
         return {
             'name': _('Bills of Material'),
             'view_id': view_id.id,

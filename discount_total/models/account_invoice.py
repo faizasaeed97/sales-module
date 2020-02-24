@@ -1,174 +1,165 @@
-from odoo import models, fields, api
-from odoo.sql_db import TestCursor
+from odoo import models, fields, api,_
+from odoo.exceptions import UserError, ValidationError
 
 
 
-class AccountInvoice(models.Model):
+class AccountInvoice_inh(models.Model):
     _inherit = 'account.move'
 
 
-    @api.depends('invoice_line_ids.price_subtotal', 'currency_id', 'company_id', 'invoice_date', 'type')
-    def compute_discount(self):
-        round_curr = self.currency_id.round
-        if self:
-            for rec in self:
-                rec.amount_untaxed = sum(line.price_subtotal for line in rec.invoice_line_ids)
-                # self.amount_tax = sum(round_curr(line.amount_total) for line in self.tax_line_id)
-                # self.amount_total = self.amount_untaxed+self.amount_tax
-                discount = 0
-                for line in rec.invoice_line_ids:
-                    discount += (line.price_unit * line.quantity * line.discount) / 100
-                rec.discount = discount
-                rec.amount_tax = sum(round_curr((line.tax_ids.amount*line.price)/100) for line in rec.invoice_line_ids)
-
-                rec.amount_total=(rec.amount_untaxed+rec.amount_tax)
-                amount_total_company_signed = rec.amount_total
-                amount_untaxed_signed = rec.amount_untaxed
-                if rec.currency_id and rec.company_id and rec.currency_id != rec.company_id.currency_id:
-                    currency_id = rec.currency_id.with_context(date=rec.invoice_date)
-                    amount_total_company_signed = currency_id.compute(rec.amount_total, rec.company_id.currency_id)
-                    amount_untaxed_signed = currency_id.compute(rec.amount_untaxed, rec.company_id.currency_id)
-                sign = rec.type in ['in_refund', 'out_refund'] and -1 or 1
-                rec.amount_total_company_signed = amount_total_company_signed * sign
-                rec.amount_total_signed = rec.amount_total * sign
-                rec.amount_untaxed_signed = amount_untaxed_signed * sign
-
-
-
-    @api.depends('invoice_line_ids')
-    def compute_total_before_discount(self):
-        for rec in self:
-            total = 0
-            for line in rec.invoice_line_ids:
-                total += line.price
-            rec.total_before_discount = total
-
-    @api.depends('invoice_line_ids')
-    def compute_total_after_discount(self):
-        for rec in self:
-            total = 0
-            total =  rec.total_before_discount - rec.discount
-            rec.total_after_discount = total
-
-
-    # discount_type = fields.Selection([('percentage', 'Percentage')], string='Discount Type',
-    #                                  readonly=True, states={'draft': [('readonly', False)]}, default='percentage')
-    # discount_rate = fields.Float(string='Discount Rate', digits=(16, 2),
-    #                              readonly=True, states={'draft': [('readonly', False)]}, default=0.0)
-    discount = fields.Monetary(string='Discount', digits=(16, 2), default=0.0,
-                               store=True, compute='compute_discount', track_visibility='always')
-    total_before_discount = fields.Monetary(string='Total Before Discount', digits=(16, 2), store=True, compute='compute_total_before_discount')
-
-    total_after_discount = fields.Monetary(string='Total After Discount', digits=(16, 2), store=True, compute='compute_total_after_discount')
+    is_commitnment = fields.Boolean(string='Is Commitnment',default=False)
 
 
 
 
-    # @api.onchange('discount_type', 'discount_rate', 'invoice_lines_ids')
-    # def set_lines_discount(self):
-    #     discount=0
-    #     if self.discount_type == 'percentage':
-    #         for line in self.invoice_line_ids:
-    #             line.discount=self.discount_rate
-    #             line.price_subtotal = (line.quantity * line.price_unit) - ((line.quantity * line.price_unit * line.discount) / 100)
-    #             discount += (line.price_unit * line.quantity * line.discount) / 100
-    #
-    #         self.discount = discount
-    #         self.total_after_discount=self.total_before_discount-discount
-    #         self.amount_total = self.amount_total - discount
 
-            # self.write(self.record, 'A')
+class AccountInvoice_custom(models.Model):
+    _inherit = 'account.move.line'
 
-        # else:
-        #     total = discount = 0.0
-        #     for line in self.invoice_line_ids:
-        #         total += (line.quantity * line.price_unit)
-        #     if self.discount_rate != 0:
-        #         discount = (self.discount_rate / total) * 100
-        #     else:
-        #         discount = self.discount_rate
-        #     for line in self.invoice_line_ids:
-        #         line.discount = discount
-        #         # line.price=line.price-line.discount
+    design_graphice_project = fields.Many2one("project.project", string="Project")
+    # stages=fields.Many2one(comodel_name="project.task.type", string="Stage")
+    # tasks=fields.Many2one(comodel_name="project.task", string="task")
+
+    # @api.onchange('project')
+    # def onchange_project(self):
+    #     if self.project.analytic_account_id:
+    #        self.analytic_account_id=self.project.analytic_account_id
 
 
 
-    # def button_dummy(self):
-    #     for rec in self:
-    #         rec.set_lines_discount()
-    #     return True
+    @api.model_create_multi
+    def create(self, vals_list):
+        # OVERRIDE
+        ACCOUNTING_FIELDS = ('debit', 'credit', 'amount_currency')
+        BUSINESS_FIELDS = ('price_unit', 'quantity', 'discount', 'tax_ids')
+
+        for vals in vals_list:
+            move = self.env['account.move'].browse(vals['move_id'])
+            vals.setdefault('company_currency_id',
+                            move.company_id.currency_id.id)  # important to bypass the ORM limitation where monetary fields are not rounded; more info in the commit message
+
+            if move.is_invoice(include_receipts=True):
+                currency = self.env['res.currency'].browse(vals.get('currency_id'))
+                partner = self.env['res.partner'].browse(vals.get('partner_id'))
+                taxes = self.resolve_2many_commands('tax_ids', vals.get('tax_ids', []), fields=['id'])
+                tax_ids = set(tax['id'] for tax in taxes)
+                taxes = self.env['account.tax'].browse(tax_ids)
+
+                # Ensure consistency between accounting & business fields.
+                # As we can't express such synchronization as computed fields without cycling, we need to do it both
+                # in onchange and in create/write. So, if something changed in accounting [resp. business] fields,
+                # business [resp. accounting] fields are recomputed.
+                if any(vals.get(field) for field in ACCOUNTING_FIELDS):
+                    if vals.get('currency_id'):
+                        balance = vals.get('amount_currency', 0.0)
+                    else:
+                        balance = vals.get('debit', 0.0) - vals.get('credit', 0.0)
+                    vals.update(self._get_fields_onchange_balance_model(
+                        vals.get('quantity', 0.0),
+                        vals.get('discount', 0.0),
+                        balance,
+                        move.type,
+                        currency,
+                        taxes
+                    ))
+                    vals.update(self._get_price_total_and_subtotal_model(
+                        vals.get('price_unit', 0.0),
+                        vals.get('quantity', 0.0),
+                        vals.get('discount', 0.0),
+                        currency,
+                        self.env['product.product'].browse(vals.get('product_id')),
+                        partner,
+                        taxes,
+                        move.type,
+                    ))
+                elif any(vals.get(field) for field in BUSINESS_FIELDS):
+                    vals.update(self._get_price_total_and_subtotal_model(
+                        vals.get('price_unit', 0.0),
+                        vals.get('quantity', 0.0),
+                        vals.get('discount', 0.0),
+                        currency,
+                        self.env['product.product'].browse(vals.get('product_id')),
+                        partner,
+                        taxes,
+                        move.type,
+                    ))
+                    vals.update(self._get_fields_onchange_subtotal_model(
+                        vals['price_subtotal'],
+                        move.type,
+                        currency,
+                        move.company_id,
+                        move.date,
+                    ))
+
+            # Ensure consistency between taxes & tax exigibility fields.
+            if 'tax_exigible' in vals:
+                continue
+            if vals.get('tax_repartition_line_id'):
+                repartition_line = self.env['account.tax.repartition.line'].browse(vals['tax_repartition_line_id'])
+                tax = repartition_line.invoice_tax_id or repartition_line.refund_tax_id
+                vals['tax_exigible'] = tax.tax_exigibility == 'on_invoice'
+            elif vals.get('tax_ids'):
+                tax_ids = [v['id'] for v in self.resolve_2many_commands('tax_ids', vals['tax_ids'], fields=['id'])]
+                taxes = self.env['account.tax'].browse(tax_ids).flatten_taxes_hierarchy()
+                vals['tax_exigible'] = not any(tax.tax_exigibility == 'on_payment' for tax in taxes)
+
+        if 'project' in vals:
+            vals_list['project'] = vals['project']
+
+        lines = super(AccountInvoice_custom, self).create(vals_list)
 
 
-    # def write(self, vals):
-    #
-    #     if 'discount_rate' in vals:
-    #         round_curr = self.currency_id.round
-    #
-    #         discount=0.0
-    #         if self.discount_type == 'percentage':
-    #             for line in self.invoice_line_ids:
-    #                 line.price_subtotal= (line.price_unit * line.quantity) -((line.price_unit * line.quantity * vals['discount_rate'])/100)
-    #                 line.discount = vals['discount_rate']
-    #                 discount += (line.price_unit * line.quantity * line.discount) / 100
-    #                 # line.price = line.price_subtotal - ((self.discount_rate * line.price_subtotal) / 100)
-    #
-    #             # vals['discount'] = discount
-    #             vals['total_after_discount'] = self.total_before_discount - discount
-    #             amount_tax = sum(round_curr((line.tax_ids.amount*line.price)/100) for line in self.invoice_line_ids)
-    #
-    #             vals['amount_total'] = (self.total_after_discount+amount_tax)
-    #             vals['total_before_discount']=self.total_before_discount
-    #     res = super(AccountInvoice, self).write(vals)
-    #
-    # @api.model_create_multi
-    # def create(self, vals_list):
-    #
-    #     res = super(AccountInvoice, self).create(vals_list)
-    #     round_curr = res.currency_id.round
-    #     if vals_list:
-    #         discount = 0.0
-    #
-    #         if 'discount_rate' in vals_list or 'discount_rate' in vals_list[0] :
-    #             if vals_list[0]['discount_type'] == 'percentage':
-    #                 for line in res.invoice_line_ids:
-    #                     line.discount = res.discount_rate
-    #                     discount += (line.price_unit * line.quantity * line.discount) / 100
-    #                     # line.price = line.price_subtotal - ((self.discount_rate * line.price_subtotal) / 100)
-    #
-    #                 res.total_after_discount = res.total_before_discount - discount
-    #                 amount_tax = sum(round_curr((line.tax_ids.amount*line.price_subtotal)/100) for line in res.invoice_line_ids)
-    #
-    #                 res.amount_total= (res.total_after_discount+amount_tax)
-    #         else:
-    #             for line in res.invoice_line_ids:
-    #                 line.discount = res.discount_rate
-    #                 discount += (line.price_unit * line.quantity * line.discount) / 100
-    #                 # line.price = line.price_subtotal - ((self.discount_rate * line.price_subtotal) / 100)
-    #
-    #             res.total_after_discount = res.total_before_discount - discount
-    #             amount_tax = sum(
-    #                 round_curr((line.tax_ids.amount * line.price_subtotal) / 100) for line in res.invoice_line_ids)
-    #
-    #             res.amount_total = (res.total_after_discount + amount_tax)
-    #
-    #
-    #     return res
-                # vals_list[0]['total_before_discount']=res.total_before_discount
+        moves = lines.mapped('move_id')
+        if self._context.get('check_move_validity', True):
+            moves._check_balanced()
+        moves._check_fiscalyear_lock_date()
+        lines._check_tax_lock_date()
+
+        return lines
+
+
+    # def get_items_proj(self):
+    #     val=[]
+    #     val['project'] = self.project
+    #     val['stages'] = self.stages
+    #     val['tasks'] = self.tasks
+    #     return val
 
 
 
-#
-class AccountInvoiceLine(models.Model):
-    _inherit = "account.move.line"
+class proj_projwork(models.Model):
+    _inherit = 'project.project'
+
+    amount_count = fields.Float(Default=0.0,compute="_get_amount")
 
 
-    @api.depends('quantity', 'price_unit')
-    def compute_line_price(self):
-        for r in self:
-            r.price = (r.quantity * r.price_unit)
+    def _get_amount(self):
+        if self.analytic_account_id:
+            getAll=self.env['account.move'].search([('is_commitnment','=',True),('line_ids.analytic_account_id.id','in',[self.analytic_account_id.id])])
+            if len(getAll) > 1:
+                raise UserError(_('You can only select 1 commitnment ammount in journal items.'))
+
+            amount=0.0
+            for rec in getAll:
+                for dt in rec.line_ids:
+                    amount+=dt.debit
+
+            self.amount_count=amount
+
+    @api.onchange('analytic_account_id')
+    def _update_amountx(self):
+        if self.analytic_account_id:
+            getAll = self.env['account.move'].search([('is_commitnment', '=', True), (
+            'line_ids.analytic_account_id.id', 'in', [self.analytic_account_id.id])])
+            if len(getAll)>1:
+                raise UserError(_('You can only select 1 commitnment ammount in journal items.'))
+
+            amount = 0.0
+            for rec in getAll:
+                for dt in rec.line_ids:
+                    amount += dt.debit
+
+            self.amount_count = amount
 
 
 
-
-    # discount = fields.Float(string='Discount (%)', digits=(16, 2), default=0.0)
-    price = fields.Float(string='Price', digits=(16, 2), store=True, compute='compute_line_price')

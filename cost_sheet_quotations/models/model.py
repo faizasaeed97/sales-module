@@ -22,15 +22,15 @@ class Costsheet(models.Model):
     cost_sheet_date = fields.Date(string='Date', default=fields.Datetime.now().date())
     client = fields.Many2one('res.partner', string='Client')
     sale_person = fields.Many2one('res.users', string='Sales person',default=lambda self: self.env.user)
-    material_ids = fields.One2many('cost.sheet.material', 'cost_sheet')
-    labor_ids = fields.One2many('cost.sheet.labors', 'cost_sheet')
-    overhead_ids = fields.One2many('cost.sheet.overhead', 'cost_sheet')
-    rental_ids = fields.One2many('cost.sheet.rental', 'cost_sheet')
-    material_total = fields.Float(compute='material_total_cal', store=True)
-    labor_total = fields.Float(compute='labor_total_cal', store=True)
-    overhead_total = fields.Float(compute='overhead_total_cal', store=True)
-    rental_total = fields.Float(compute='rental_total_cal', store=True)
-    grand_total = fields.Float(compute='grand_total_cal', store=True)
+    material_ids = fields.One2many('cost.sheet.material', 'cost_sheet',store=True)
+    labor_ids = fields.One2many('cost.sheet.labors', 'cost_sheet',store=True)
+    overhead_ids = fields.One2many('cost.sheet.overhead', 'cost_sheet',store=True)
+    rental_ids = fields.One2many('cost.sheet.rental', 'cost_sheet',store=True)
+    material_total = fields.Float(compute='material_total_cal',)
+    labor_total = fields.Float(compute='labor_total_cal')
+    overhead_total = fields.Float(compute='overhead_total_cal',)
+    rental_total = fields.Float(compute='rental_total_cal',)
+    grand_total = fields.Float(compute='grand_total_cal')
     markup_type = fields.Selection([('Percentage', 'Percentage'), ('Amount', 'Amount')], default='Percentage',
                                    string='Markup Type')
     quotation_value = fields.Float(string='Quotation Value', compute='get_quotation_value')
@@ -49,11 +49,14 @@ class Costsheet(models.Model):
 
     quotation_count = fields.Integer(string="Quotations",)
 
+    scope_work = fields.One2many('scope.work', 'cost_sheet',store=True)
+
+    is_final_cs=fields.Boolean("Final Cost Sheet?",default=False,)
+
+
+
     # def get_user_id(self):
     #     return self.env.user.id
-
-
-
 
 
     def approve_cs(self):
@@ -80,8 +83,8 @@ class Costsheet(models.Model):
             return False
 
     def create_additional_cost_sheet(self):
-        if self.check_if_saleordercocnfirm(self.opportunity_id.name):
-            raise ValidationError("you can't create addional costsheet, cancel confirm sale order first")
+        # if self.check_if_saleordercocnfirm(self.opportunity_id.name):
+        #     raise ValidationError("you can't create addional costsheet, cancel confirm sale order first")
 
         view_id = self.env.ref('cost_sheet_quotations.costsheet_form')
         return {
@@ -154,6 +157,12 @@ class Costsheet(models.Model):
                 sale_order = self.env['sale.order'].create(
                     {'cost_sheet_id': self.id, 'partner_id': self.client.id,
                      'date_order': self.cost_sheet_date})
+                if len(self.scope_work) > 0:
+                    for obj in self.scope_work:
+                        sale_order_line = self.env['scope.work.line'].create(
+                            {'saleorder': sale_order.id, 'product_id': obj.product_id.id,
+                             'name': obj.product_id.name,
+                             'total_qty': obj.total_qty, 'total_cost': obj.total_cost})
                 if len(self.material_ids) > 0:
                     for obj in self.material_ids:
                         sale_order_line = self.env['sale.order.line'].create(
@@ -248,6 +257,7 @@ class Costsheet(models.Model):
             vals['opportunity_id'] = opertunity_id
             vals['is_additional'] = True
             vals['crm_lead']=csr.crm_lead.id
+            vals['client']=csr.client.id
 
 
         else:
@@ -266,13 +276,72 @@ class Costsheet(models.Model):
         res = super(Costsheet, self).create(vals)
         return res
 
+    # @api.model
+    def final_total_cal(self):
+        for rec in self:
+            for dta in rec:
+                sum = 0
+                qty=0
+                last_p=-1
+                if dta.material_ids:
+                    for sc in dta.scope_work:
+                        for mt in dta.material_ids:
+                            if (sc.product_id.id == mt.product_final.id) or (len(mt.product_final)==0 and last_p > 0):
+                                last_p=sc.product_id.id
+                                sum += mt.subtotal
+                                qty+=mt.qty
+                                sc.total_cost = sum
+                                sc.total_qty = qty
+                            else:
+                                sum = 0
+                                qty=0
+                                last_p=-1
+
+
+
+class costsheetwcope(models.Model):
+    _name = 'scope.work.line'
+
+    saleorder = fields.Many2one('sale.order')
+    name=fields.Char("name")
+    product_id = fields.Many2one('product.product', domain=[('type', '=', 'product'),('final_prod', '=', True)], string='Final Product',
+                                 required=True)
+
+    total_cost= fields.Float(string="total")
+    total_qty=fields.Integer(string="Qty",store=True)
+
+
+
+class costsheetwcope(models.Model):
+    _name = 'scope.work'
+
+    cost_sheet = fields.Many2one('cost.sheet.crm')
+    product_id = fields.Many2one('product.product', domain=[('type', '=', 'product'),('final_prod', '=', True)], string='Final Product',
+                                 required=True)
+
+    total_cost= fields.Float(string="total")
+    total_qty=fields.Integer(string="Qty",store=True)
+
+
+
+
+
+
+
 
 class costsheetmaterial(models.Model):
     _name = 'cost.sheet.material'
 
+    # domain = [('type', '=', 'product')]
+
     cost_sheet = fields.Many2one('cost.sheet.crm')
-    product_id = fields.Many2one('product.product', domain=[('type', '=', 'product')], string='Particular',
+    scope = fields.Many2one('scope.work')
+    product_final = fields.Many2one(related='scope.product_id', string='Final Product',
+                                 required=False,readonly=False,store=True)
+    product_id = fields.Many2one('product.product', domain=[('type', '=', 'product'),('raw_mat', '=', True)], string='Particular',
                                  required=True)
+
+    qty_ava = fields.Float(related='product_id.qty_available', string="Qty avaialble", store=True, readonly=True)
     qty = fields.Float(string='Qty.', default=1)
     uom = fields.Many2one('uom.uom', string='UOM')
     rate = fields.Float(string='Rate')
@@ -403,6 +472,9 @@ class saleorder(models.Model):
     project = fields.Many2one('project.project', string='Project')
     is_allmaterial_availbile = fields.Boolean(default=False)
 
+    scope_work = fields.One2many('scope.work.line', 'saleorder',store=True)
+
+
     def create_bom(self):
         view_id = self.env.ref('mrp.mrp_bom_form_view')
         bom_list = []
@@ -490,7 +562,7 @@ class saleorder(models.Model):
     def action_confirm(self):
         res = super(saleorder, self).action_confirm()
         if self.cost_sheet_id:
-            self.check_material_availbility(self.cost_sheet_id)
+            # self.check_material_availbility(self.cost_sheet_id)
             proj = self.env['project.project'].search([('name', '=', self.cost_sheet_id.opportunity_id.name)])
             self.write({'project': proj.id})
             # now update opportunity to won

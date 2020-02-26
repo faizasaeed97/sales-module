@@ -23,6 +23,7 @@
                 <xpath expr="//button[@name='create_quotation']" position="after">
                     <button name="create_revision" type="object"
                             string="Create New Revision"
+                            attrs="{'invisible': [('is_final_cs','=',True)]}"
                     />
                     <!--						attrs="{'invisible': ['|','|', ('state', '!=', 'cancel'), ('is_revision', '=', True), ('is_confirmed', '=', True)]}" />-->
                 </xpath>

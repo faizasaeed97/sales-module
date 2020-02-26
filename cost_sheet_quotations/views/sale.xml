@@ -19,6 +19,25 @@
             <xpath expr="//field[@name='partner_id']" position="after">
                  <field name="project" attrs="{'invisible':[('project','=',False)]}"/>
              </xpath>
+
+
+                        <xpath expr="//notebook/page[@name='other_information']" position="after">
+                            <page string="Final Products">
+                           <field name="scope_work" force_save="1">
+                                <tree editable="false">
+                                    <field name="product_id" invisible="1"/>
+                                    <field name="name"/>
+                                    <!--                                    <field name="qty"/>-->
+                                    <!--                                    <field name="uom"/>-->
+                                    <field name="total_qty"/>
+                                    <field name="total_cost"/>
+                                </tree>
+                            </field>
+                            </page>
+                        </xpath>
+
+
+
         </field>
      </record>
 </odoo>

@@ -23,7 +23,7 @@ class account_projwork(models.Model):
         if not opening_move:
             raise UserError(_("You must first define an opening move."))
 
-        if opening_move.state == 'posted':
+        if opening_move.state in ['posted','cancel','draft']:
             # check whether we should create a new move line or modify an existing one
             opening_move_line = self.env['account.move.line'].search([('account_id', '=', self.id),
                                                                       ('move_id','=', opening_move.id),

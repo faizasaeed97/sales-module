@@ -123,6 +123,10 @@
                         <field name="overhead_total" widget="monetary"
                                options="{'currency_field': 'company_currency'}"/>
                         <field name="rental_total" widget="monetary" options="{'currency_field': 'company_currency'}"/>
+
+                        <field name="rental_total_out" widget="monetary"
+                               options="{'currency_field': 'company_currency'}"/>
+
                     </group>
                     <group col="2" colspan="6">
                         <field name="grand_total" widget="monetary" options="{'currency_field': 'company_currency'}"/>
@@ -137,7 +141,7 @@
                             <field name="scope_work" force_save="1">
                                 <tree editable="bottom">
                                     <field name="product_id"/>
-                                    <!--                                    <field name="qty"/>-->
+                                    <field name="desc"/>
                                     <!--                                    <field name="uom"/>-->
                                     <!--                                    <field name="rate"/>-->
                                     <!--                                    <field name="subtotal"/>-->
@@ -175,6 +179,8 @@
                         <page string="Direct Labours">
                             <field name="labor_ids" force_save="1">
                                 <tree editable="bottom">
+                                    <field name="product_final"/>
+
                                     <field name="job_id"/>
                                     <field name="qty"/>
                                     <field name="uom"/>
@@ -182,10 +188,22 @@
                                     <field name="subtotal"/>
                                 </tree>
                             </field>
+
+                            <field name="scope_work" force_save="1">
+                                <tree editable="false">
+                                    <field name="product_id"/>
+                                    <!--                                    <field name="product_id"/>-->
+                                    <!--                                    <field name="qty"/>-->
+                                    <!--                                    <field name="uom"/>-->
+                                    <field name="total_qty"/>
+                                    <field name="total_cost"/>
+                                </tree>
+                            </field>
                         </page>
                         <page string="Overheads">
                             <field name="overhead_ids" force_save="1">
                                 <tree editable="bottom">
+                                    <field name="product_final"/>
                                     <field name="product_id"/>
                                     <field name="qty"/>
                                     <field name="uom"/>
@@ -193,15 +211,66 @@
                                     <field name="subtotal"/>
                                 </tree>
                             </field>
+
+                            <field name="scope_work" force_save="1">
+                                <tree editable="false">
+                                    <field name="product_id"/>
+                                    <!--                                    <field name="product_id"/>-->
+                                    <!--                                    <field name="qty"/>-->
+                                    <!--                                    <field name="uom"/>-->
+                                    <field name="total_qty"/>
+                                    <field name="total_cost"/>
+                                </tree>
+                            </field>
+
                         </page>
-                        <page string="Rental">
-                            <field name="rental_ids" force_save="1">
+                        <page string="Rental Internal">
+                            <field name="internal_rental_ids" force_save="1">
                                 <tree editable="bottom">
+                                    <field name="product_final"/>
+
                                     <field name="product_id"/>
                                     <field name="qty"/>
                                     <field name="uom"/>
                                     <field name="rate"/>
                                     <field name="subtotal"/>
+                                </tree>
+                            </field>
+
+                            <field name="scope_work" force_save="1">
+                                <tree editable="false">
+                                    <field name="product_id"/>
+                                    <!--                                    <field name="product_id"/>-->
+                                    <!--                                    <field name="qty"/>-->
+                                    <!--                                    <field name="uom"/>-->
+                                    <field name="total_qty"/>
+                                    <field name="total_cost"/>
+                                </tree>
+                            </field>
+
+                        </page>
+
+                        <page string="Rental Outsource">
+                            <field name="outsource_rental_ids" force_save="1">
+                                <tree editable="bottom">
+                                    <field name="product_final"/>
+
+                                    <field name="product_id"/>
+                                    <field name="qty"/>
+                                    <field name="uom"/>
+                                    <field name="rate"/>
+                                    <field name="subtotal"/>
+                                </tree>
+                            </field>
+
+                            <field name="scope_work" force_save="1">
+                                <tree editable="false">
+                                    <field name="product_id"/>
+                                    <!--                                    <field name="product_id"/>-->
+                                    <!--                                    <field name="qty"/>-->
+                                    <!--                                    <field name="uom"/>-->
+                                    <field name="total_qty"/>
+                                    <field name="total_cost"/>
                                 </tree>
                             </field>
                         </page>

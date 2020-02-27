@@ -1,43 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-      <record model="ir.ui.view" id="inherit_saleorder">
+    <record model="ir.ui.view" id="inherit_saleorder">
         <field name="name">sale.form.inherit</field>
         <field name="model">sale.order</field>
         <field name="inherit_id" ref="sale.view_order_form"/>
         <field name="arch" type="xml">
-             <xpath expr="//button[@name='action_cancel']" position="after">
-                 <field name="is_allmaterial_availbile" invisible="1"/>
-               <button name="create_bom" string="Create Bom"  type="object"
-                       class="btn-primary" attrs="{'invisible':[('is_allmaterial_availbile','=',False)]}"/>
+            <xpath expr="//button[@name='action_cancel']" position="after">
+                <field name="is_allmaterial_availbile" invisible="1"/>
+                <button name="create_bom" string="Create Bom" type="object"
+                        class="btn-primary" attrs="{'invisible':[('is_allmaterial_availbile','=',False)]}"/>
 
-                 <button name="process_material" attrs="{'invisible':[('is_allmaterial_availbile','=',True)]}"
-               class="btn-primary" string="Create Material Requisition" type="object"/>
-             </xpath>
-             <xpath expr="//field[@name='name']" position="after">
-                <field name="cost_sheet_id" invisible="1" />
-             </xpath>
+                <button name="process_material" attrs="{'invisible':[('is_allmaterial_availbile','=',True)]}"
+                        class="btn-primary" string="Create Material Requisition" type="object"/>
+            </xpath>
+            <xpath expr="//field[@name='name']" position="after">
+                <field name="cost_sheet_id" invisible="1"/>
+            </xpath>
             <xpath expr="//field[@name='partner_id']" position="after">
-                 <field name="project" attrs="{'invisible':[('project','=',False)]}"/>
-             </xpath>
+                <field name="project" attrs="{'invisible':[('project','=',False)]}"/>
+            </xpath>
 
 
-                        <xpath expr="//notebook/page[@name='other_information']" position="after">
-                            <page string="Final Products">
-                           <field name="scope_work" force_save="1">
-                                <tree editable="false">
-                                    <field name="product_id" invisible="1"/>
-                                    <field name="name"/>
-                                    <!--                                    <field name="qty"/>-->
-                                    <!--                                    <field name="uom"/>-->
-                                    <field name="total_qty"/>
-                                    <field name="total_cost"/>
-                                </tree>
-                            </field>
-                            </page>
-                        </xpath>
-
+            <xpath expr="//notebook/page[@name='other_information']" position="after">
+                <page string="Final Products">
+                    <field name="scope_work" force_save="1">
+                        <tree editable="false">
+                            <field name="product_id" invisible="1"/>
+                            <field name="desc"/>
+                            <field name="tax_id"/>
+                            <field name="total_qty"/>
+                            <field name="total_cost"/>
+                        </tree>
+                    </field>
+                </page>
+            </xpath>
 
 
         </field>
-     </record>
+    </record>
 </odoo>

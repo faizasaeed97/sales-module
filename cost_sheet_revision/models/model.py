@@ -50,10 +50,30 @@ class Costsheets(models.Model):
         copied_rec.cost_sheet_date=self.cost_sheet_date
         copied_rec.client =self.client
         copied_rec.sale_person =self.sale_person
-        copied_rec.material_ids =self.material_ids
-        copied_rec.labor_ids =self.labor_ids
-        copied_rec.overhead_ids =self.overhead_ids
-        copied_rec.rental_ids =self.rental_ids
+        # for rec in self.material_ids:
+        #     self.env['cost.sheet.material'].create({
+        #         'cost_sheet':copied_rec.id,
+        #         'scope': rec.scope.id,
+        #         'product_final': rec.product_final.id,
+        #         'product_id': rec.product_id.id,
+        #         'qty_ava': rec.qty_ava,
+        #         'qty': rec.qty,
+        #         'uom': rec.uom,
+        #         'rate': rec.rate,
+        #         'subtotal': rec.subtotal,
+        #     })
+
+        # for rec in self.material_ids:
+        #     copied_rec.material_ids.create({
+        #
+        #
+        #
+        #
+        #     })
+
+        # copied_rec.labor_ids =self.labor_ids
+        # copied_rec.overhead_ids =self.overhead_ids
+        # copied_rec.rental_ids =self.rental_ids
         copied_rec.material_total =self.material_total
         copied_rec.labor_total =self.labor_total
         copied_rec.overhead_total =self.overhead_total
@@ -64,8 +84,6 @@ class Costsheets(models.Model):
         copied_rec.quotation_value =self.quotation_value
         copied_rec.markup_value =self.markup_value
         copied_rec.company_currency =self.company_currency
-        copied_rec.scope_work =self.scope_work
-
 
         copied_rec.is_a_revision = True
         copied_rec.number_of_revision = self.number_of_revision
@@ -121,6 +139,9 @@ class Costsheets(models.Model):
 
     def _get_number_of_revision(self):
         self.number_of_revision = len(self.search([('name', '=', self.name)]).ids) - 1
+
+
+
 
 
 

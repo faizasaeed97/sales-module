@@ -22,14 +22,19 @@ class Costsheet(models.Model):
     cost_sheet_date = fields.Date(string='Date', default=fields.Datetime.now().date())
     client = fields.Many2one('res.partner', string='Client')
     sale_person = fields.Many2one('res.users', string='Sales person',default=lambda self: self.env.user)
-    material_ids = fields.One2many('cost.sheet.material', 'cost_sheet',store=True)
-    labor_ids = fields.One2many('cost.sheet.labors', 'cost_sheet',store=True)
-    overhead_ids = fields.One2many('cost.sheet.overhead', 'cost_sheet',store=True)
-    rental_ids = fields.One2many('cost.sheet.rental', 'cost_sheet',store=True)
+    material_ids = fields.One2many('cost.sheet.material', 'cost_sheet',store=True,copy=True)
+    labor_ids = fields.One2many('cost.sheet.labors', 'cost_sheet',store=True,copy=True)
+    overhead_ids = fields.One2many('cost.sheet.overhead', 'cost_sheet',store=True,copy=True)
+    internal_rental_ids = fields.One2many('cost.sheet.rental.internal', 'cost_sheet',store=True,copy=True)
+
+    outsource_rental_ids = fields.One2many('cost.sheet.rental.outsource', 'cost_sheet',store=True,copy=True)
+
+
     material_total = fields.Float(compute='material_total_cal',)
     labor_total = fields.Float(compute='labor_total_cal')
     overhead_total = fields.Float(compute='overhead_total_cal',)
     rental_total = fields.Float(compute='rental_total_cal',)
+    rental_total_out=fields.Float(compute='rental_total_cal_out',)
     grand_total = fields.Float(compute='grand_total_cal')
     markup_type = fields.Selection([('Percentage', 'Percentage'), ('Amount', 'Amount')], default='Percentage',
                                    string='Markup Type')
@@ -49,7 +54,7 @@ class Costsheet(models.Model):
 
     quotation_count = fields.Integer(string="Quotations",)
 
-    scope_work = fields.One2many('scope.work', 'cost_sheet',store=True)
+    scope_work = fields.One2many('scope.work', 'cost_sheet',store=True,copy=True)
 
     is_final_cs=fields.Boolean("Final Cost Sheet?",default=False,)
 
@@ -119,8 +124,10 @@ class Costsheet(models.Model):
                 count += len(self.material_ids)
             if self.overhead_ids:
                 count += len(self.overhead_ids)
-            if self.rental_ids:
-                count += len(self.rental_ids)
+            if self.internal_rental_ids:
+                count += len(self.internal_rental_ids)
+            if self.outsource_rental_ids:
+                count+=len(self.outsource_rental_ids)
         if markup_amount > 0:
             return (markup_amount / count)
         else:
@@ -151,7 +158,7 @@ class Costsheet(models.Model):
     def create_quotation(self):
         if self.state=='Approved':
 
-            if len(self.material_ids) > 0 or len(self.rental_ids) > 0 or len(self.overhead_ids) or self.labor_total:
+            if len(self.material_ids) > 0 or len(self.internal_rental_ids) > 0 or len(self.overhead_ids) or len(self.labor_total) > 0 or len(self.outsource_rental_ids)>0:
                 markup_amount_line = self.get_each_line_markup_division_amount(
                     self.get_markup_amount(self.grand_total, self.markup_type, self.markup_value))
                 sale_order = self.env['sale.order'].create(
@@ -162,6 +169,7 @@ class Costsheet(models.Model):
                         sale_order_line = self.env['scope.work.line'].create(
                             {'saleorder': sale_order.id, 'product_id': obj.product_id.id,
                              'name': obj.product_id.name,
+                             'desc':obj.desc,
                              'total_qty': obj.total_qty, 'total_cost': obj.total_cost})
                 if len(self.material_ids) > 0:
                     for obj in self.material_ids:
@@ -169,12 +177,19 @@ class Costsheet(models.Model):
                             {'order_id': sale_order.id, 'product_id': obj.product_id.id,
                              'name': obj.product_id.name,
                              'product_uom_qty': obj.qty, 'price_unit': obj.rate + markup_amount_line})
-                if len(self.rental_ids) > 0:
-                    for obj in self.rental_ids:
+                if len(self.internal_rental_ids) > 0:
+                    for obj in self.internal_rental_ids:
                         sale_order_line = self.env['sale.order.line'].create(
                             {'order_id': sale_order.id, 'product_id': obj.product_id.id,
                              'name': obj.product_id.name,
                              'product_uom_qty': obj.qty, 'price_unit': obj.rate + markup_amount_line})
+                if len(self.outsource_rental_ids) > 0:
+                    for obj in self.outsource_rental_ids:
+                        sale_order_line = self.env['sale.order.line'].create(
+                            {'order_id': sale_order.id, 'product_id': obj.product_id.id,
+                             'name': obj.product_id.name,
+                             'product_uom_qty': obj.qty, 'price_unit': obj.rate + markup_amount_line})
+
 
                 if len(self.overhead_ids) > 0:
                     for obj in self.overhead_ids:
@@ -197,10 +212,10 @@ class Costsheet(models.Model):
             raise ValidationError(
                     _("Please Approve the cost sheet by Manager"))
 
-    @api.depends('material_total', 'labor_total', 'overhead_total', 'rental_total')
+    @api.depends('material_total', 'labor_total', 'overhead_total', 'rental_total','rental_total_out')
     def grand_total_cal(self):
         for record in self:
-            record.grand_total = record.material_total + record.labor_total + record.overhead_total + record.rental_total
+            record.grand_total = record.material_total + record.labor_total + record.overhead_total + record.rental_total+record.rental_total_out
 
     @api.depends('material_ids')
     def material_total_cal(self):
@@ -229,14 +244,27 @@ class Costsheet(models.Model):
                     sum += record.subtotal
         self.overhead_total = sum
 
-    @api.depends('rental_ids')
+    @api.depends('internal_rental_ids')
     def rental_total_cal(self):
         sum = 0
-        if self.rental_ids:
-            for record in self.rental_ids:
+        if self.internal_rental_ids:
+            for record in self.internal_rental_ids:
                 if record.subtotal:
                     sum += record.subtotal
         self.rental_total = sum
+
+    @api.depends('outsource_rental_ids')
+    def rental_total_cal_out(self):
+        sum = 0
+        if self.outsource_rental_ids:
+            for record in self.outsource_rental_ids:
+                if record.subtotal:
+                    sum += record.subtotal
+        self.rental_total_out= sum
+
+
+
+
 
     @api.model
     def create(self, vals):
@@ -296,6 +324,58 @@ class Costsheet(models.Model):
                                 sum = 0
                                 qty=0
                                 last_p=-1
+                if dta.labor_ids:
+                    for sc in dta.scope_work:
+                        for mt in dta.labor_ids:
+                            if (sc.product_id.id == mt.product_final.id) or (len(mt.product_final) == 0 and last_p > 0):
+                                last_p = sc.product_id.id
+                                sum += mt.subtotal
+                                qty += mt.qty
+                                sc.total_cost = sum
+                                sc.total_qty = qty
+                            else:
+                                sum = 0
+                                qty = 0
+                                last_p = -1
+                if dta.overhead_ids:
+                    for sc in dta.scope_work:
+                        for mt in dta.overhead_ids:
+                            if (sc.product_id.id == mt.product_final.id) or (len(mt.product_final) == 0 and last_p > 0):
+                                last_p = sc.product_id.id
+                                sum += mt.subtotal
+                                qty += mt.qty
+                                sc.total_cost = sum
+                                sc.total_qty = qty
+                            else:
+                                sum = 0
+                                qty = 0
+                                last_p = -1
+                if dta.internal_rental_ids:
+                    for sc in dta.scope_work:
+                        for mt in dta.internal_rental_ids:
+                            if (sc.product_id.id == mt.product_final.id) or (len(mt.product_final) == 0 and last_p > 0):
+                                last_p = sc.product_id.id
+                                sum += mt.subtotal
+                                qty += mt.qty
+                                sc.total_cost = sum
+                                sc.total_qty = qty
+                            else:
+                                sum = 0
+                                qty = 0
+                                last_p = -1
+                if dta.outsource_rental_ids:
+                    for sc in dta.scope_work:
+                        for mt in dta.outsource_rental_ids:
+                            if (sc.product_id.id == mt.product_final.id) or (len(mt.product_final) == 0 and last_p > 0):
+                                last_p = sc.product_id.id
+                                sum += mt.subtotal
+                                qty += mt.qty
+                                sc.total_cost = sum
+                                sc.total_qty = qty
+                            else:
+                                sum = 0
+                                qty = 0
+                                last_p = -1
 
 
 
@@ -306,6 +386,12 @@ class costsheetwcope(models.Model):
     name=fields.Char("name")
     product_id = fields.Many2one('product.product', domain=[('type', '=', 'product'),('final_prod', '=', True)], string='Final Product',
                                  required=True)
+    desc=fields.Char(string="Description")
+    tax_id = fields.Many2one(
+        'account.tax',
+        index=True,
+        string='Tax ID',
+    )
 
     total_cost= fields.Float(string="total")
     total_qty=fields.Integer(string="Qty",store=True)
@@ -318,6 +404,7 @@ class costsheetwcope(models.Model):
     cost_sheet = fields.Many2one('cost.sheet.crm')
     product_id = fields.Many2one('product.product', domain=[('type', '=', 'product'),('final_prod', '=', True)], string='Final Product',
                                  required=True)
+    desc=fields.Char(string="Description")
 
     total_cost= fields.Float(string="total")
     total_qty=fields.Integer(string="Qty",store=True)
@@ -337,7 +424,7 @@ class costsheetmaterial(models.Model):
     cost_sheet = fields.Many2one('cost.sheet.crm')
     scope = fields.Many2one('scope.work')
     product_final = fields.Many2one(related='scope.product_id', string='Final Product',
-                                 required=False,readonly=False,store=True)
+                                 required=False,readonly=False,store=True,copy=True)
     product_id = fields.Many2one('product.product', domain=[('type', '=', 'product'),('raw_mat', '=', True)], string='Particular',
                                  required=True)
 
@@ -361,6 +448,10 @@ class costsheetmaterial(models.Model):
 class costsheetlabors(models.Model):
     _name = 'cost.sheet.labors'
     cost_sheet = fields.Many2one('cost.sheet.crm')
+
+    scope = fields.Many2one('scope.work')
+    product_final = fields.Many2one(related='scope.product_id', string='Final Product',copy=True,
+                                    required=False, readonly=False, store=True)
     job_id = fields.Many2one('hr.job', string='Particular', required=True)
     qty = fields.Float(string='Qty.', default=1)
     uom = fields.Many2one('uom.uom', string='UOM')
@@ -377,6 +468,27 @@ class costsheetmaterial(models.Model):
     _name = 'cost.sheet.overhead'
 
     cost_sheet = fields.Many2one('cost.sheet.crm')
+    scope = fields.Many2one('scope.work')
+    product_final = fields.Many2one(related='scope.product_id', string='Final Product',copy=True,
+                                    required=False, readonly=False, store=True)
+    product_id = fields.Many2one('product.product', string='Particular', required=True)
+    qty = fields.Float(string='Qty.', default=1)
+    uom = fields.Many2one('uom.uom', string='UOM')
+    rate = fields.Float(string='Rate')
+    subtotal = fields.Float(string='Total')
+
+    @api.onchange('qty', 'rate')
+    def onchange_product(self):
+        if self.qty and self.rate:
+            self.subtotal = self.qty * self.rate
+
+class costsheetmaterial(models.Model):
+    _name = 'cost.sheet.rental.internal'
+
+    cost_sheet = fields.Many2one('cost.sheet.crm')
+    scope = fields.Many2one('scope.work')
+    product_final = fields.Many2one(related='scope.product_id', string='Final Product',copy=True,
+                                    required=False, readonly=False, store=True)
     product_id = fields.Many2one('product.product', string='Particular', required=True)
     qty = fields.Float(string='Qty.', default=1)
     uom = fields.Many2one('uom.uom', string='UOM')
@@ -389,10 +501,14 @@ class costsheetmaterial(models.Model):
             self.subtotal = self.qty * self.rate
 
 
+
 class costsheetmaterial(models.Model):
-    _name = 'cost.sheet.rental'
+    _name = 'cost.sheet.rental.outsource'
 
     cost_sheet = fields.Many2one('cost.sheet.crm')
+    scope = fields.Many2one('scope.work')
+    product_final = fields.Many2one(related='scope.product_id', string='Final Product',copy=True,
+                                    required=False, readonly=False, store=True)
     product_id = fields.Many2one('product.product', string='Particular', required=True)
     qty = fields.Float(string='Qty.', default=1)
     uom = fields.Many2one('uom.uom', string='UOM')

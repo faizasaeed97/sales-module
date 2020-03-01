@@ -16,6 +16,7 @@
                     <field name="travel_allowance"></field>
                     <field name="increment_Date"></field>
                     <field name="increment_Amount"></field>
+                    <field name="gosi_Salary_Deduction"></field>
                     <field name="leave_Status"></field>
                 </group>
 

@@ -306,6 +306,10 @@ class Costsheet(models.Model):
 
     # @api.model
     def final_total_cal(self):
+        for sc in self.scope_work:
+            sc.total_cost = 0.0
+            sc.total_qty = 0.0
+
         for rec in self:
             for dta in rec:
                 sum = 0
@@ -313,69 +317,96 @@ class Costsheet(models.Model):
                 last_p=-1
                 if dta.material_ids:
                     for sc in dta.scope_work:
+                        last_p = -1
+                        sum = 0
+                        qty = 0
                         for mt in dta.material_ids:
                             if (sc.product_id.id == mt.product_final.id) or (len(mt.product_final)==0 and last_p > 0):
                                 last_p=sc.product_id.id
                                 sum += mt.subtotal
                                 qty+=mt.qty
-                                sc.total_cost = sum
-                                sc.total_qty = qty
                             else:
-                                sum = 0
-                                qty=0
+                                # sum = 0
+                                # qty=0
                                 last_p=-1
+                        sc.total_cost += sum
+                        sc.total_qty += qty
+                sum = 0
+                qty = 0
+                last_p = -1
                 if dta.labor_ids:
                     for sc in dta.scope_work:
+                        last_p = -1
+                        sum = 0
+                        qty = 0
                         for mt in dta.labor_ids:
                             if (sc.product_id.id == mt.product_final.id) or (len(mt.product_final) == 0 and last_p > 0):
                                 last_p = sc.product_id.id
                                 sum += mt.subtotal
                                 qty += mt.qty
-                                sc.total_cost = sum
-                                sc.total_qty = qty
                             else:
-                                sum = 0
-                                qty = 0
+                                # sum = 0
+                                # qty = 0
                                 last_p = -1
+                        sc.total_cost += sum
+                        sc.total_qty += qty
+                sum = 0
+                qty = 0
+                last_p = -1
                 if dta.overhead_ids:
                     for sc in dta.scope_work:
+                        last_p = -1
+                        sum = 0
+                        qty = 0
                         for mt in dta.overhead_ids:
                             if (sc.product_id.id == mt.product_final.id) or (len(mt.product_final) == 0 and last_p > 0):
                                 last_p = sc.product_id.id
                                 sum += mt.subtotal
                                 qty += mt.qty
-                                sc.total_cost = sum
-                                sc.total_qty = qty
                             else:
-                                sum = 0
-                                qty = 0
+                                # sum = 0
+                                # qty = 0
                                 last_p = -1
+                        sc.total_cost += sum
+                        sc.total_qty += qty
+                sum = 0
+                qty = 0
+                last_p = -1
                 if dta.internal_rental_ids:
                     for sc in dta.scope_work:
+                        last_p = -1
+                        sum = 0
+                        qty = 0
                         for mt in dta.internal_rental_ids:
                             if (sc.product_id.id == mt.product_final.id) or (len(mt.product_final) == 0 and last_p > 0):
                                 last_p = sc.product_id.id
                                 sum += mt.subtotal
                                 qty += mt.qty
-                                sc.total_cost = sum
-                                sc.total_qty = qty
                             else:
-                                sum = 0
-                                qty = 0
+                                # sum = 0
+                                # qty = 0
                                 last_p = -1
+                        sc.total_cost += sum
+                        sc.total_qty += qty
+                sum = 0
+                qty = 0
+                last_p = -1
                 if dta.outsource_rental_ids:
                     for sc in dta.scope_work:
+                        last_p = -1
+                        sum = 0
+                        qty = 0
                         for mt in dta.outsource_rental_ids:
                             if (sc.product_id.id == mt.product_final.id) or (len(mt.product_final) == 0 and last_p > 0):
                                 last_p = sc.product_id.id
                                 sum += mt.subtotal
                                 qty += mt.qty
-                                sc.total_cost = sum
-                                sc.total_qty = qty
                             else:
-                                sum = 0
-                                qty = 0
+                                # sum = 0
+                                # qty = 0
                                 last_p = -1
+                        sc.total_cost += sum
+                        sc.total_qty += qty
 
 
 
@@ -392,10 +423,8 @@ class costsheetwcope(models.Model):
         index=True,
         string='Tax ID',
     )
-
     total_cost= fields.Float(string="total")
     total_qty=fields.Integer(string="Qty",store=True)
-
 
 
 class costsheetwcope(models.Model):
@@ -410,12 +439,6 @@ class costsheetwcope(models.Model):
     total_qty=fields.Integer(string="Qty",store=True)
 
 
-
-
-
-
-
-
 class costsheetmaterial(models.Model):
     _name = 'cost.sheet.material'
 
@@ -427,7 +450,6 @@ class costsheetmaterial(models.Model):
                                  required=False,readonly=False,store=True,copy=True)
     product_id = fields.Many2one('product.product', domain=[('type', '=', 'product'),('raw_mat', '=', True)], string='Particular',
                                  required=True)
-
     qty_ava = fields.Float(related='product_id.qty_available', string="Qty avaialble", store=True, readonly=True)
     qty = fields.Float(string='Qty.', default=1)
     uom = fields.Many2one('uom.uom', string='UOM')

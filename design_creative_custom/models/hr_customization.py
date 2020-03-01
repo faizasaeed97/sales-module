@@ -24,7 +24,7 @@ class inherithremploye(models.Model):
     accomodation = fields.Selection([('YES', 'YES'), ('NO', 'NO')], string='Acomodation', )
 
 
-class inheritcontract(models.Model):
+class inheritcontracts(models.Model):
     _inherit = 'hr.contract'
 
 
@@ -40,5 +40,18 @@ class inheritcontract(models.Model):
     tenure= fields.Char(string="Tenure")
     sponsorship= fields.Selection([('Design Creative', 'Design Creative'), ('Design Grafix', 'Design Grafix')], string='Sponsorship', )
     work_location = fields.Selection([('DG', 'DG'), ('DC', 'DC')], string='Work Location', )
+    gosi_Salary_Deduction=fields.Float("GOSI Salery deduction",default=0.00)
+
+    hourly_salery=fields.Float("Hourly salery",default=0.00)
+    Misce_Allowance=fields.Float("Miscellaneous Allowance",default=0.00)
+    OT=fields.Float("OT",default=0.00)
+    OT1 = fields.Float("OT 1", default=0.00)
+    OT2 = fields.Float("OT 2", default=0.00)
+    OTw = fields.Float("OT(W)", default=0.00)
+
+
+
+
+
 #
 

@@ -15,6 +15,8 @@
         'security/ir.model.access.csv',
         'views/hr_emplouee_custom.xml',
         'views/hr_contract_custom.xml',
+        'views/quotation_report.xml',
+
     ],
     'installable': True,
 }

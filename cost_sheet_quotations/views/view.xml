@@ -275,7 +275,7 @@
                             </field>
                         </page>
 
-                        <page string="Summery">
+                        <page string="Summery" invisible="1">
 
                             <group>
                                     <field name="initial_budget"/>

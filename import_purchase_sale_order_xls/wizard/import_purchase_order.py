@@ -20,11 +20,10 @@ class ImportPurchaseOrder(models.TransientModel):
     file_data = fields.Binary('Archive', required=True,)
     file_name = fields.Char('File Name')
 
-
     def import_button(self):
         if not self.csv_validator(self.file_name):
             raise UserError(_("The file must be an .xls/.xlsx extension"))
-        file_path = tempfile.gettempdir()+'/file.xlsx'
+        file_path = tempfile.gettempdir() + '/file.xlsx'
         data = self.file_data
         # f = open(file_path,'wb')
         # # f.write(data.decode('base64'))
@@ -41,30 +40,27 @@ class ImportPurchaseOrder(models.TransientModel):
 
         # workbook = xlrd.open_workbook(file_path, on_demand = True)
         worksheet = workbook.active
-        first_row = [] # The row where we stock the name of the column
+        first_row = []  # The row where we stock the name of the column
         for col in range(worksheet.max_column):
-            first_row.append(worksheet.cell(1,col+1).value)
+            first_row.append(worksheet.cell(1, col + 1).value)
         # transform the workbook to a list of dictionaries
         archive_lines = []
         for row in range(1, worksheet.max_row):
             elm = {}
             for col in range(worksheet.max_column):
-                elm[first_row[col]]=worksheet.cell(row+1,col+1).value
+                elm[first_row[col]] = worksheet.cell(row + 1, col + 1).value
 
             archive_lines.append(elm)
 
-
-        
-        employee = self.env['hr.employee']
+        productx = self.env['product.template']
         # contract = self.env['hr.product']
-        # product_template_obj = self.env['product.template']
-        hr_contract = self.env['hr.contract']
-
+        categ = self.env['product.category']
+        uom_obj= self.env['uom.uom']
 
         # self.valid_columns_keys(archive_lines)
         # self.valid_product_code(archive_lines, product_obj)
         # self.valid_prices(archive_lines)
-        
+
         # vals = {
         #     'partner_id': self.partner_id.id,
         #     'date_planned': datetime.now(),
@@ -73,58 +69,203 @@ class ImportPurchaseOrder(models.TransientModel):
         cont = 0
         for line in archive_lines:
             cont += 1
-            code = str(line.get('Roll',""))
-            emp = str(line.get('Name', ""))
-            employe_id = employee.search([('identification_id','=',code),('name','=',emp)])
+            sub = str(line.get('Sub-Category', ""))
+            cat = str(line.get('Category', ""))
+            um=str(line.get('UOM', ""))
+            uom=uom_obj.search([('name','=',um)])
+            cat_id = categ.search([('name', '=', sub), ('parent_id.name', '=', cat)],limit=1).id
             # quantity = line.get(u'quantity',0)
             # price_unit = self.get_valid_price(line.get('price',""),cont)
             # product_uom = product_template_obj.search([('default_code','=',code)])
             # taxes = product_id.supplier_taxes_id.filtered(lambda r: not product_id.company_id or r.company_id == product_id.company_id)
             # tax_ids = taxes.ids
-            if  employe_id:
-                if line.get('Travel Allowance',0.0) ==' ':
-                    ha=0.0
-                else:
-                    ha = (line.get('Housing Allowance', 0.0)) or 0.0
+            if line.get('NAME OF ITEM', False):
 
-                if line.get('Travel Allowance',0.0) ==' ':
-                    ta=0.0
-                else:
-                    ta= line.get('Travel Allowance',0.0) or 0.0
+                # if not cat_id:
+                #    cat_id = categ.search([('name', '=', sub), ('parent_id.name', '=', cat)])
 
-                if line.get('Basic Salary',0.0) == ' ':
-                    wa=0.0
-                else:
-                    wa = line.get('Basic Salary', 0.0) or 0.0
+                if not cat_id:
+                    cat_id = categ.search([('parent_id.name', '=', cat)],limit=1).id
 
-                if line.get('GOSI Salary Deduction',0.0) == ' ':
-                    gos=0.0
-                else:
-                   gos=line.get('GOSI Salary Deduction',0.0) or 0.0
+                # if not cat_id:
+                #     cat_id=1
+
+                # if line.get('Travel Allowance', 0.0) == ' ':
+                #     ha = 0.0
+                # else:
+                #     ha = (line.get('Housing Allowance', 0.0)) or 0.0
+                #
+                # if line.get('Travel Allowance', 0.0) == ' ':
+                #     ta = 0.0
+                # else:
+                #     ta = line.get('Travel Allowance', 0.0) or 0.0
+                #
+                # if line.get('Basic Salary', 0.0) == ' ':
+                #     wa = 0.0
+                # else:
+                #     wa = line.get('Basic Salary', 0.0) or 0.0
+                #
+                # if line.get('GOSI Salary Deduction', 0.0) == ' ':
+                #     gos = 0.0
+                # else:
+                #     gos = line.get('GOSI Salary Deduction', 0.0) or 0.0
 
                 vals = {
-                    'date_start':  datetime.strptime(line.get('Date of Join',""), '%d/%m/%Y').date(),
-                    'name': employe_id.name,
-                    'employee_id':employe_id.id,
-                    'department_id': employe_id.department_id.id,
-                    'company_id':employe_id.company_id.id,
-                    'sponsorship': line.get('Sponsor',""),
-                    'housing_allowance':ha,
-                    'travel_allowance': ta,
-                    'wage': wa,
-                    'gosi_Salary_Deduction':gos,
-                    'state':'open'
+                    'name': str(line.get('NAME OF ITEM', "")),
+                    'uom_id': uom.id,
+                    'uom_po_id':uom.id,
+                    'product_size': str(line.get('Size', "")),
+                    'product_color': str(line.get('Colour', "")),
+                    'categ_id': cat_id,
+                    'type': 'product',
+                    'raw_mat':True,
+
                 }
                 print(vals)
-                has=hr_contract.search([('name','=',employe_id.name),('employee_id','=',employe_id.id)])
-                if len(has)>0:
-                    has.write(vals)
-                else:
-                   ct= self.env['hr.contract'].sudo().create(vals)
+                # has = productx.search([('name', '=', str(line.get('NAME OF ITEM', ""))), ('product_size', '=', str(line.get('Size', ""))),('product_color', '=', str(line.get('Colour', ""))) ])
+                # if len(has) > 0:
+                #     has.write(vals)
+                # else:
+                #     try:
+                #       ct = self.env['product.template'].sudo().create(vals)
+                #     except:
+                #         print("THIS IS THE SHIT------->",vals)
 
         # if self._context.get('open_order', False):
         #     return purchase_order_id.action_view_order(purchase_order_id.id)
         # return {'type': 'ir.actions.act_window_close'}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    #
+    # def import_buttonxx(self):
+    #     if not self.csv_validator(self.file_name):
+    #         raise UserError(_("The file must be an .xls/.xlsx extension"))
+    #     file_path = tempfile.gettempdir()+'/file.xlsx'
+    #     data = self.file_data
+    #     # f = open(file_path,'wb')
+    #     # # f.write(data.decode('base64'))
+    #     # s2 = base64.b64encode(data);
+    #     # s3=base64.b64decode(s2)
+    #     # f.write(s3)
+    #     #
+    #     #
+    #     # f.close()
+    #
+    #     decoded_data = base64.b64decode(self.file_data)
+    #     xls_filelike = io.BytesIO(decoded_data)
+    #     workbook = openpyxl.load_workbook(xls_filelike)
+    #
+    #     # workbook = xlrd.open_workbook(file_path, on_demand = True)
+    #     worksheet = workbook.active
+    #     first_row = [] # The row where we stock the name of the column
+    #     for col in range(worksheet.max_column):
+    #         first_row.append(worksheet.cell(1,col+1).value)
+    #     # transform the workbook to a list of dictionaries
+    #     archive_lines = []
+    #     for row in range(1, worksheet.max_row):
+    #         elm = {}
+    #         for col in range(worksheet.max_column):
+    #             elm[first_row[col]]=worksheet.cell(row+1,col+1).value
+    #
+    #         archive_lines.append(elm)
+    #
+    #
+    #
+    #     employee = self.env['hr.employee']
+    #     # contract = self.env['hr.product']
+    #     # product_template_obj = self.env['product.template']
+    #     hr_contract = self.env['hr.contract']
+    #
+    #
+    #     # self.valid_columns_keys(archive_lines)
+    #     # self.valid_product_code(archive_lines, product_obj)
+    #     # self.valid_prices(archive_lines)
+    #
+    #     # vals = {
+    #     #     'partner_id': self.partner_id.id,
+    #     #     'date_planned': datetime.now(),
+    #     # }
+    #     # purchase_order_id = purchase_order_obj.create(vals)
+    #     cont = 0
+    #     for line in archive_lines:
+    #         cont += 1
+    #         code = str(line.get('Roll',""))
+    #         emp = str(line.get('Name', ""))
+    #         employe_id = employee.search([('identification_id','=',code),('name','=',emp)])
+    #         # quantity = line.get(u'quantity',0)
+    #         # price_unit = self.get_valid_price(line.get('price',""),cont)
+    #         # product_uom = product_template_obj.search([('default_code','=',code)])
+    #         # taxes = product_id.supplier_taxes_id.filtered(lambda r: not product_id.company_id or r.company_id == product_id.company_id)
+    #         # tax_ids = taxes.ids
+    #         if  employe_id:
+    #             if line.get('Travel Allowance',0.0) ==' ':
+    #                 ha=0.0
+    #             else:
+    #                 ha = (line.get('Housing Allowance', 0.0)) or 0.0
+    #
+    #             if line.get('Travel Allowance',0.0) ==' ':
+    #                 ta=0.0
+    #             else:
+    #                 ta= line.get('Travel Allowance',0.0) or 0.0
+    #
+    #             if line.get('Basic Salary',0.0) == ' ':
+    #                 wa=0.0
+    #             else:
+    #                 wa = line.get('Basic Salary', 0.0) or 0.0
+    #
+    #             if line.get('GOSI Salary Deduction',0.0) == ' ':
+    #                 gos=0.0
+    #             else:
+    #                gos=line.get('GOSI Salary Deduction',0.0) or 0.0
+    #
+    #             vals = {
+    #                 'date_start':  datetime.strptime(line.get('Date of Join',""), '%d/%m/%Y').date(),
+    #                 'name': employe_id.name,
+    #                 'employee_id':employe_id.id,
+    #                 'department_id': employe_id.department_id.id,
+    #                 'company_id':employe_id.company_id.id,
+    #                 'sponsorship': line.get('Sponsor',""),
+    #                 'housing_allowance':ha,
+    #                 'travel_allowance': ta,
+    #                 'wage': wa,
+    #                 'gosi_Salary_Deduction':gos,
+    #                 'state':'open'
+    #             }
+    #             print(vals)
+    #             has=hr_contract.search([('name','=',employe_id.name),('employee_id','=',employe_id.id)])
+    #             if len(has)>0:
+    #                 has.write(vals)
+    #             else:
+    #                ct= self.env['hr.contract'].sudo().create(vals)
+    #
+    #     # if self._context.get('open_order', False):
+    #     #     return purchase_order_id.action_view_order(purchase_order_id.id)
+    #     # return {'type': 'ir.actions.act_window_close'}
 
         
     # @api.model

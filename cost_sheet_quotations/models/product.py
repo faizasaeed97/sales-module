@@ -7,6 +7,22 @@ class Costsheet(models.Model):
 
     raw_mat = fields.Boolean(string='Raw Material')
     final_prod = fields.Boolean(string='Final Product')
+    product_size = fields.Char("size")
+    product_color =  fields.Char("Color")
+
+class prod_inheritx(models.Model):
+    _inherit = 'product.product'
+
+    def name_get(self):
+        result = []
+        for record in self:
+            record_name = record.product_tmpl_id.name + ' - ' + record.product_tmpl_id.product_size
+
+            result.append((record.id, record_name))
+        return result
+
+
+
 
 
 class account_projwork(models.Model):

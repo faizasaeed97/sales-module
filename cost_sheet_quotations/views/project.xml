@@ -15,6 +15,14 @@
                     <label for="final_prod"/>
                 </div>
             </xpath>
+            <xpath expr="//field[@name='categ_id']" position="after">
+
+                    <field name="product_size"/>
+                    <field name="product_color"/>
+
+
+            </xpath>
+
         </field>
     </record>
 </odoo>

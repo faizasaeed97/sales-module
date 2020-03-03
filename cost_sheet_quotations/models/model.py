@@ -17,24 +17,30 @@ class Costsheet(models.Model):
     # parent_cost_sheet_ref = fields.Many2one('cost.sheet.crm',string='Costsheet ref')
     opportunity_id = fields.Many2one('project.project', string='Project')
     crm_lead=fields.Many2one('crm.lead', string='lead')
-    dafult_cost_sheet_ref = fields.Many2one('cost.sheet.crm', string='Costsheet ref',readonly=True)
+    dafult_cost_sheet_ref = fields.Many2one('cost.sheet.crm', string='Costsheet ref',readonly=False)
     name = fields.Char(string='Cost sheet No.')
     cost_sheet_date = fields.Date(string='Date', default=fields.Datetime.now().date())
     client = fields.Many2one('res.partner', string='Client')
     sale_person = fields.Many2one('res.users', string='Sales person',default=lambda self: self.env.user)
-    material_ids = fields.One2many('cost.sheet.material', 'cost_sheet',store=True,copy=True)
-    labor_ids = fields.One2many('cost.sheet.labors', 'cost_sheet',store=True,copy=True)
-    overhead_ids = fields.One2many('cost.sheet.overhead', 'cost_sheet',store=True,copy=True)
-    internal_rental_ids = fields.One2many('cost.sheet.rental.internal', 'cost_sheet',store=True,copy=True)
+    material_ids = fields.One2many('cost.sheet.material', 'cost_sheet',store=True,copy=True, ondelete='cascade')
+    labor_ids = fields.One2many('cost.sheet.labors', 'cost_sheet',store=True,copy=True, ondelete='cascade')
+    overhead_ids = fields.One2many('cost.sheet.overhead', 'cost_sheet',store=True,copy=True, ondelete='cascade')
+    internal_rental_ids = fields.One2many('cost.sheet.rental.internal', 'cost_sheet',store=True,copy=True, ondelete='cascade')
 
-    outsource_rental_ids = fields.One2many('cost.sheet.rental.outsource', 'cost_sheet',store=True,copy=True)
+    outsource_rental_ids = fields.One2many('cost.sheet.rental.outsource', 'cost_sheet',store=True,copy=True, ondelete='cascade')
 
+    initial_budget = fields.Float(string="initial budget", compute="get_costsheet_summery", )
+    cs_history_value = fields.Float(string="Cost Sheet history", compute="get_costsheet_summery", )
 
-    material_total = fields.Float(compute='material_total_cal',)
-    labor_total = fields.Float(compute='labor_total_cal')
-    overhead_total = fields.Float(compute='overhead_total_cal',)
-    rental_total = fields.Float(compute='rental_total_cal',)
-    rental_total_out=fields.Float(compute='rental_total_cal_out',)
+    auctual_budget = fields.Float(string="auctual budget", compute="get_costsheet_summery", )
+    quotation_value = fields.Float(string="Quotation value", compute="get_costsheet_summery")
+    final_profit = fields.Float(string="Final profit", compute="get_costsheet_summery",digits=(16, 2))
+
+    material_total = fields.Float(compute='material_total_cal',store=True)
+    labor_total = fields.Float(compute='labor_total_cal',store=True)
+    overhead_total = fields.Float(compute='overhead_total_cal',store=True)
+    rental_total = fields.Float(compute='rental_total_cal',store=True)
+    rental_total_out=fields.Float(compute='rental_total_cal_out',store=True)
     grand_total = fields.Float(compute='grand_total_cal')
     markup_type = fields.Selection([('Percentage', 'Percentage'), ('Amount', 'Amount')], default='Percentage',
                                    string='Markup Type')
@@ -60,8 +66,56 @@ class Costsheet(models.Model):
 
 
 
-    # def get_user_id(self):
-    #     return self.env.user.id
+    def get_costsheet_summery(self):
+        cost_sheetx = self.env['cost.sheet.crm'].search(
+            [('name', '=', self.name), ('is_a_revision', '=', False)])
+        if  cost_sheetx:
+            # means this cost shet has revisions
+            self.initial_budget= cost_sheetx.grand_total
+            self.cs_history_value=0.0
+            cs_history=self.env['cost.sheet.crm'].search([('dafult_cost_sheet_ref.id','=', cost_sheetx.id),('is_a_revision','=',True)])
+            grand_totalx=0.0
+            for rec in cs_history:
+                grand_totalx += (rec.material_total + rec.labor_total + rec.overhead_total + rec.rental_total+rec.rental_total_out)
+
+            self.cs_history_value=grand_totalx
+
+            final_cs=self.env['cost.sheet.crm'].search([('dafult_cost_sheet_ref.id','=', cost_sheetx.id),('is_final_cs','=',True)])
+            auctual_budget=0.0
+            final_quotation=0.0
+            profit=0.0
+            if len(final_cs)==1:
+                auctual_budget=final_cs.grand_total
+                final_quotation=final_cs.quotation_value
+                profit=final_quotation-auctual_budget
+
+            else:
+                last_cs = self.env['cost.sheet.crm'].search(
+                    [('dafult_cost_sheet_ref.id', '=',  cost_sheetx.id)],limit=1,order='id desc')
+
+                if last_cs:
+                    auctual_budget = last_cs.grand_total
+                    final_quotation = last_cs.quotation_value
+                    profit = final_quotation - auctual_budget
+                else:
+                    auctual_budget = self.grand_total
+                    final_quotation = self.quotation_value
+                    profit = final_quotation - auctual_budget
+
+
+            self.auctual_budget=auctual_budget
+            self.quotation_value=final_quotation
+            self.final_profit=profit
+
+        elif not  cost_sheetx:
+            # means this cost shet has no revision
+                self.initial_budget = self.grand_total
+                self.cs_history_value = self.grand_total
+                self.auctual_budget = self.grand_total
+                self.quotation_value = self.quotation_value
+                profit = self.quotation_value - self.auctual_budget
+                self.final_profit = profit
+
 
 
     def approve_cs(self):
@@ -431,7 +485,7 @@ class costsheetwcope(models.Model):
     _name = 'scope.work'
 
     cost_sheet = fields.Many2one('cost.sheet.crm')
-    product_id = fields.Many2one('product.product', domain=[('type', '=', 'product'),('final_prod', '=', True)], string='Final Product',
+    product_id = fields.Many2one('product.product', domain=[('type', '=', 'product'),('final_prod', '=', True)], string='Final Product', ondelete='cascade',
                                  required=True)
     desc=fields.Char(string="Description")
 
@@ -449,7 +503,7 @@ class costsheetmaterial(models.Model):
     product_final = fields.Many2one(related='scope.product_id', string='Final Product',
                                  required=False,readonly=False,store=True,copy=True)
     product_id = fields.Many2one('product.product', domain=[('type', '=', 'product'),('raw_mat', '=', True)], string='Particular',
-                                 required=True)
+                                 required=True, ondelete='cascade')
     qty_ava = fields.Float(related='product_id.qty_available', string="Qty avaialble", store=True, readonly=True)
     qty = fields.Float(string='Qty.', default=1)
     uom = fields.Many2one('uom.uom', string='UOM')
@@ -493,7 +547,7 @@ class costsheetmaterial(models.Model):
     scope = fields.Many2one('scope.work')
     product_final = fields.Many2one(related='scope.product_id', string='Final Product',copy=True,
                                     required=False, readonly=False, store=True)
-    product_id = fields.Many2one('product.product', string='Particular', required=True)
+    product_id = fields.Many2one('product.product', string='Particular', required=True, ondelete='cascade')
     qty = fields.Float(string='Qty.', default=1)
     uom = fields.Many2one('uom.uom', string='UOM')
     rate = fields.Float(string='Rate')
@@ -511,7 +565,7 @@ class costsheetmaterial(models.Model):
     scope = fields.Many2one('scope.work')
     product_final = fields.Many2one(related='scope.product_id', string='Final Product',copy=True,
                                     required=False, readonly=False, store=True)
-    product_id = fields.Many2one('product.product', string='Particular', required=True)
+    product_id = fields.Many2one('product.product', string='Particular', required=True, ondelete='cascade')
     qty = fields.Float(string='Qty.', default=1)
     uom = fields.Many2one('uom.uom', string='UOM')
     rate = fields.Float(string='Rate')
@@ -531,7 +585,7 @@ class costsheetmaterial(models.Model):
     scope = fields.Many2one('scope.work')
     product_final = fields.Many2one(related='scope.product_id', string='Final Product',copy=True,
                                     required=False, readonly=False, store=True)
-    product_id = fields.Many2one('product.product', string='Particular', required=True)
+    product_id = fields.Many2one('product.product', string='Particular', required=True, ondelete='cascade')
     qty = fields.Float(string='Qty.', default=1)
     uom = fields.Many2one('uom.uom', string='UOM')
     rate = fields.Float(string='Rate')
@@ -709,3 +763,11 @@ class saleorder(models.Model):
                 lead.write(
                     {'stage_id': lead._stage_find(domain=[('is_won', '=', True)]).id})
         return res
+
+
+
+
+            
+
+
+

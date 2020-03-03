@@ -274,6 +274,20 @@
                                 </tree>
                             </field>
                         </page>
+
+                        <page string="Summery">
+
+                            <group>
+                                    <field name="initial_budget"/>
+                                    <field name="cs_history_value"/>
+                                    <field name="auctual_budget"/>
+                                    <field name="quotation_value"/>
+                                    <field name="final_profit"/>
+                            </group>
+
+                        </page>
+
+
                     </notebook>
                 </sheet>
 

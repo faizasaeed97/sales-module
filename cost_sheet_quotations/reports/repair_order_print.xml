@@ -177,7 +177,7 @@
                                             <b>S.No</b>
                                         </td>
 
-                                               <td style="border-color:black" width="20%" align="center">
+                                        <td style="border-color:black" width="20%" align="center">
                                             <b>Final Product</b>
                                         </td>
 
@@ -284,7 +284,7 @@
                                         <td style="border-color:black" width="5%" align="center">
                                             <b>S.No</b>
                                         </td>
-                                            <td style="border-color:black" width="20%" align="center">
+                                        <td style="border-color:black" width="20%" align="center">
                                             <b>Final Product</b>
                                         </td>
 
@@ -395,7 +395,7 @@
                                             <b>S.No</b>
                                         </td>
 
-                                           <td style="border-color:black" width="20%" align="center">
+                                        <td style="border-color:black" width="20%" align="center">
                                             <b>Final Product</b>
                                         </td>
 
@@ -585,7 +585,7 @@
                     </table>
                 </div>
 
-                            <div class="row">
+                <div class="row">
                     <table width="100%">
                         <tr style="background-color:#D9DBE9">
                             <!--						<td width="15%" align="center" style="font-size:14px"> <b><span t-field="o.x_ro_no" /></b> </td>-->
@@ -600,7 +600,7 @@
                 </div>
 
 
-                                <div class="row">
+                <div class="row">
                     <table class="table-bordered" width="100%" style="border-color:black">
                         <tr style="height:60px;vertical-align:top; border-color:white">
                             <td style="border-color:white">
@@ -693,7 +693,6 @@
                 </div>
 
 
-
                 <!--                CAlculations-->
                 <div class="row">
                     <table class="table-bordered" width="100%" style="border-color:black">
@@ -711,7 +710,7 @@
                                         </td>
 
                                         <td style="border-color:black" width="40%" align="center">
-                                            <span t-esc="'{0:,.0f}'.format(int(o.grand_total))"/>
+                                            <span t-esc="o.grand_total"/>
 
                                         </td>
                                     </tr>
@@ -728,7 +727,7 @@
                                         </td>
 
                                         <td style="border-color:black" width="40%" align="center">
-                                            <span t-esc="'{0:,.0f}'.format(int(o.markup_value))"/>
+                                            <span t-esc="o.markup_value"/>
                                         </td>
                                     </tr>
 
@@ -744,7 +743,7 @@
                                         </td>
 
                                         <td style="border-color:black" width="40%" align="center">
-                                            <span t-esc="'{0:,.0f}'.format(int(o.quotation_value))"/>
+                                            <span t-esc="o.quotation_value"/>
                                         </td>
                                     </tr>
 
@@ -759,7 +758,7 @@
                                         </td>
 
                                         <td style="border-color:black" width="40%" align="center">
-                                            <span t-esc="'{0:,.0f}'.format(int(o.quotation_value-o.grand_total))"/>
+                                            <span t-esc="o.final_profit"/>
 
                                         </td>
                                     </tr>
@@ -767,6 +766,72 @@
 
                                 </table>
                             </td>
+                        </tr>
+                    </table>
+                </div>
+
+<br/>
+                <div class="row">
+                    <table width="100%">
+                        <tr style="background-color:#D9DBE9">
+                            <!--						<td width="15%" align="center" style="font-size:14px"> <b><span t-field="o.x_ro_no" /></b> </td>-->
+                            <td colspan="6" align="center" style="font-size:16px">
+                                <b>Summery</b>
+                            </td>
+
+                            <!--							<td width="15%" align="center" style="font-size:14px"><b><span t-field="o.name" /></b></td>-->
+                        </tr>
+
+                    </table>
+                </div>
+
+                <div class="row">
+                    <table border="0" cellpadding="0" cellspacing="0" class="table-bordered" width="100%">
+
+                        <tr style="line-height: 23px;font-size:13px" width="100%">
+                            <td align="center" width="20%">
+                                <b>Initial Budget</b>
+                            </td>
+                            <td align="center" width="30%">
+                                <span t-esc="o.initial_budget"/>
+
+                            </td>
+
+                            <td align="center" width="20%">
+                                <b>Cost Sheet History</b>
+                            </td>
+                            <td align="center" width="30%">
+                                <span t-esc="o.cs_history_value"/>
+                            </td>
+
+                        </tr>
+
+                        <tr style="line-height: 23px;font-size:13px" width="100%">
+                            <td align="center" width="20%">
+                                <b>Auctual Budget</b>
+                            </td>
+                            <td align="center" width="30%">
+                                <span t-esc="o.auctual_budget"/>
+                            </td>
+                            <td align="center" width="20%">
+                                <b>Quotation Value</b>
+                            </td>
+                            <td align="center" width="30%">
+                                <span t-esc="o.quotation_value"/>
+                            </td>
+
+                        </tr>
+
+                        <tr style="line-height: 23px;font-size:13px" width="100%">
+
+                            <td align="center" width="20%">
+                                <b>Profit:</b>
+                            </td>
+                            <td align="center" width="30%">
+                                <span t-esc="o.final_profit"/>
+                            </td>
+
+
                         </tr>
                     </table>
                 </div>

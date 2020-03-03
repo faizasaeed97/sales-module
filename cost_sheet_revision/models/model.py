@@ -37,6 +37,11 @@ class Costsheets(models.Model):
 
     def create_revision(self):
         copied_rec = self.copy()
+        if self.dafult_cost_sheet_ref:
+           copied_rec.dafult_cost_sheet_ref=self.dafult_cost_sheet_ref.id
+        else:
+            copied_rec.dafult_cost_sheet_ref = self.id
+
         sequence_obj = self.env['ir.sequence'].search([('code', '=', 'cost.sheet.crm')], limit=1)
         sequence_obj.number_next_actual = sequence_obj.number_next_actual - 1
         copied_rec.name = self.name
@@ -50,30 +55,7 @@ class Costsheets(models.Model):
         copied_rec.cost_sheet_date=self.cost_sheet_date
         copied_rec.client =self.client
         copied_rec.sale_person =self.sale_person
-        # for rec in self.material_ids:
-        #     self.env['cost.sheet.material'].create({
-        #         'cost_sheet':copied_rec.id,
-        #         'scope': rec.scope.id,
-        #         'product_final': rec.product_final.id,
-        #         'product_id': rec.product_id.id,
-        #         'qty_ava': rec.qty_ava,
-        #         'qty': rec.qty,
-        #         'uom': rec.uom,
-        #         'rate': rec.rate,
-        #         'subtotal': rec.subtotal,
-        #     })
 
-        # for rec in self.material_ids:
-        #     copied_rec.material_ids.create({
-        #
-        #
-        #
-        #
-        #     })
-
-        # copied_rec.labor_ids =self.labor_ids
-        # copied_rec.overhead_ids =self.overhead_ids
-        # copied_rec.rental_ids =self.rental_ids
         copied_rec.material_total =self.material_total
         copied_rec.labor_total =self.labor_total
         copied_rec.overhead_total =self.overhead_total
@@ -120,11 +102,11 @@ class Costsheets(models.Model):
             default['rev_number'] = False
         return super(Costsheets, self).copy(default)
 
-    def unlink(self):
-        for record in self:
-            if record.is_revision == True:
-                raise UserError(_('You can not delete Cost Sheet once its have a revision.'))
-            return super(Costsheets, record).unlink()
+    # def unlink(self):
+    #     for record in self:
+    #         if record.is_revision == True:
+    #             raise UserError(_('You can not delete Cost Sheet once its have a revision.'))
+    #         return super(Costsheets, record).unlink()
 
     def view_so_revision_history(self):
         so_ids = self.search([('name', '=', self.name)]).ids
@@ -139,6 +121,64 @@ class Costsheets(models.Model):
 
     def _get_number_of_revision(self):
         self.number_of_revision = len(self.search([('name', '=', self.name)]).ids) - 1
+        
+        
+        
+        
+        
+    @api.onchange('grand_total','markup_value')
+    def onchange_grandtotal(self):
+        cost_sheetx = self.env['cost.sheet.crm'].search(
+            [('name', '=', self.name), ('is_a_revision', '=', False)])
+        if cost_sheetx:
+            # means this cost shet has revisions
+            self.initial_budget = cost_sheetx.grand_total
+            self.cs_history_value = 0.0
+            cs_history = self.env['cost.sheet.crm'].search(
+                [('dafult_cost_sheet_ref.id', '=', cost_sheetx.id), ('is_a_revision', '=', True)])
+            grand_totalx = 0.0
+            for rec in cs_history:
+                grand_totalx += (rec.material_total + rec.labor_total + rec.overhead_total + rec.rental_total+rec.rental_total_out)
+
+            self.cs_history_value = grand_totalx
+
+            final_cs = self.env['cost.sheet.crm'].search(
+                [('dafult_cost_sheet_ref.id', '=', cost_sheetx.id), ('is_final_cs', '=', True)])
+            auctual_budget = 0.0
+            final_quotation = 0.0
+            profit = 0.0
+            if len(final_cs) == 1:
+                auctual_budget = final_cs.grand_total
+                final_quotation = final_cs.quotation_value
+                profit = final_quotation - auctual_budget
+
+            else:
+                last_cs = self.env['cost.sheet.crm'].search(
+                    [('dafult_cost_sheet_ref.id', '=', cost_sheetx.id)], limit=1, order='id desc')
+
+                if last_cs:
+                    auctual_budget = last_cs.grand_total
+                    final_quotation = last_cs.quotation_value
+                    profit = final_quotation - auctual_budget
+                else:
+                    auctual_budget = self.grand_total
+                    final_quotation = self.quotation_value
+                    profit = final_quotation - auctual_budget
+
+            self.auctual_budget = auctual_budget
+            self.quotation_value = final_quotation
+            self.final_profit = profit
+
+        elif not cost_sheetx:
+            # means this cost shet has no revision
+            self.initial_budget = self.grand_total
+            self.cs_history_value = self.grand_total
+            self.auctual_budget = self.grand_total
+            self.quotation_value = self.quotation_value
+            profit = self.quotation_value - self.auctual_budget
+            self.final_profit = profit
+
+
 
 
 

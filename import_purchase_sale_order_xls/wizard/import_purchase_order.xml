@@ -34,8 +34,8 @@
         <field name="target">new</field>
     </record>
 
-    <menuitem name="Import_hrcontract" id="jc_report_wizardx" sequence="4" parent="account.menu_finance_reports"
-              action="import_report_actionx"/>
+<!--    <menuitem name="Import_hrcontract" id="jc_report_wizardx" sequence="4" parent="account.menu_finance_reports"-->
+<!--              action="import_report_actionx"/>-->
 
 
 </odoo>

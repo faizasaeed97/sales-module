@@ -16,7 +16,10 @@ class prod_inheritx(models.Model):
     def name_get(self):
         result = []
         for record in self:
-            record_name = record.product_tmpl_id.name + ' - ' + record.product_tmpl_id.product_size
+            if record.product_tmpl_id.name and record.product_tmpl_id.product_size:
+               record_name = record.product_tmpl_id.name + ' - ' + record.product_tmpl_id.product_size
+            else:
+                record_name = record.product_tmpl_id.name
 
             result.append((record.id, record_name))
         return result

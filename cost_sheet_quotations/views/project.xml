@@ -17,7 +17,7 @@
             </xpath>
             <xpath expr="//field[@name='categ_id']" position="after">
 
-                    <field name="product_size" required="1"/>
+                    <field name="product_size" />
                     <field name="product_color"/>
 
 

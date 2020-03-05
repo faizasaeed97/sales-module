@@ -37,7 +37,7 @@ class Costsheet(models.Model):
                 if pocount:
                     rec.po_count = pocount
                 else:
-                    rec.pocount = 0
+                    rec.po_count = 0
 
 
     def get_additional_costsheet(self):

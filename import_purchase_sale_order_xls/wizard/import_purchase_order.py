@@ -52,9 +52,9 @@ class ImportPurchaseOrder(models.TransientModel):
 
             archive_lines.append(elm)
 
-        productx = self.env['product.template']
+        accmove = self.env['account.move']
         # contract = self.env['hr.product']
-        categ = self.env['product.category']
+        account = self.env['account.account']
         uom_obj= self.env['uom.uom']
 
         # self.valid_columns_keys(archive_lines)
@@ -69,24 +69,31 @@ class ImportPurchaseOrder(models.TransientModel):
         cont = 0
         for line in archive_lines:
             cont += 1
-            sub = str(line.get('Sub-Category', ""))
-            cat = str(line.get('Category', ""))
-            um=str(line.get('UOM', ""))
-            uom=uom_obj.search([('name','=',um)])
-            cat_id = categ.search([('name', '=', sub), ('parent_id.name', '=', cat)],limit=1).id
+            accc = str(line.get('Account Name',False))
+            acc_id = account.search([('name', '=', accc)],limit=1)
             # quantity = line.get(u'quantity',0)
             # price_unit = self.get_valid_price(line.get('price',""),cont)
             # product_uom = product_template_obj.search([('default_code','=',code)])
             # taxes = product_id.supplier_taxes_id.filtered(lambda r: not product_id.company_id or r.company_id == product_id.company_id)
             # tax_ids = taxes.ids
-            if line.get('NAME OF ITEM', False):
+            if acc_id.id or False:
+                # quantity = line.get(u'quantity',0)
+                debit=line.get('Debit')
+                credit=line.get('Credit')
+
+                if debit==None:
+                    debit=0.0
+                if credit==None:
+                    credit=0.0
+
+
 
                 # if not cat_id:
                 #    cat_id = categ.search([('name', '=', sub), ('parent_id.name', '=', cat)])
-
-                if not cat_id:
-                    cat_id = categ.search([('parent_id.name', '=', cat)],limit=1).id
-
+                #
+                # if not cat_id:
+                #     cat_id = categ.search([('parent_id.name', '=', cat)],limit=1).id
+                #
                 # if not cat_id:
                 #     cat_id=1
 
@@ -110,26 +117,35 @@ class ImportPurchaseOrder(models.TransientModel):
                 # else:
                 #     gos = line.get('GOSI Salary Deduction', 0.0) or 0.0
 
-                vals = {
-                    'name': str(line.get('NAME OF ITEM', "")),
-                    'uom_id': uom.id,
-                    'uom_po_id':uom.id,
-                    'product_size': str(line.get('Size', "")),
-                    'product_color': str(line.get('Colour', "")),
-                    'categ_id': cat_id,
-                    'type': 'product',
-                    'raw_mat':True,
+                movid=accmove.create(
+                    {
+                        'ref':"opening balance"
+                    }
+                )
+
+                vald = {
+                    'account_id': acc_id.id,
+                    'debit': debit,
+                    'credit':credit,
+                    'move_id':movid.id,
 
                 }
-                print(vals)
-                # has = productx.search([('name', '=', str(line.get('NAME OF ITEM', ""))), ('product_size', '=', str(line.get('Size', ""))),('product_color', '=', str(line.get('Colour', ""))) ])
+                valc = {
+                    'account_id': acc_id.id,
+                    'debit':  credit,
+                    'credit': debit,
+                    'move_id': movid.id,
+
+                }
+                # has = accmove.search([('name', '=', acc_id.name)])
                 # if len(has) > 0:
                 #     has.write(vals)
                 # else:
-                #     try:
-                #       ct = self.env['product.template'].sudo().create(vals)
-                #     except:
-                #         print("THIS IS THE SHIT------->",vals)
+                # try:
+                ct = self.env['account.move.line'].sudo().create([vald,valc])
+                movid.post()
+                # except:
+                #     print("THIS IS THE SHIT------->",vals)
 
         # if self._context.get('open_order', False):
         #     return purchase_order_id.action_view_order(purchase_order_id.id)

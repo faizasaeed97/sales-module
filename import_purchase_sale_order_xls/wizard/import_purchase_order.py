@@ -42,13 +42,13 @@ class ImportPurchaseOrder(models.TransientModel):
         worksheet = workbook.active
         first_row = []  # The row where we stock the name of the column
         for col in range(worksheet.max_column):
-            first_row.append(worksheet.cell(row=1, col=col + 1).value)
+            first_row.append(worksheet.cell(row=1, column=col + 1).value)
         # transform the workbook to a list of dictionaries
         archive_lines = []
         for row in range(1, worksheet.max_row):
             elm = {}
             for col in range(worksheet.max_column):
-                elm[first_row[col]] = worksheet.cell(row=row + 1, col=col + 1).value
+                elm[first_row[col]] = worksheet.cell(row=row + 1, column=col + 1).value
 
             archive_lines.append(elm)
 

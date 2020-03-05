@@ -19,7 +19,7 @@
 
                 <button width="200px" class="oe_stat_button" name="view_po_history" type="object"
                         icon="fa-file-text-o">
-                    <field string="Additonal costsheet revisions" name="po_count" widget="statinfo"/>
+                    <field string="Purchase History" name="po_count" widget="statinfo"/>
                 </button>
 
             </xpath>

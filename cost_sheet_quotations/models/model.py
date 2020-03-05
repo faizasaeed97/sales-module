@@ -499,8 +499,8 @@ class costsheetmaterial(models.Model):
     # domain = [('type', '=', 'product')]
 
     cost_sheet = fields.Many2one('cost.sheet.crm')
-    scope = fields.Many2one('scope.work')
-    product_final = fields.Many2one(related='scope.product_id', string='Final Product',
+    # scope = fields.One2many(related='cost_sheet.scope_work')
+    product_final = fields.Many2one('product.product', string='Final Product', domain=[('final_prod','=',True)],
                                  required=False,readonly=False,store=True,copy=True)
     product_id = fields.Many2one('product.product', domain=[('type', '=', 'product'),('raw_mat', '=', True)], string='Particular',
                                  required=True, ondelete='cascade')
@@ -509,6 +509,8 @@ class costsheetmaterial(models.Model):
     uom = fields.Many2one('uom.uom', string='UOM')
     rate = fields.Float(string='Rate')
     subtotal = fields.Float(string='Total')
+
+
 
     @api.onchange('product_id')
     def onchange_product(self):

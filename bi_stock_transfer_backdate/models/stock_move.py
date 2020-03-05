@@ -45,7 +45,15 @@ class StockMoveUpdate(models.Model):
 
         description=ref
 
-        move_lines = self.with_context(forced_ref=ref)._prepare_account_move_line(quantity, abs(self.value), credit_account_id, debit_account_id,description)
+        if cost:
+            move_lines = self.with_context(forced_ref=ref)._prepare_account_move_line(qty, cost,
+                                                                                      credit_account_id,
+                                                                                      debit_account_id, description)
+        else:
+            move_lines = self.with_context(forced_ref=ref)._prepare_account_move_line(quantity, abs(self.value),
+                                                                                      credit_account_id,
+                                                                                      debit_account_id, description)
+
         if move_lines:
             date = self.transfer_date or self._context.get('force_period_date', fields.Date.context_today(self))
             new_account_move = AccountMove.sudo().create({
@@ -56,6 +64,8 @@ class StockMoveUpdate(models.Model):
                 'stock_move_id': self.id,
             })
             new_account_move.post()
+
+
 
 
 

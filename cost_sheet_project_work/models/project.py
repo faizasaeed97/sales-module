@@ -8,6 +8,7 @@ class Costsheet(models.Model):
 
     additional_costsheet_count = fields.Integer(string='Costsheet_revisioncount', compute='get_additional_costsheet')
     cost_sheet_revision_count = fields.Integer(string='Costsheet_revisioncount', compute='get_costsheetrevision_count')
+    po_count= fields.Integer(string='po count', compute='get_po_count')
 
     def get_costsheetrevision_count(self):
         if self.id:
@@ -15,9 +16,7 @@ class Costsheet(models.Model):
             # check project reference in sale, get ks se yeh hoe ha sale costsheet, then us costsheet ke additional cost sheet get
             for rec in self:
                 # sale_order = self.env['sale.order'].search([('project', '=', self.id)], limit=1)
-                # if sale_order:
-                #     if sale_order:
-                # get cost sheetref
+
                 cost_sheet_revision_count = self.env['cost.sheet.crm']. \
                     search_count([('is_a_revision', '=', True),
                                   ('opportunity_id', '=', self.id)])
@@ -25,14 +24,21 @@ class Costsheet(models.Model):
                     rec.cost_sheet_revision_count = cost_sheet_revision_count
                 else:
                     rec.cost_sheet_revision_count = 0
-                # else:
-                #     rec.additional_costsheet_count = 0
-                #     return 0
 
-    # def get_opportunity_name_byid(self, name):
-    #     opportunity = self.env['crm.lead'].search([('name', '=', name)])
-    #     if opportunity:
-    #         return opportunity.id
+    def get_po_count(self):
+        if self.id:
+            # how can we compute this ???
+            # check project reference in sale, get ks se yeh hoe ha sale costsheet, then us costsheet ke additional cost sheet get
+            for rec in self:
+                # sale_order = self.env['sale.order'].search([('project', '=', self.id)], limit=1)
+
+                pocount = self.env['purchase.order']. \
+                    search_count([('project.id', '=', self.id)])
+                if pocount:
+                    rec.po_count = pocount
+                else:
+                    rec.pocount = 0
+
 
     def get_additional_costsheet(self):
         if self.id:
@@ -98,4 +104,29 @@ class Costsheet(models.Model):
                 }
             else:
                 return 0
+
+    def view_po_history(self):
+        lists = []
+        pocnt = self.env['purchase.order'].search(
+            [('project.id', '=', self.id)])
+
+        out = list(itertools.chain(*pocnt))
+
+        for o in out:
+            for z in o:
+                lists.append(z.id)
+
+        if lists:
+            return {
+                'name': _('Hurchase History'),
+                'view_type': 'form',
+                'view_mode': 'tree,form',
+                'res_model': 'purchase.order',
+                'type': 'ir.actions.act_window',
+                'domain': [('id', 'in', lists)],
+            }
+        else:
+            return 0
+
+
 

@@ -67,6 +67,7 @@ class ImportPurchaseOrder(models.TransientModel):
         # }
         # purchase_order_id = purchase_order_obj.create(vals)
         cont = 0
+        notlist=[]
         for line in archive_lines:
             cont += 1
             accc = str(line.get('Account Name',False))
@@ -117,35 +118,48 @@ class ImportPurchaseOrder(models.TransientModel):
                 # else:
                 #     gos = line.get('GOSI Salary Deduction', 0.0) or 0.0
 
-                movid=accmove.create(
-                    {
-                        'ref':"opening balance"
-                    }
-                )
-
-                vald = {
-                    'account_id': acc_id.id,
-                    'debit': debit,
-                    'credit':credit,
-                    'move_id':movid.id,
-
-                }
-                valc = {
-                    'account_id': acc_id.id,
-                    'debit':  credit,
-                    'credit': debit,
-                    'move_id': movid.id,
-
-                }
+                # movid=accmove.create(
+                #     {
+                #         'ref':"opening balance"
+                #     }
+                # )
+                #
+                # vald = {
+                #     'account_id': acc_id.id,
+                #     'debit': debit,
+                #     'credit':credit,
+                #     'move_id':movid.id,
+                #
+                # }
+                # valc = {
+                #     'account_id': acc_id.id,
+                #     'debit':  credit,
+                #     'credit': debit,
+                #     'move_id': movid.id,
+                #
+                # }
                 # has = accmove.search([('name', '=', acc_id.name)])
                 # if len(has) > 0:
                 #     has.write(vals)
                 # else:
                 # try:
-                ct = self.env['account.move.line'].sudo().create([vald,valc])
-                movid.post()
+                # ct = self.env['account.move.line'].sudo().create([vald,valc])
+                # movid.post()
                 # except:
                 #     print("THIS IS THE SHIT------->",vals)
+
+                if debit>0.0:
+                    acc_id.opening_debit=debit
+                if credit>0.0:
+                    acc_id.opening_credit=credit
+
+
+            else:
+                notlist.append(str(line.get('Account Name',False)))
+
+
+        print(notlist)
+
 
         # if self._context.get('open_order', False):
         #     return purchase_order_id.action_view_order(purchase_order_id.id)

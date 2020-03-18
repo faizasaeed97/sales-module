@@ -19,10 +19,9 @@
 #    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 ###################################################################################
-import props as props
-from odoo.http import request
+
 from odoo import models, api
-import jsons
+
 
 
 class ProjectReportPar(models.AbstractModel):

@@ -75,7 +75,8 @@
                             groups="cost_sheet_quotations.group_costsheet_user_all"/>
 
 <!--                    <div class="oe_button_box" align="right">-->
-                     
+                        <button name="%(cost_sheet_quotations.wizard_report_actionzx)d" class="btn btn-primary oe_left"
+                                string="Print" type="action"/>
 <!--                    </div>-->
 
 

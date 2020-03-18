@@ -74,6 +74,11 @@
                             attrs="{'invisible': [('state','in',['Draft'])]}"
                             groups="cost_sheet_quotations.group_costsheet_user_all"/>
 
+<!--                    <div class="oe_button_box" align="right">-->
+                        <button name="%(cost_sheet_quotations.wizard_report_actionzx)d" class="btn btn-primary oe_left"
+                                string="Print" type="action"/>
+<!--                    </div>-->
+
 
                     <field name="state" widget="statusbar" statusbar_visible="Draft,Validated,Approved"/>
 
@@ -157,6 +162,13 @@
                                     <field name="product_id"/>
                                     <field name="qty_ava"/>
                                     <field name="qty"/>
+
+                                    <field name="department"/>
+                                    <field name="days"/>
+                                    <field name="hours"/>
+
+
+                                    <field name="mat_purchase" readonly="1"/>
                                     <field name="uom"/>
                                     <field name="rate"/>
                                     <field name="subtotal"/>
@@ -180,10 +192,14 @@
                             <field name="labor_ids" force_save="1">
                                 <tree editable="bottom">
                                     <field name="product_final"/>
-
+ <field name="product_id"/>
                                     <field name="job_id"/>
                                     <field name="qty"/>
                                     <field name="uom"/>
+
+                                    <field name="department"/>
+                                    <field name="days"/>
+                                    <field name="hours"/>
                                     <field name="rate"/>
                                     <field name="subtotal"/>
                                 </tree>
@@ -204,10 +220,13 @@
                             <field name="overhead_ids" force_save="1">
                                 <tree editable="bottom">
                                     <field name="product_final"/>
-                                    <field name="product_id"/>
+                                                                        <field name="product_id"/>
                                     <field name="qty"/>
                                     <field name="uom"/>
                                     <field name="rate"/>
+                                    <field name="department"/>
+                                    <field name="days"/>
+                                    <field name="hours"/>
                                     <field name="subtotal"/>
                                 </tree>
                             </field>
@@ -229,10 +248,13 @@
                                 <tree editable="bottom">
                                     <field name="product_final"/>
 
-                                    <field name="product_id"/>
+                                                                        <field name="product_id"/>
                                     <field name="qty"/>
                                     <field name="uom"/>
                                     <field name="rate"/>
+                                    <field name="department"/>
+                                    <field name="days"/>
+                                    <field name="hours"/>
                                     <field name="subtotal"/>
                                 </tree>
                             </field>
@@ -255,10 +277,13 @@
                                 <tree editable="bottom">
                                     <field name="product_final"/>
 
-                                    <field name="product_id"/>
+                                                                        <field name="product_id"/>
                                     <field name="qty"/>
                                     <field name="uom"/>
                                     <field name="rate"/>
+                                    <field name="department"/>
+                                    <field name="days"/>
+                                    <field name="hours"/>
                                     <field name="subtotal"/>
                                 </tree>
                             </field>
@@ -278,11 +303,11 @@
                         <page string="Summery" invisible="1">
 
                             <group>
-                                    <field name="initial_budget"/>
-                                    <field name="cs_history_value"/>
-                                    <field name="auctual_budget"/>
-                                    <field name="quotation_value"/>
-                                    <field name="final_profit"/>
+                                <field name="initial_budget"/>
+                                <field name="cs_history_value"/>
+                                <field name="auctual_budget"/>
+                                <field name="quotation_value"/>
+                                <field name="final_profit"/>
                             </group>
 
                         </page>

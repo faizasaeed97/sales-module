@@ -362,29 +362,31 @@ class Costsheet(models.Model):
     def final_total_cal(self):
         for sc in self.scope_work:
             sc.total_cost = 0.0
-            sc.total_qty = 0.0
 
         for rec in self:
             for dta in rec:
                 sum = 0
                 qty=0
+                mat_tot=0.0
                 last_p=-1
                 if dta.material_ids:
                     for sc in dta.scope_work:
                         last_p = -1
                         sum = 0
                         qty = 0
+                        mat_tot=0.0
                         for mt in dta.material_ids:
                             if (sc.product_id.id == mt.product_final.id) or (len(mt.product_final)==0 and last_p > 0):
                                 last_p=sc.product_id.id
                                 sum += mt.subtotal
+                                mat_tot+=mt.mat_purchase
                                 qty+=mt.qty
                             else:
                                 # sum = 0
                                 # qty=0
                                 last_p=-1
                         sc.total_cost += sum
-                        sc.total_qty += qty
+                        sc.mat_pur_tot=mat_tot
                 sum = 0
                 qty = 0
                 last_p = -1
@@ -403,7 +405,7 @@ class Costsheet(models.Model):
                                 # qty = 0
                                 last_p = -1
                         sc.total_cost += sum
-                        sc.total_qty += qty
+
                 sum = 0
                 qty = 0
                 last_p = -1
@@ -422,7 +424,7 @@ class Costsheet(models.Model):
                                 # qty = 0
                                 last_p = -1
                         sc.total_cost += sum
-                        sc.total_qty += qty
+
                 sum = 0
                 qty = 0
                 last_p = -1
@@ -441,7 +443,7 @@ class Costsheet(models.Model):
                                 # qty = 0
                                 last_p = -1
                         sc.total_cost += sum
-                        sc.total_qty += qty
+
                 sum = 0
                 qty = 0
                 last_p = -1
@@ -460,7 +462,7 @@ class Costsheet(models.Model):
                                 # qty = 0
                                 last_p = -1
                         sc.total_cost += sum
-                        sc.total_qty += qty
+
 
 
 
@@ -490,7 +492,8 @@ class costsheetwcope(models.Model):
     desc=fields.Char(string="Description")
 
     total_cost= fields.Float(string="total")
-    total_qty=fields.Integer(string="Qty",store=True)
+    mat_pur_tot=fields.Float(string="Material Total")
+    total_qty=fields.Integer(string="Qty",store=True,default=1)
 
 
 class costsheetmaterial(models.Model):
@@ -509,6 +512,12 @@ class costsheetmaterial(models.Model):
     uom = fields.Many2one('uom.uom', string='UOM')
     rate = fields.Float(string='Rate')
     subtotal = fields.Float(string='Total')
+    department=fields.Many2one('hr.department',string='Department')
+    days=fields.Char(string='Day(s)')
+    hours=fields.Char(string='hour(s)')
+    mat_purchase=fields.Float("Material Purchase")
+
+
 
 
 
@@ -521,6 +530,9 @@ class costsheetmaterial(models.Model):
     def onchange_products(self):
         if self.qty and self.rate:
             self.subtotal = self.qty * self.rate
+        if self.product_id and self.qty:
+            self.mat_purchase=self.product_id.standard_price * self.qty
+
 
 
 class costsheetlabors(models.Model):
@@ -530,11 +542,17 @@ class costsheetlabors(models.Model):
     scope = fields.Many2one('scope.work')
     product_final = fields.Many2one(related='scope.product_id', string='Final Product',copy=True,
                                     required=False, readonly=False, store=True)
-    job_id = fields.Many2one('hr.job', string='Particular', required=True)
+
+    product_id = fields.Many2one('product.product', string='Particular', required=True, ondelete='cascade')
+
+    job_id = fields.Many2one('hr.job', string='Designations', required=True)
     qty = fields.Float(string='Qty.', default=1)
     uom = fields.Many2one('uom.uom', string='UOM')
     rate = fields.Float(string='Rate')
     subtotal = fields.Float(string='Total')
+    department=fields.Many2one('hr.department',string='Department')
+    days=fields.Char(string='Day(s)')
+    hours=fields.Char(string='hour(s)')
 
     @api.onchange('qty', 'rate')
     def onchange_product(self):
@@ -555,6 +573,10 @@ class costsheetmaterial(models.Model):
     rate = fields.Float(string='Rate')
     subtotal = fields.Float(string='Total')
 
+    department=fields.Many2one('hr.department',string='Department')
+    days=fields.Char(string='Day(s)')
+    hours=fields.Char(string='hour(s)')
+
     @api.onchange('qty', 'rate')
     def onchange_product(self):
         if self.qty and self.rate:
@@ -572,6 +594,10 @@ class costsheetmaterial(models.Model):
     uom = fields.Many2one('uom.uom', string='UOM')
     rate = fields.Float(string='Rate')
     subtotal = fields.Float(string='Total')
+
+    department=fields.Many2one('hr.department',string='Department')
+    days=fields.Char(string='Day(s)')
+    hours=fields.Char(string='hour(s)')
 
     @api.onchange('qty', 'rate')
     def onchange_product(self):
@@ -593,6 +619,10 @@ class costsheetmaterial(models.Model):
     rate = fields.Float(string='Rate')
     subtotal = fields.Float(string='Total')
 
+    department=fields.Many2one('hr.department',string='Department')
+    days=fields.Char(string='Day(s)')
+    hours=fields.Char(string='hour(s)')
+
     @api.onchange('qty', 'rate')
     def onchange_product(self):
         if self.qty and self.rate:
@@ -602,19 +632,27 @@ class costsheetmaterial(models.Model):
 class CRM(models.Model):
     _inherit = 'crm.lead'
 
-    is_cost_sheet_generated = fields.Boolean()
+    is_cost_sheet_generated = fields.Boolean(default=False,compute='check_cs_gen')
     partner_id = fields.Many2one('res.partner', string='Customer', tracking=10, index=True,
                                  required=1,
                                  domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]",
                                  help="Linked partner (optional). Usually created when converting the lead. You can find a partner by its Name, TIN, Email or Internal Reference.")
+    def check_cs_gen(self):
+        cost_sheet = self.env['cost.sheet.crm'].search(
+            [('crm_lead', '=', self.id), ('dafult_cost_sheet_ref', '=', False)], limit=1)
+        if cost_sheet:
+            self.is_cost_sheet_generated=True
+        else:
+            self.is_cost_sheet_generated=False
+
 
     def open_cost_sheet(self):
 
         # if record is there open else create it
-        project = self.env['project.project'].search([('name','=',self.name)],limit=1)
+        # project = self.env['project.project'].search([('name','=',self.name)],limit=1)
 
         cost_sheet = self.env['cost.sheet.crm'].search(
-            [('opportunity_id', '=', project.id), ('dafult_cost_sheet_ref', '=', False)], limit=1)
+            [('crm_lead', '=', self.id), ('dafult_cost_sheet_ref', '=', False)], limit=1)
         if len(cost_sheet)>0:
             return {
                 'name': _('Cost Sheet'),
@@ -626,9 +664,9 @@ class CRM(models.Model):
                 'res_id': cost_sheet.id
             }
         else:
-            project = self.env['project.project'].create({'name': self.name})
+            # project = self.env['project.project'].create({'name': self.name})
 
-            cost_sheet = self.env['cost.sheet.crm'].create({'opportunity_id': project.id})
+            cost_sheet = self.env['cost.sheet.crm'].create({'crm_lead': self.id})
             if cost_sheet:
                self.is_cost_sheet_generated = True
                return {
@@ -644,9 +682,9 @@ class CRM(models.Model):
     def generate_cost_sheet(self):
         # if record is there open else create it
 
-        project = self.env['project.project'].create({'name': self.name})
+        # project = self.env['project.project'].create({'name': self.name})
 
-        cost_sheet = self.env['cost.sheet.crm'].create({'opportunity_id': project.id,'client':self.partner_id.id,'crm_lead':self.id})
+        cost_sheet = self.env['cost.sheet.crm'].create({'crm_lead': self.id,'client':self.partner_id.id,'crm_lead':self.id})
         if cost_sheet:
             self.is_cost_sheet_generated = True
             return {

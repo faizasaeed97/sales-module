@@ -25,7 +25,7 @@
                 <page string="Final Products">
                     <field name="scope_work" force_save="1">
                         <tree editable="false">
-                            <field name="product_id" invisible="1"/>
+                            <field name="product_id"/>
                             <field name="desc"/>
                             <field name="tax_id"/>
                             <field name="total_qty"/>

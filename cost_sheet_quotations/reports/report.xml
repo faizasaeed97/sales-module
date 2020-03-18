@@ -21,9 +21,11 @@
         id="action_repair_order_print"
 		string="Print Cost Sheet"
 		model ="cost.sheet.crm"
-		report_type="qweb-pdf"
-		name = "cost_sheet_quotations.repair_order_print_template"
-        file="cost_sheet_quotations.repair_order_print_template" />
+		report_type="qweb-html"
+		name = "cost_sheet_quotations.cs_order_print_template"
+        file="cost_sheet_quotations.cs_order_print_template"
+        menu="False"
+        />
 <!--        paperformat="paper_format_jobcard"-->
 
     </data>

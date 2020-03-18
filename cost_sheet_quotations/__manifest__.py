@@ -24,6 +24,8 @@ Cost sheet from CRM, Generate Quotation
         'reports/repair_order_print.xml',
         'reports/report.xml',
         'reports/quotation_print.xml',
+        'wizard/wizard_view.xml',
+
     ],
     'installable': True,
     'application': True,

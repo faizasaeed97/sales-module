@@ -16,7 +16,6 @@
                     <field string="Additonal costsheet revisions" name="additional_costsheet_count" widget="statinfo"/>
                 </button>
 
-
                 <button width="200px" class="oe_stat_button" name="view_po_history" type="object"
                         icon="fa-file-text-o">
                     <field string="Purchase History" name="po_count" widget="statinfo"/>

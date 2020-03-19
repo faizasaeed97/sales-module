@@ -517,7 +517,22 @@ class costsheetmaterial(models.Model):
     hours=fields.Char(string='hour(s)')
     mat_purchase=fields.Float("Material Purchase")
 
+    @api.onchange('product_final')
+    def onchange_product_id(self):
+        variant_ids_list = []
+        result=[]
+        if self._context.get('scope'):
+            scop=self._context.get('scope')
+            for rec in scop:
+                cnt=0
+                for pr in rec:
+                    cnt+=1
+                    if cnt==2 and pr:
+                        scope = self.env["scope.work"].browse(pr)
+                        if scope:
+                           variant_ids_list.append(scope.product_id.id)
 
+        return {'domain':{'product_final': [('id', 'in', variant_ids_list)]}}
 
 
 
@@ -560,6 +575,24 @@ class costsheetlabors(models.Model):
             self.subtotal = self.qty * self.rate
 
 
+    @api.onchange('product_final')
+    def onchange_product_id(self):
+        variant_ids_list = []
+        result=[]
+        if self._context.get('scope'):
+            scop=self._context.get('scope')
+            for rec in scop:
+                cnt=0
+                for pr in rec:
+                    cnt+=1
+                    if cnt==2 and pr:
+                        scope = self.env["scope.work"].browse(pr)
+                        if scope:
+                           variant_ids_list.append(scope.product_id.id)
+
+        return {'domain':{'product_final': [('id', 'in', variant_ids_list)]}}
+
+
 class costsheetmaterial(models.Model):
     _name = 'cost.sheet.overhead'
 
@@ -581,6 +614,25 @@ class costsheetmaterial(models.Model):
     def onchange_product(self):
         if self.qty and self.rate:
             self.subtotal = self.qty * self.rate
+
+
+    @api.onchange('product_final')
+    def onchange_product_id(self):
+        variant_ids_list = []
+        result=[]
+        if self._context.get('scope'):
+            scop=self._context.get('scope')
+            for rec in scop:
+                cnt=0
+                for pr in rec:
+                    cnt+=1
+                    if cnt==2 and pr:
+                        scope = self.env["scope.work"].browse(pr)
+                        if scope:
+                           variant_ids_list.append(scope.product_id.id)
+
+        return {'domain':{'product_final': [('id', 'in', variant_ids_list)]}}
+
 
 class costsheetmaterial(models.Model):
     _name = 'cost.sheet.rental.internal'
@@ -605,6 +657,24 @@ class costsheetmaterial(models.Model):
             self.subtotal = self.qty * self.rate
 
 
+    @api.onchange('product_final')
+    def onchange_product_id(self):
+        variant_ids_list = []
+        result=[]
+        if self._context.get('scope'):
+            scop=self._context.get('scope')
+            for rec in scop:
+                cnt=0
+                for pr in rec:
+                    cnt+=1
+                    if cnt==2 and pr:
+                        scope = self.env["scope.work"].browse(pr)
+                        if scope:
+                           variant_ids_list.append(scope.product_id.id)
+
+        return {'domain':{'product_final': [('id', 'in', variant_ids_list)]}}
+
+
 
 class costsheetmaterial(models.Model):
     _name = 'cost.sheet.rental.outsource'
@@ -627,6 +697,24 @@ class costsheetmaterial(models.Model):
     def onchange_product(self):
         if self.qty and self.rate:
             self.subtotal = self.qty * self.rate
+
+
+    @api.onchange('product_final')
+    def onchange_product_id(self):
+        variant_ids_list = []
+        result=[]
+        if self._context.get('scope'):
+            scop=self._context.get('scope')
+            for rec in scop:
+                cnt=0
+                for pr in rec:
+                    cnt+=1
+                    if cnt==2 and pr:
+                        scope = self.env["scope.work"].browse(pr)
+                        if scope:
+                           variant_ids_list.append(scope.product_id.id)
+
+        return {'domain':{'product_final': [('id', 'in', variant_ids_list)]}}
 
 
 class CRM(models.Model):

@@ -156,7 +156,7 @@
 
 
                         <page string="Materials">
-                            <field name="material_ids" force_save="1">
+                            <field name="material_ids" context="{'scope':parent.scope_work}" force_save="1">
                                 <tree editable="bottom">
                                     <field name="product_final" widget="many2many_list"/>
                                     <field name="product_id"/>
@@ -189,7 +189,7 @@
 
                         </page>
                         <page string="Direct Labours">
-                            <field name="labor_ids" force_save="1">
+                            <field name="labor_ids" context="{'scope':parent.scope_work}" force_save="1">
                                 <tree editable="bottom">
                                     <field name="product_final"/>
  <field name="product_id"/>
@@ -217,7 +217,7 @@
                             </field>
                         </page>
                         <page string="Overheads">
-                            <field name="overhead_ids" force_save="1">
+                            <field name="overhead_ids"  context="{'scope':parent.scope_work}" force_save="1">
                                 <tree editable="bottom">
                                     <field name="product_final"/>
                                                                         <field name="product_id"/>
@@ -244,7 +244,7 @@
 
                         </page>
                         <page string="Rental Internal">
-                            <field name="internal_rental_ids" force_save="1">
+                            <field name="internal_rental_ids" context="{'scope':parent.scope_work}" force_save="1">
                                 <tree editable="bottom">
                                     <field name="product_final"/>
 
@@ -273,7 +273,7 @@
                         </page>
 
                         <page string="Rental Outsource">
-                            <field name="outsource_rental_ids" force_save="1">
+                            <field name="outsource_rental_ids" context="{'scope':parent.scope_work}" force_save="1">
                                 <tree editable="bottom">
                                     <field name="product_final"/>
 

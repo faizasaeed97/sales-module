@@ -541,12 +541,12 @@ class costsheetmaterial(models.Model):
         if self.product_id:
             self.rate = self.product_id.lst_price
 
-    @api.onchange('qty', 'rate')
-    def onchange_products(self):
-        if self.qty and self.rate:
-            self.subtotal = self.qty * self.rate
-        if self.product_id and self.qty:
-            self.mat_purchase=self.product_id.standard_price * self.qty
+    # @api.onchange('qty', 'rate')
+    # def onchange_products(self):
+    #     if self.qty and self.rate:
+    #         self.subtotal = self.qty * self.rate
+    #     if self.product_id and self.qty:
+    #         self.mat_purchase=self.product_id.standard_price * self.qty
 
 
 

@@ -167,8 +167,7 @@
                                     <field name="days"/>
                                     <field name="hours"/>
 
-
-                                    <field name="mat_purchase" readonly="1"/>
+                                    <field name="mat_purchase" readonly="0"/>
                                     <field name="uom"/>
                                     <field name="rate"/>
                                     <field name="subtotal"/>

@@ -545,6 +545,8 @@ class costsheetmaterial(models.Model):
     def onchange_products(self):
         if self.qty and self.rate:
             self.subtotal = self.qty * self.rate
+        else:
+            self.subtotal=0.0
         # if self.product_id and self.qty:
         #     self.mat_purchase=self.product_id.standard_price * self.qty
 

@@ -560,7 +560,7 @@ class costsheetlabors(models.Model):
 
     product_id = fields.Many2one('product.product', string='Particular', required=True, ondelete='cascade')
 
-    job_id = fields.Many2one('hr.job', string='Designations', required=True)
+    job_id = fields.Many2one('hr.job', string='Designations', required=False)
     qty = fields.Float(string='Qty.', default=1)
     uom = fields.Many2one('uom.uom', string='UOM')
     rate = fields.Float(string='Rate')

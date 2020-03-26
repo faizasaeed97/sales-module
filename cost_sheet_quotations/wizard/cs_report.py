@@ -88,7 +88,7 @@ class ProjectReportPar(models.AbstractModel):
 
                     dicts={'subtotal':fptot,'material':fpmat,'final':False,'display':True}
 
-                list.append({'name':i.product_id.name,'qty':i.qty,'unit':i.uom,'rate':i.rate,'subtotal':i.subtotal,'mat_pur':i.mat_purchase,'final':False,'display':False})
+                list.append({'name':i.product_id.name,'qty':i.qty,'unit':i.uom.name,'rate':i.rate,'subtotal':i.subtotal,'mat_pur':i.mat_purchase,'final':False,'display':False})
                 if dicts and i.is_last:
                     list.append(dicts)
                     # val={}

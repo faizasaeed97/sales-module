@@ -380,6 +380,12 @@ class Costsheet(models.Model):
                 mat_tot=0.0
                 last_p=-1
                 if dta.material_ids:
+                    for rec in dta.material_ids:
+                        rec.is_last = False
+                    lastproduct = dta.material_ids.search([('cost_sheet','=',self.id)], order='id desc', limit=1)
+                    if lastproduct:
+                        lastproduct.is_last = True
+
                     for sc in dta.scope_work:
                         last_p = -1
                         sum = 0

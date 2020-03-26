@@ -160,6 +160,8 @@
                                 <tree editable="bottom">
                                     <field name="product_final" widget="many2many_list"/>
                                     <field name="product_id"/>
+
+                                    <field name="is_last" invisible="1"/>
                                     <field name="qty_ava"/>
                                     <field name="qty"/>
 

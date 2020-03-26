@@ -31,15 +31,15 @@ class ProjectReportPar(models.AbstractModel):
         csid = data['cs_id']
         if csid:
             cost_sheet=self.env['cost.sheet.crm'].browse(csid)
-            vals = {}
+            dicts = {}
             list=[]
             fp = -1
             for i in cost_sheet.material_ids:
-                # if vals:
-                #     list.append(vals)
-                #     vals={}
 
                 if i.product_final:
+                    if dicts:
+                        list.append(dicts)
+                        dicts = {}
                     fp=i.product_final
 
                     # --subtotal--
@@ -52,29 +52,46 @@ class ProjectReportPar(models.AbstractModel):
 
                     # --Rentals internal--
                     rent_int = 0.0
+                    found=False
                     for rec in cost_sheet.internal_rental_ids:
                         if rec.product_final.id == fp.id:
-                            rent_int = rec.subtotal
+                            found=True
+                        if  rec.product_final and  fp.id!=rec.product_final.id:
+                            found=False
+                        if found:
+                            rent_int += rec.subtotal
 
 
                     # --Rentals external--
                     rent_ext = 0.0
+                    found = False
                     for rec in cost_sheet.outsource_rental_ids:
                         if rec.product_final.id == fp.id:
-                            rent_ext = rec.subtotal
+                            found = True
+                        if rec.product_final and fp.id != rec.product_final.id:
+                            found = False
+                        if found:
+                            rent_ext += rec.subtotal
 
                     # --Labor--
                     labor = 0.0
+                    found = False
                     for rec in cost_sheet.labor_ids:
                         if rec.product_final.id == fp.id:
-                            labor = rec.subtotal
+                            found = True
+                        if rec.product_final and fp.id != rec.product_final.id:
+                            found = False
+                        if found:
+                            labor += rec.subtotal
 
-                    list.append({'name':fp.name,'labor':labor,'rent_int':rent_int,'rent_ext':rent_ext,'final':True,'subtotal':fptot,'material':fpmat})
-                    # vals({'subtotal':fptot,'material':fpmat,'final':False})
+                    list.append({'name':fp.name,'labor':labor,'rent_int':rent_int,'rent_ext':rent_ext,'final':True,'subtotal':fptot,'material':fpmat,'display':False})
 
-                list.append({'name':i.product_id.name,'qty':i.qty,'unit':i.uom,'rate':i.rate,'subtotal':i.subtotal,'mat_pur':i.mat_purchase,'final':False})
+                    dicts={'subtotal':fptot,'material':fpmat,'final':False,'display':True}
 
-                # list.append(dict((key, value) for key, value in i.__dict__.items() if not callable(value) and not key.startswith('__')).values())
+                list.append({'name':i.product_id.name,'qty':i.qty,'unit':i.uom,'rate':i.rate,'subtotal':i.subtotal,'mat_pur':i.mat_purchase,'final':False,'display':False})
+                if dicts and i.is_last:
+                    list.append(dicts)
+                    # val={}
 
 
 

@@ -318,6 +318,16 @@ class Costsheet(models.Model):
 
 
 
+    def write(self, vals):
+        if 'material_ids' in vals:
+            for rec in self.material_ids:
+                rec.is_last = False
+            # lastproduct=self.material_ids.search([],order='id desc', limit=1)
+            # if lastproduct:
+            #     lastproduct.is_last=True
+
+        res = super(Costsheet, self).write(vals)
+        return res
 
 
     @api.model
@@ -346,7 +356,7 @@ class Costsheet(models.Model):
             csno = self.env['ir.sequence'].next_by_code('cst')
             vals['name'] = 'CS' + '19' + csno
             vals['is_additional'] = False
-            # vals['opportunity_id']=
+
 
         # if csr:
         #     vals['dafult_cost_sheet_ref']=dcsr
@@ -516,6 +526,7 @@ class costsheetmaterial(models.Model):
     days=fields.Char(string='Day(s)')
     hours=fields.Char(string='hour(s)')
     mat_purchase=fields.Float("Material Purchase")
+    is_last=fields.Boolean(default=True,string="last")
 
     @api.onchange('product_final')
     def onchange_product_id(self):
@@ -540,6 +551,7 @@ class costsheetmaterial(models.Model):
     def onchange_product(self):
         if self.product_id:
             self.rate = self.product_id.lst_price
+
 
     @api.onchange('qty', 'rate')
     def onchange_products(self):
@@ -754,9 +766,11 @@ class CRM(models.Model):
                 'res_id': cost_sheet.id
             }
         else:
-            # project = self.env['project.project'].create({'name': self.name})
+            project = self.env['project.project'].create({'name': self.name})
 
-            cost_sheet = self.env['cost.sheet.crm'].create({'crm_lead': self.id})
+            cost_sheet = self.env['cost.sheet.crm'].create(
+                {'crm_lead': self.id, 'client': self.partner_id.id, 'crm_lead': self.id, 'opportunity_id': project.id})
+
             if cost_sheet:
                self.is_cost_sheet_generated = True
                return {
@@ -772,9 +786,9 @@ class CRM(models.Model):
     def generate_cost_sheet(self):
         # if record is there open else create it
 
-        # project = self.env['project.project'].create({'name': self.name})
+        project = self.env['project.project'].create({'name': self.name})
 
-        cost_sheet = self.env['cost.sheet.crm'].create({'crm_lead': self.id,'client':self.partner_id.id,'crm_lead':self.id})
+        cost_sheet = self.env['cost.sheet.crm'].create({'crm_lead': self.id,'client':self.partner_id.id,'crm_lead':self.id,'opportunity_id':project.id})
         if cost_sheet:
             self.is_cost_sheet_generated = True
             return {

@@ -1,2 +1,12 @@
 id,name,model_id/id,group_id/id,perm_read,perm_write,perm_create,perm_unlink
+access_product_color,product_color,model_product_color,,1,1,1,1
+access_product_length,product_length,model_product_length,,1,1,1,1
+access_product_width,product_width,model_product_width,,1,1,1,1
+access_product_height,product_height,model_product_height,,1,1,1,1
+access_product_type,product_type,model_product_type,,1,1,1,1
+access_brand,brand,model_brand,,1,1,1,1
+access_product_made,product_made,model_product_made,,1,1,1,1
+access_employee_designation,employee_designation,model_employee_designation,,1,1,1,1
+access_employee_rate,employee_rate,model_employee_rate,,1,1,1,1
+
 

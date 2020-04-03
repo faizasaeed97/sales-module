@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+
+
+    <record model="ir.ui.view" id="prodtmpl_view_form">
+        <field name="name">res.partner.order.form</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_form_view"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//field[@name='name']" position="after">
+                <group>
+                    <field name="brand" placeholder="Select Brand"/>
+
+                    <field name="p_type" placeholder="Select Type"/>
+
+                    <field name="p_made" placeholder="Select Made"/>
+
+                    <field name="p_color" placeholder="Select Color"/>
+
+                    <field name="p_length" placeholder="Select Length"/>
+                    <field name="p_width" placeholder="Select Width"/>
+                    <field name="p_height" placeholder="Select Height"/>
+                </group>
+            </xpath>
+
+            <xpath expr="//field[@name='name']" position="attributes">
+                <attribute name="readonly">1</attribute>
+            </xpath>
+
+
+        </field>
+    </record>
+
+
+
+
+
+</odoo>

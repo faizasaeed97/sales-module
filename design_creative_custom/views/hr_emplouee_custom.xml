@@ -8,6 +8,18 @@
         <field name="inherit_id" ref="hr.view_employee_form"/>
         <field name="arch" type="xml">
 
+
+            <xpath expr="//field[@name='job_title']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='name']" position="after">
+                <h2>
+                <field name="designation" placeholder="Job Position"></field>
+                </h2>
+            </xpath>
+
+
             <xpath expr="//field[@name='passport_id']" position="after">
                 <field name="passport_exp_date" groups="hr.group_hr_user"></field>
 
@@ -33,8 +45,6 @@
                     <field name="rp_exp_date"></field>
                     <field name="veh_alloted"></field>
                     <field name="accomodation"></field>
-
-
                 </group>
             </xpath>
 

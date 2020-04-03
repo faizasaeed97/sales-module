@@ -1,2 +1,2 @@
 
-from . import hr_customization
+from . import hr_customization,product_custom

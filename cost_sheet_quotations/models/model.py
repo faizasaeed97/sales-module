@@ -216,8 +216,9 @@ class Costsheet(models.Model):
                 markup_amount_line = self.get_each_line_markup_division_amount(
                     self.get_markup_amount(self.grand_total, self.markup_type, self.markup_value))
                 sale_order = self.env['sale.order'].create(
-                    {'cost_sheet_id': self.id, 'partner_id': self.client.id,
-                     'date_order': self.cost_sheet_date})
+                    {'cost_sheet_id': self.id, 'partner_id': self.client.id,'project':self.opportunity_id,
+                     'date_order': self.cost_sheet_date}
+                     )
                 if len(self.scope_work) > 0:
                     for obj in self.scope_work:
                         sale_order_line = self.env['scope.work.line'].create(
@@ -556,7 +557,7 @@ class costsheetmaterial(models.Model):
     @api.onchange('product_id')
     def onchange_product(self):
         if self.product_id:
-            self.rate = self.product_id.lst_price
+            self.rate = self.product_id.standard_price
 
 
     @api.onchange('qty', 'rate')
@@ -580,10 +581,10 @@ class costsheetlabors(models.Model):
 
     product_id = fields.Many2one('product.product', string='Particular', required=True, ondelete='cascade')
 
-    job_id = fields.Many2one('hr.job', string='Designations', required=False)
+    job_id = fields.Many2one('employee.designation', string='Designations', required=False)
     qty = fields.Float(string='Qty.', default=1)
     uom = fields.Many2one('uom.uom', string='UOM')
-    rate = fields.Float(string='Rate')
+    rate = fields.Float(related='job_id.rate.rate', string='Rate')
     subtotal = fields.Float(string='Total')
     department=fields.Many2one('hr.department',string='Department')
     days=fields.Char(string='Day(s)')

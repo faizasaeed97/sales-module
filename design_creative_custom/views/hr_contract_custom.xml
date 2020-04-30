@@ -62,7 +62,7 @@
                         </group>
 
                         <group col="4" colspan="12">
-                            <group string="Salery Info">
+                            <group string="Salary Info">
                                 <field name="p_salery_pd"/>
                                 <field name="p_salery_ph"/>
                             </group>
@@ -75,7 +75,7 @@
                                 <field name="p_ideminity_pd"/>
                                 <field name="p_ideminity_ph"/>
                             </group>
-                            <group string="AirFair Info">
+                            <group string="AirFare Info">
                                 <field name="p_airfair_pd"/>
                                 <field name="p_airfair_ph"/>
                             </group>

@@ -165,7 +165,6 @@
                                     <field name="qty_ava"/>
                                     <field name="qty"/>
 
-                                    <field name="department"/>
                                     <field name="days"/>
                                     <field name="hours"/>
 
@@ -227,7 +226,6 @@
                                     <field name="qty"/>
                                     <field name="uom"/>
                                     <field name="rate"/>
-                                    <field name="department"/>
                                     <field name="days"/>
                                     <field name="hours"/>
                                     <field name="subtotal"/>
@@ -255,7 +253,6 @@
                                     <field name="qty"/>
                                     <field name="uom"/>
                                     <field name="rate"/>
-                                    <field name="department"/>
                                     <field name="days"/>
                                     <field name="hours"/>
                                     <field name="subtotal"/>
@@ -284,7 +281,6 @@
                                     <field name="qty"/>
                                     <field name="uom"/>
                                     <field name="rate"/>
-                                    <field name="department"/>
                                     <field name="days"/>
                                     <field name="hours"/>
                                     <field name="subtotal"/>

@@ -529,7 +529,7 @@ class costsheetmaterial(models.Model):
     uom = fields.Many2one('uom.uom', string='UOM')
     rate = fields.Float(string='Rate')
     subtotal = fields.Float(string='Total')
-    department=fields.Many2one('hr.department',string='Department')
+    # department=fields.Many2one('hr.department',string='Department')
     days=fields.Char(string='Day(s)')
     hours=fields.Char(string='hour(s)')
     mat_purchase=fields.Float("Material Purchase")
@@ -633,30 +633,30 @@ class costsheetlabors(models.Model):
             self.subtotal = self.qty * self.rate
         get_exp=self.env['ir.property'].search([('name','=','property_account_expense_categ_id')])
 
-        get_exp.value_reference='account.account,3'
+        get_exp.value_reference='account.account,2616'
 
         get_inc=self.env['ir.property'].search([('name','=','property_account_income_categ_id')])
-        get_inc.value_reference='account.account,3'
+        get_inc.value_reference='account.account,2617'
 
 
         get_pay=self.env['ir.property'].search([('name','=','property_account_payable_id')])
-        get_pay.value_reference='account.account,3'
+        get_pay.value_reference='account.account,2615'
 
 
         get_rec=self.env['ir.property'].search([('name','=','property_account_receivable_id')])
-        get_rec.value_reference='account.account,3'
+        get_rec.value_reference='account.account,2476'
 
 
         get_inp=self.env['ir.property'].search([('name','=','property_stock_account_input_categ_id')])
-        get_inp.value_reference ='account.account,3'
+        get_inp.value_reference ='account.account,2619'
 
 
         get_out=self.env['ir.property'].search([('name','=','property_stock_account_output_categ_id')])
-        get_out.value_reference ='account.account,3'
+        get_out.value_reference ='account.account,2618'
 
 
         get_val=self.env['ir.property'].search([('name','=','property_stock_valuation_account_id')])
-        get_val.value_reference ='account.account,3'
+        get_val.value_reference ='account.account,2620'
 
 
 
@@ -691,7 +691,7 @@ class costsheetmaterial(models.Model):
     rate = fields.Float(string='Rate')
     subtotal = fields.Float(string='Total')
 
-    department=fields.Many2one('hr.department',string='Department')
+    # department=fields.Many2one('hr.department',string='Department')
     days=fields.Char(string='Day(s)')
     hours=fields.Char(string='hour(s)')
 
@@ -732,7 +732,7 @@ class costsheetmaterial(models.Model):
     rate = fields.Float(string='Rate')
     subtotal = fields.Float(string='Total')
 
-    department=fields.Many2one('hr.department',string='Department')
+    # department=fields.Many2one('hr.department',string='Department')
     days=fields.Char(string='Day(s)')
     hours=fields.Char(string='hour(s)')
 
@@ -774,7 +774,7 @@ class costsheetmaterial(models.Model):
     rate = fields.Float(string='Rate')
     subtotal = fields.Float(string='Total')
 
-    department=fields.Many2one('hr.department',string='Department')
+    # department=fields.Many2one('hr.department',string='Department')
     days=fields.Char(string='Day(s)')
     hours=fields.Char(string='hour(s)')
 

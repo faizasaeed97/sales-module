@@ -53,7 +53,7 @@
                     <page name="Project_salery" string="Project salery">
                         <group col="4" colspan="12">
                             <field name="p_salery" required="1" force_save="1"/>
-                            <field name="p_leave_salery" required="1" force_save="1"/>
+<!--                            <field name="p_leave_salery" required="1" force_save="1"/>-->
                             <field name="p_ideminity" required="1" force_save="1"/>
                             <field name="p_airfair" required="1" force_save="1"/>
                             <field name="p_lmra" required="1" force_save="1"/>

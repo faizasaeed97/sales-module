@@ -56,9 +56,9 @@ class inheritcontracts(models.Model):
 
 
 
-    p_leave_salery=fields.Monetary(string='Leave Salary',digits=(16, 3))
-    p_leave_salery_pd=fields.Monetary(string='Leave Salary / Day',digits=(16, 3),default=0.0,store=True,compute='leave_comp')
-    p_leave_salery_ph=fields.Monetary(string='Leave Salary /  Hour',digits=(16, 3),default=0.0,store=True,compute='leave_comp')
+    # p_leave_salery=fields.Monetary(string='Leave Salary',digits=(16, 3))
+    p_leave_salery_pd=fields.Monetary(string='Leave Salary / Day',digits=(16, 3),default=0.0,)
+    p_leave_salery_ph=fields.Monetary(string='Leave Salary /  Hour',digits=(16, 3),default=0.0,)
 
     p_ideminity=fields.Monetary(string='Ideminity',digits=(16, 3))
     p_ideminity_pd =fields.Monetary(string='Ideminity / Day',digits=(16, 3),default=0.0,store=True,compute='ideminity_comp')
@@ -83,7 +83,7 @@ class inheritcontracts(models.Model):
     final_day_rate=fields.Monetary('Final / Day rate',compute='get_hourly_final')
 
 
-    @api.depends('p_salery','p_leave_salery','p_airfair','p_ideminity','p_lmra','p_visa')
+    @api.depends('p_salery','p_airfair','p_ideminity','p_lmra','p_visa')
     def get_hourly_final(self):
         for rec in self:
             rec.final_hourly_rate= rec.p_salery_ph + rec.p_leave_salery_ph + rec.p_airfair_ph + rec.p_ideminity_ph + rec.p_lmra_ph + rec.p_visa_ph \
@@ -95,16 +95,23 @@ class inheritcontracts(models.Model):
     def salery_comp(self):
         for rec in self:
             if rec.p_salery:
-                # year = time.strftime('%Y', time.strptime(str(fields.Datetime.now().date().year), "%Y"))
-
-                # year=datetime.datetime.strptime(str(fields.Datetime.now().date()), "%Y-%m-%d").strftime('%Y')
+                #leave calcualtion
+                year = datetime.datetime.strptime(str(fields.Datetime.now().date()), "%Y-%m-%d").strftime('%Y')
 
                 # year = datetime.datetime.strptime(fields.Datetime.now().strftime("%Y"))
+                if isleap(int(year)):
+                    rec.p_leave_salery_pd = rec.p_salery / 366
+                    rec.p_leave_salery_ph = rec.p_leave_salery_pd / 8
+                else:
+                    rec.p_leave_salery_pd = rec.p_salery / 365
+                    rec.p_leave_salery_ph = rec.p_leave_salery_pd / 8
+
+                #salery calculation
                 rec.p_salery_pd=rec.p_salery/30
                 rec.p_salery_ph=rec.p_salery_pd/8
+                # Gosi calculation
                 citizen = rec.employee_id.bahrain_expact
 
-                # year = datetime.datetime.strptime(fields.Datetime.now().strftime("%Y"))
                 if citizen == 'Expats':
                     rec.p_gosi_pd = ((rec.p_salery * 3) / 100) / 30
                     rec.p_gosi_ph = rec.p_gosi_pd / 8

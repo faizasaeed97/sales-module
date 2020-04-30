@@ -3,7 +3,6 @@ import time
 from odoo import models, fields, api
 from calendar import isleap
 import datetime
-import tools
 from odoo.exceptions import UserError, ValidationError
 
 

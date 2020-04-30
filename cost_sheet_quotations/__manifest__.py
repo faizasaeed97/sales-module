@@ -16,6 +16,7 @@ Cost sheet from CRM, Generate Quotation
         'security/ir.model.access.csv',
         'security/recrules.xml',
         'views/sale.xml',
+        'wizard/wizard_view.xml',
         'views/view.xml',
         'views/project.xml',
         'data/demo.xml',
@@ -24,8 +25,6 @@ Cost sheet from CRM, Generate Quotation
         'reports/repair_order_print.xml',
         'reports/report.xml',
         'reports/quotation_print.xml',
-        'wizard/wizard_view.xml',
-
     ],
     'installable': True,
     'application': True,

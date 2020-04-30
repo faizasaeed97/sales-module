@@ -1,4 +1,9 @@
+import time
+
 from odoo import models, fields, api
+from calendar import isleap
+import datetime
+import tools
 from odoo.exceptions import UserError, ValidationError
 
 
@@ -16,7 +21,7 @@ class inherithremploye(models.Model):
     rp_exp_date = fields.Date(string="RP Expiry")
     veh_alloted = fields.Selection([('Yes', 'Yes'), ('No', 'No')], string='Vehicle Alloted', )
     accomodation = fields.Selection([('YES', 'YES'), ('NO', 'NO')], string='Acomodation', )
-    designation=fields.Many2one('employee.designation',)
+    # designation=fields.Many2one('employee.designation',)
 
 
 
@@ -43,6 +48,154 @@ class inheritcontracts(models.Model):
     OT1 = fields.Float("OT 1", default=0.00)
     OT2 = fields.Float("OT 2", default=0.00)
     OTw = fields.Float("OT(W)", default=0.00)
+
+    p_salery = fields.Monetary(string="Salary" , required=True)
+    p_salery_pd=fields.Monetary(string='Salary / Day',digits=(16, 3),default=0.0, compute='salery_comp',store=True)
+    p_salery_ph=fields.Monetary(string='Salary / Hour',digits=(16, 3),default=0.0,compute='salery_comp',store=True)
+
+    department_id = fields.Many2one(related='employee_id.department_id', string="Department")
+
+
+
+    p_leave_salery=fields.Monetary(string='Leave Salary',digits=(16, 3))
+    p_leave_salery_pd=fields.Monetary(string='Leave Salary / Day',digits=(16, 3),default=0.0,store=True,compute='leave_comp')
+    p_leave_salery_ph=fields.Monetary(string='Leave Salary /  Hour',digits=(16, 3),default=0.0,store=True,compute='leave_comp')
+
+    p_ideminity=fields.Monetary(string='Ideminity',digits=(16, 3))
+    p_ideminity_pd =fields.Monetary(string='Ideminity / Day',digits=(16, 3),default=0.0,store=True,compute='ideminity_comp')
+    p_ideminity_ph =fields.Monetary(string='Ideminity / hour',digits=(16, 3),default=0.0,store=True,compute='ideminity_comp')
+
+    p_airfair=fields.Monetary(string='Airfare',digits=(16, 3))
+    p_airfair_pd =fields.Monetary(string='Airfare / Day',digits=(16, 3),default=0.0,store=True,compute='air_comp')
+    p_airfair_ph =fields.Monetary(string='Airfare / hour',digits=(16, 3),default=0.0,store=True,compute='air_comp')
+
+    p_lmra=fields.Monetary(string='Lmra',digits=(16, 3))
+    p_lmra_pd =fields.Monetary(string='Lmra / Day',digits=(16, 3),default=0.0,store=True,compute='lmra_comp')
+    p_lmra_ph =fields.Monetary(string='Lmra / Hour',digits=(16, 3),default=0.0,store=True,compute='lmra_comp')
+
+    p_visa=fields.Monetary(string='Visa',digits=(16, 3))
+    p_visa_pd =fields.Monetary(string='Visa / Day',digits=(16, 3),default=0.0,store=True,compute='visa_comp')
+    p_visa_ph =fields.Monetary(string='Visa / hour',digits=(16, 3),default=0.0,store=True,compute='visa_comp')
+
+    p_gosi_pd =fields.Monetary(string='Gosi / Day',digits=(16, 3),default=0.0)
+    p_gosi_ph =fields.Monetary(string='Gosi / Hour',digits=(16, 3),default=0.0)
+    grade = fields.Many2one('hr.grade',string="grade")
+    final_hourly_rate=fields.Monetary('Final  / hourly rate',compute='get_hourly_final')
+    final_day_rate=fields.Monetary('Final / Day rate',compute='get_hourly_final')
+
+
+    @api.depends('p_salery','p_leave_salery','p_airfair','p_ideminity','p_lmra','p_visa')
+    def get_hourly_final(self):
+        for rec in self:
+            rec.final_hourly_rate= rec.p_salery_ph + rec.p_leave_salery_ph + rec.p_airfair_ph + rec.p_ideminity_ph + rec.p_lmra_ph + rec.p_visa_ph \
+                                   +rec.p_gosi_ph
+            rec.final_day_rate = rec.p_salery_pd + rec.p_leave_salery_pd + rec.p_airfair_pd + rec.p_ideminity_pd + rec.p_lmra_pd + rec.p_visa_pd \
+                                    + rec.p_gosi_pd
+
+    @api.depends('p_salery')
+    def salery_comp(self):
+        for rec in self:
+            if rec.p_salery:
+                # year = time.strftime('%Y', time.strptime(str(fields.Datetime.now().date().year), "%Y"))
+
+                # year=datetime.datetime.strptime(str(fields.Datetime.now().date()), "%Y-%m-%d").strftime('%Y')
+
+                # year = datetime.datetime.strptime(fields.Datetime.now().strftime("%Y"))
+                rec.p_salery_pd=rec.p_salery/30
+                rec.p_salery_ph=rec.p_salery_pd/8
+                citizen = rec.employee_id.bahrain_expact
+
+                # year = datetime.datetime.strptime(fields.Datetime.now().strftime("%Y"))
+                if citizen == 'Expats':
+                    rec.p_gosi_pd = ((rec.p_salery * 3) / 100) / 30
+                    rec.p_gosi_ph = rec.p_gosi_pd / 8
+                elif citizen == 'Bahraini':
+                    rec.p_gosi_pd = ((rec.p_salery * 12) / 100) / 30
+                    rec.p_gosi_ph = rec.p_gosi_pd / 8
+
+
+    @api.depends('p_leave_salery')
+    def leave_comp(self):
+        for rec in self:
+            if rec.p_leave_salery:
+                # year = time.strftime('%Y', time.strptime(str(fields.Datetime.now().date().year), "%Y"))
+
+                year = datetime.datetime.strptime(str(fields.Datetime.now().date()), "%Y-%m-%d").strftime('%Y')
+
+                # year = datetime.datetime.strptime(fields.Datetime.now().strftime("%Y"))
+                if isleap(int(year)):
+                    rec.p_leave_salery_pd = rec.p_leave_salery / 366
+                    rec.p_leave_salery_ph = rec.p_leave_salery_pd / 8
+                else:
+                    rec.p_leave_salery_pd = rec.p_leave_salery / 365
+                    rec.p_leave_salery_ph = rec.p_leave_salery_pd / 8
+
+
+    @api.depends('p_airfair')
+    def air_comp(self):
+        for rec in self:
+            if rec.p_airfair:
+                # year = time.strftime('%Y', time.strptime(str(fields.Datetime.now().date().year), "%Y"))
+
+                year = datetime.datetime.strptime(str(fields.Datetime.now().date()), "%Y-%m-%d").strftime('%Y')
+
+                # year = datetime.datetime.strptime(fields.Datetime.now().strftime("%Y"))
+                if isleap(int(year)):
+                    rec.p_airfair_pd = rec.p_airfair / 731
+                    rec.p_airfair_ph = rec.p_airfair_pd / 8
+                else:
+                    rec.p_airfair_pd = rec.p_airfair / 730
+                    rec.p_airfair_ph = rec.p_airfair_pd / 8
+
+    @api.depends('p_ideminity')
+    def ideminity_comp(self):
+        for rec in self:
+            if rec.p_ideminity:
+                # year = time.strftime('%Y', time.strptime(str(fields.Datetime.now().date().year), "%Y"))
+
+                year = datetime.datetime.strptime(str(fields.Datetime.now().date()), "%Y-%m-%d").strftime('%Y')
+
+                # year = datetime.datetime.strptime(fields.Datetime.now().strftime("%Y"))
+                if isleap(int(year)):
+                    rec.p_ideminity_pd = rec.p_ideminity / 366
+                    rec.p_ideminity_ph = rec.p_ideminity_pd / 8
+                else:
+                    rec.p_ideminity_pd = rec.p_ideminity / 365
+                    rec.p_ideminity_ph = rec.p_ideminity_pd / 8
+
+    @api.depends('p_lmra')
+    def lmra_comp(self):
+        for rec in self:
+            if rec.p_lmra:
+                # year = time.strftime('%Y', time.strptime(str(fields.Datetime.now().date().year), "%Y"))
+
+                # year = datetime.datetime.strptime(str(fields.Datetime.now().date()), "%Y-%m-%d").strftime('%Y')
+
+                # year = datetime.datetime.strptime(fields.Datetime.now().strftime("%Y"))
+                rec.p_lmra_pd = rec.p_lmra / 30
+                rec.p_lmra_ph = rec.p_lmra_pd / 8
+
+    @api.depends('p_visa')
+    def visa_comp(self):
+        for rec in self:
+            if rec.p_visa:
+                # year = time.strftime('%Y', time.strptime(str(fields.Datetime.now().date().year), "%Y"))
+
+                year = datetime.datetime.strptime(str(fields.Datetime.now().date()), "%Y-%m-%d").strftime('%Y')
+
+                # year = datetime.datetime.strptime(fields.Datetime.now().strftime("%Y"))
+                if isleap(int(year)):
+                    rec.p_visa_pd = rec.p_visa / 731
+                    rec.p_visa_ph = rec.p_visa_pd / 8
+                else:
+                    rec.p_visa_pd = rec.p_visa / 730
+                    rec.p_visa_ph = rec.p_visa_pd / 8
+
+
+
+
+
+
 
 class accacc_mov(models.Model):
     _inherit = 'account.account'
@@ -88,6 +241,35 @@ class accacc_mov(models.Model):
             if not 'import_file' in self.env.context:
                 # When importing a file, avoid recomputing the opening move for each account and do it at the end, for better performances
                 self.company_id._auto_balance_opening_move()
+
+
+
+
+class hr_gradeclass(models.Model):
+    _name = 'hr.grade'
+    _rec_name='name'
+
+
+    name=fields.Char(string="Name",compute='comp_name',store=True)
+    grade=fields.Char(string="Grade" ,required=1)
+    department=fields.Many2one('hr.department',string='Department',required=1)
+    designation = fields.Many2one('hr.job', string='Designations',required=1)
+
+
+    @api.depends('grade','department','designation')
+    def comp_name(self):
+        for rec in self:
+            if rec.grade and rec.department and rec.designation:
+                rec.name= rec.grade +'-'+rec.designation.name
+
+    @api.constrains('name','department')
+    def _check_name(self):
+        for rec in self:
+            record_exist = self.env['hr.grade'].search([('name', '=', rec.name),('department', '=', rec.department.id)])
+            if len(record_exist) > 1:
+                raise UserError('Grade for selected department already exist')
+
+
 
 
 

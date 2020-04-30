@@ -74,10 +74,10 @@
                             attrs="{'invisible': [('state','in',['Draft'])]}"
                             groups="cost_sheet_quotations.group_costsheet_user_all"/>
 
-<!--                    <div class="oe_button_box" align="right">-->
-                        <button name="%(cost_sheet_quotations.wizard_report_actionzx)d" class="btn btn-primary oe_left"
-                                string="Print" type="action"/>
-<!--                    </div>-->
+                    <!--                    <div class="oe_button_box" align="right">-->
+                    <button name="%(cost_sheet_quotations.wizard_report_actionzx)d" class="btn btn-primary oe_left"
+                            string="Print" type="action"/>
+                    <!--                    </div>-->
 
 
                     <field name="state" widget="statusbar" statusbar_visible="Draft,Validated,Approved"/>
@@ -193,12 +193,14 @@
                             <field name="labor_ids" context="{'scope':scope_work}" force_save="1">
                                 <tree editable="bottom">
                                     <field name="product_final"/>
- <field name="product_id"/>
+                                    <field name="product_id"/>
+                                    <field name="department"/>
                                     <field name="job_id"/>
+                                    <field name="grade" required="True" domain="[('department','=',department),('designation','=',job_id)]"/>
+
                                     <field name="qty"/>
                                     <field name="uom"/>
 
-                                    <field name="department"/>
                                     <field name="days"/>
                                     <field name="hours"/>
                                     <field name="rate"/>
@@ -218,10 +220,10 @@
                             </field>
                         </page>
                         <page string="Overheads">
-                            <field name="overhead_ids"  context="{'scope':scope_work}" force_save="1">
+                            <field name="overhead_ids" context="{'scope':scope_work}" force_save="1">
                                 <tree editable="bottom">
                                     <field name="product_final"/>
-                                                                        <field name="product_id"/>
+                                    <field name="product_id"/>
                                     <field name="qty"/>
                                     <field name="uom"/>
                                     <field name="rate"/>
@@ -249,7 +251,7 @@
                                 <tree editable="bottom">
                                     <field name="product_final"/>
 
-                                                                        <field name="product_id"/>
+                                    <field name="product_id"/>
                                     <field name="qty"/>
                                     <field name="uom"/>
                                     <field name="rate"/>
@@ -278,7 +280,7 @@
                                 <tree editable="bottom">
                                     <field name="product_final"/>
 
-                                                                        <field name="product_id"/>
+                                    <field name="product_id"/>
                                     <field name="qty"/>
                                     <field name="uom"/>
                                     <field name="rate"/>

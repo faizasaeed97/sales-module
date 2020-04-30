@@ -1,57 +1,143 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <odoo>
-<data>
+    <data>
 
-        <record model="ir.ui.view" id="account_type_inherit_custom">
-         <field name="name">account.account.type.form.inherit</field>
-            <field name="model">account.account.type</field>
-        <field name="inherit_id" ref="account.view_account_type_form"/>
-        <field name="arch" type="xml">
-                        <xpath expr="//field[@name='include_initial_balance']" position="after">
-<field name="internal_group"/>
-                        </xpath>
+        <record id="view_hr_job_formviewinherit" model="ir.ui.view">
+            <field name="name">hr.job.form.inh</field>
+            <field name="model">hr.job</field>
+            <field name="inherit_id" ref="hr.view_hr_job_form"/>
+            <field name="arch" type="xml">
+               <xpath expr="//field[@name='department_id']" position="attributes">
+                                        <attribute name="required">1</attribute>
 
-
-        </field>
+               </xpath>
+            </field>
         </record>
 
-    <record model="ir.ui.view" id="hrcontract_custom_view_form">
-        <field name="name">hr.contract.form.inherit</field>
-        <field name="model">hr.contract</field>
-        <field name="inherit_id" ref="hr_contract.hr_contract_view_form"/>
-        <field name="arch" type="xml">
+        <record model="ir.ui.view" id="account_type_inherit_custom">
+            <field name="name">account.account.type.form.inherit</field>
+            <field name="model">account.account.type</field>
+            <field name="inherit_id" ref="account.view_account_type_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='include_initial_balance']" position="after">
+                    <field name="internal_group"/>
+                </xpath>
 
 
+            </field>
+        </record>
 
-            <xpath expr="//notebook/page[@name='other']//group/group[1]" position="after">
-                <group string="Info">
-                    <field name="housing_allowance"></field>
-                    <field name="travel_allowance"></field>
-                    <field name="increment_Date"></field>
-                    <field name="increment_Amount"></field>
-                    <field name="gosi_Salary_Deduction"></field>
-                    <field name="leave_Status"></field>
-                </group>
-
-                <group string="Other Info">
-                    <field name="leave_due"></field>
-                    <field name="leave_amount"></field>
-                    <field name="total_work_experience"></field>
-                    <field name="indemnity"></field>
-                    <field name="tenure"></field>
-
-                    <field name="sponsorship"></field>
-                    <field name="work_location"></field>
+        <record model="ir.ui.view" id="hrcontract_custom_view_form">
+            <field name="name">hr.contract.form.inherit</field>
+            <field name="model">hr.contract</field>
+            <field name="inherit_id" ref="hr_contract.hr_contract_view_form"/>
+            <field name="arch" type="xml">
 
 
-                </group>
+                <xpath expr="//field[@name='department_id']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+
+                <xpath expr="//field[@name='job_id']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
 
 
-            </xpath>
+                <xpath expr="//field[@name='employee_id']" position="after">
+                    <field name="grade" required="1"/>
+
+                </xpath>
 
 
-        </field>
-    </record>
+                <xpath expr="//notebook/page[@name='other']" position="before">
+                    <page name="Project_salery" string="Project salery">
+                        <group col="4" colspan="12">
+                            <field name="p_salery" required="1" force_save="1"/>
+                            <field name="p_leave_salery" required="1" force_save="1"/>
+                            <field name="p_ideminity" required="1" force_save="1"/>
+                            <field name="p_airfair" required="1" force_save="1"/>
+                            <field name="p_lmra" required="1" force_save="1"/>
+                            <field name="p_visa" required="1" force_save="1"/>
 
-</data>
+                        </group>
+
+                        <group col="4" colspan="12">
+                            <group string="Salery Info">
+                                <field name="p_salery_pd"/>
+                                <field name="p_salery_ph"/>
+                            </group>
+
+                            <group string="Leave Info">
+                                <field name="p_leave_salery_pd"/>
+                                <field name="p_leave_salery_ph"/>
+                            </group>
+                            <group string="Indeminity Info">
+                                <field name="p_ideminity_pd"/>
+                                <field name="p_ideminity_ph"/>
+                            </group>
+                            <group string="AirFair Info">
+                                <field name="p_airfair_pd"/>
+                                <field name="p_airfair_ph"/>
+                            </group>
+                        </group>
+
+                        <group col="4" colspan="12">
+
+                            <group string="Lmra Info">
+                                <field name="p_lmra_pd"/>
+                                <field name="p_lmra_ph"/>
+                            </group>
+                            <group string="Visa Info">
+                                <field name="p_visa_pd"/>
+                                <field name="p_visa_ph"/>
+                            </group>
+
+                            <group string="Gosi Info">
+                                <field name="p_gosi_pd"/>
+                                <field name="p_gosi_ph"/>
+                            </group>
+                        </group>
+
+                        <group string="Final Rates">
+                            <field name="final_hourly_rate"/>
+                            <field name="final_day_rate"/>
+
+                        </group>
+
+
+                    </page>
+
+
+                </xpath>
+
+
+                <xpath expr="//notebook/page[@name='other']//group/group[1]" position="after">
+                    <group string="Info">
+                        <field name="housing_allowance"></field>
+                        <field name="travel_allowance"></field>
+                        <field name="increment_Date"></field>
+                        <field name="increment_Amount"></field>
+                        <field name="gosi_Salary_Deduction"></field>
+                        <field name="leave_Status"></field>
+                    </group>
+
+                    <group string="Other Info">
+                        <field name="leave_due"></field>
+                        <field name="leave_amount"></field>
+                        <field name="total_work_experience"></field>
+                        <field name="indemnity"></field>
+                        <field name="tenure"></field>
+
+                        <field name="sponsorship"></field>
+                        <field name="work_location"></field>
+                    </group>
+
+
+                </xpath>
+
+
+            </field>
+        </record>
+
+    </data>
 </odoo>

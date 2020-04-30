@@ -13,11 +13,19 @@
                 <attribute name="invisible">1</attribute>
             </xpath>
 
-            <xpath expr="//field[@name='name']" position="after">
-                <h2>
-                <field name="designation" placeholder="Job Position"></field>
-                </h2>
+            <xpath expr="//field[@name='department_id']" position="attributes">
+                <attribute name="invisible">1</attribute>
             </xpath>
+
+            <xpath expr="//field[@name='job_id']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+
+            <!--            <xpath expr="//field[@name='name']" position="after">-->
+            <!--                <h2>-->
+            <!--                <field name="designation" placeholder="Job Position"></field>-->
+            <!--                </h2>-->
+            <!--            </xpath>-->
 
 
             <xpath expr="//field[@name='passport_id']" position="after">

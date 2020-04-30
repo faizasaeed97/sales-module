@@ -8,5 +8,7 @@ access_brand,brand,model_brand,,1,1,1,1
 access_product_made,product_made,model_product_made,,1,1,1,1
 access_employee_designation,employee_designation,model_employee_designation,,1,1,1,1
 access_employee_rate,employee_rate,model_employee_rate,,1,1,1,1
+access_hr_grade,asses_employee_grade,model_hr_grade,,1,1,1,1
+
 
 

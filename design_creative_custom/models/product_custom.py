@@ -18,6 +18,9 @@ class inherithremploye(models.Model):
     p_made=fields.Many2one('product.made',string="Made")
 
     brand= fields.Many2one('brand', string='Brand')
+    raw_mat = fields.Boolean(string="Raw Material", default=False)
+    final_prod = fields.Boolean(string="Final Product", default=False)
+    overhead_mat = fields.Boolean(string="Overhead Materail", default=False)
 
 
     @api.model

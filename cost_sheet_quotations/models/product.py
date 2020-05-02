@@ -2,13 +2,6 @@ from odoo import api, models, fields, _
 from odoo.exceptions import UserError, ValidationError
 
 
-class prodttmpaltes(models.Model):
-    _inherit = 'product.template'
-
-    raw_mat = fields.Boolean(string="Raw Material",default=False)
-    final_prod = fields.Boolean(string="Final Product",default=False)
-    overhead_mat=fields.Boolean(string="Overhead Materail",default=False)
-
 
 
 

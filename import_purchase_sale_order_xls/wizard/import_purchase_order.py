@@ -118,8 +118,15 @@ class ImportPurchaseOrder(models.TransientModel):
                 visa=line.get(u'VISA',0.0)
 
                 airfare=line.get(u'AIR FARE',0.0)
+                natnal=str(line.get('Leave Salary',False))
+                if natnal == 'ex':
+                    natnal='Expats'
+                # elif natnal == 'Bahraini':
+                #     natnal=natnal
                 if acc_id.id:
 
+
+                    acc_id.employee_id.bahrain_expact=natnal
                     acc_id.p_salery=float(salery)
                     acc_id.housing_allowance=housing
                     acc_id.travel_allowance=travel

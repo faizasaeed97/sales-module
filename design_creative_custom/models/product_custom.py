@@ -40,7 +40,7 @@ class inherithremploye(models.Model):
             if res.p_height:
                 names += 'X' + res.p_height.name +' '
 
-            names+= res.p_type.name  + ' ' + res.p_made.name + ' ' + res.brand.name
+            names+= res.p_color.name + res.p_type.name  + ' ' + res.p_made.name + ' ' + res.brand.name
             res.name=str(names)
 
         return res
@@ -59,7 +59,7 @@ class inherithremploye(models.Model):
                 if self.p_height:
                     names += 'X' +self.p_height.name+' '
 
-                names+= ' '+ self.p_type.name  + ' ' + self.p_made.name + ' ' + self.brand.name
+                names+= self.p_color.name+' '+ self.p_type.name  + ' ' + self.p_made.name + ' ' + self.brand.name
                 vals['name']=str(names)
         rslt = super(inherithremploye, self).write(vals)
         return rslt

@@ -282,7 +282,6 @@ class Costsheet(models.Model):
                     sum += record.subtotal
                 self.labor_ids |= self.labor_ids.new({
                     'cost_sheet': self.id,
-
                     'product_final':record.product_final.id,
                     'product_id':record.product_id.id ,
                 })
@@ -298,19 +297,19 @@ class Costsheet(models.Model):
                     sum += record.subtotal
         self.labor_total = sum
 
-    @api.depends('overhead_ids','overhead_ids.product_id')
+    @api.depends('overhead_ids')
     def overhead_total_cal(self):
-        self.outsource_rental_ids = [(5,)]
+        # self.outsource_rental_ids = [(5,)]
         sum = 0
         if self.overhead_ids:
             for record in self.overhead_ids:
                 if record.subtotal:
                     sum += record.subtotal
-                    self.outsource_rental_ids |= self.outsource_rental_ids.new({
-                        'cost_sheet':self.id,
-                        'product_final': record.product_final.id,
-                        'product_id': record.product_id.id,
-                    })
+                    # self.outsource_rental_ids |= self.outsource_rental_ids.new({
+                    #     'cost_sheet':self.id,
+                    #     'product_final': record.product_final.id,
+                    #     'product_id': record.product_id.id,
+                    # })
         self.overhead_total = sum
 
     @api.depends('internal_rental_ids')

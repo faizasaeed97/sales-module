@@ -271,9 +271,9 @@
                         <page string="Rental Outsource">
                             <field name="outsource_rental_ids" context="{'scope':scope_work}" force_save="1">
                                 <tree editable="bottom">
-                                    <field name="product_final" domain="[('final_prod','=',True)]" readonly="1" options="{'no_create': True, 'no_open': True}"/>
+                                    <field name="product_final" domain="[('final_prod','=',True)]"  options="{'no_create': True, 'no_open': True}"/>
 
-                                    <field name="product_id" readonly="1" options="{'no_create': True, 'no_open': True}"/>
+                                    <field name="product_id"  options="{'no_create': True, 'no_open': True}"/>
                                     <field name="qty"/>
                                     <field name="uom"/>
                                     <field name="rate" readonly="1"/>

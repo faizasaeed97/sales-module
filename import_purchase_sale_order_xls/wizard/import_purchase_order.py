@@ -94,14 +94,14 @@ class ImportPurchaseOrder(models.TransientModel):
                 if not checkdesig:
                     checkdesig=self.env['hr.job'].create({
                         'name':desig,
-                        'department_id': department_idx.id,
+                        'department_id': department_idx[0].id,
                     })
 
 
 
 
                 grd=grade.create({
-                    'department': department_idx.id,
+                    'department': department_idx[0].id,
                     'designation': checkdesig.id,
                     'grade': gradx,
                 })

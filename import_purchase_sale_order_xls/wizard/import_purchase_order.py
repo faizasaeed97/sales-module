@@ -90,7 +90,7 @@ class ImportPurchaseOrder(models.TransientModel):
                 #     })
 
 
-                checkdesig=self.env['hr.job'].search([('name','=',desig),('department_id','=',department_idx.id)],limit=1)
+                checkdesig=self.env['hr.job'].search([('name','=',desig)],limit=1)
                 if not checkdesig:
                     checkdesig=self.env['hr.job'].create({
                         'name':desig,

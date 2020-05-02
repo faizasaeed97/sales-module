@@ -84,13 +84,13 @@ class ImportPurchaseOrder(models.TransientModel):
 
                 department_idx=self.env['hr.department'].search([('name','=',dept)])
 
-                if not department_idx:
-                    department_idx = self.env['hr.job'].create({
-                        'name': dept,
-                    })
+                # if not department_idx:
+                #     department_idx = self.env['hr.job'].create({
+                #         'name': dept,
+                #     })
 
 
-                checkdesig=self.env['hr.job'].search([('name','=',desig)],limit=1)
+                checkdesig=self.env['hr.job'].search([('name','=',desig),('department_id','=',department_idx.id)],limit=1)
                 if not checkdesig:
                     checkdesig=self.env['hr.job'].create({
                         'name':desig,

@@ -2,27 +2,27 @@ from odoo import api, models, fields, _
 from odoo.exceptions import UserError, ValidationError
 
 
-class Costsheet(models.Model):
+class prodttmpaltes(models.Model):
     _inherit = 'product.template'
 
-    raw_mat = fields.Boolean(string='Raw Material')
-    final_prod = fields.Boolean(string='Final Product')
-    product_size = fields.Char("size")
-    product_color =  fields.Char("Color")
+    raw_mat = fields.Boolean(string="Raw Material",default=False)
+    final_prod = fields.Boolean(string="Final Product",default=False)
+    overhead_mat=fields.Boolean(string="Overhead Materail",default=False)
+
 
 class prod_inheritx(models.Model):
     _inherit = 'product.product'
 
-    def name_get(self):
-        result = []
-        for record in self:
-            if record.product_tmpl_id.name and record.product_tmpl_id.product_size:
-               record_name = record.product_tmpl_id.name + ' - ' + record.product_tmpl_id.product_size
-            else:
-                record_name = record.product_tmpl_id.name
-
-            result.append((record.id, record_name))
-        return result
+    # def name_get(self):
+    #     result = []
+    #     for record in self:
+    #         if record.product_tmpl_id.name and record.product_tmpl_id.product_size:
+    #            record_name = record.product_tmpl_id.name + ' - ' + record.product_tmpl_id.product_size
+    #         else:
+    #             record_name = record.product_tmpl_id.name
+    #
+    #         result.append((record.id, record_name))
+    #     return result
 
 
 

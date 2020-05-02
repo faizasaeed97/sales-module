@@ -75,8 +75,7 @@
                             groups="cost_sheet_quotations.group_costsheet_user_all"/>
 
                     <!--                    <div class="oe_button_box" align="right">-->
-                    <button name="%(cost_sheet_quotations.wizard_report_actionzx)d" class="btn btn-primary oe_left"
-                            string="Print" type="action"/>
+
                     <!--                    </div>-->
 
 
@@ -145,7 +144,7 @@
                         <page string="Scope of Work">
                             <field name="scope_work" force_save="1">
                                 <tree editable="bottom">
-                                    <field name="product_id"/>
+                                    <field name="product_id" domain="[('final_prod','=',True)]" options="{'no_create': True, 'no_open': True}"/>
                                     <field name="desc"/>
                                     <!--                                    <field name="uom"/>-->
                                     <!--                                    <field name="rate"/>-->
@@ -158,19 +157,18 @@
                         <page string="Materials">
                             <field name="material_ids" context="{'scope':scope_work}" force_save="1">
                                 <tree editable="bottom">
-                                    <field name="product_final" widget="many2many_list"/>
-                                    <field name="product_id"/>
+                                    <field name="product_final" domain="[('final_prod','=',True)]" widget="many2many_list" options="{'no_create': True, 'no_open': True}"/>
+                                    <field name="product_id" domain="[('raw_mat','=',True)]"  options="{'no_create': True, 'no_open': True}"/>
 
                                     <field name="is_last" invisible="1"/>
                                     <field name="qty_ava"/>
                                     <field name="qty"/>
 
-                                    <field name="days"/>
-                                    <field name="hours"/>
+<!--                                    <field name="days"/>-->
+<!--                                    <field name="hours"/>-->
 
-                                    <field name="mat_purchase" readonly="0"/>
                                     <field name="uom"/>
-                                    <field name="rate"/>
+                                    <field name="rate" readonly="1"/>
                                     <field name="subtotal"/>
                                 </tree>
                             </field>
@@ -178,7 +176,7 @@
 
                             <field name="scope_work" force_save="1">
                                 <tree editable="false">
-                                    <field name="product_id"/>
+                                    <field name="product_id" domain="[('final_prod','=',True)]" options="{'no_create': True, 'no_open': True}"/>
                                     <!--                                    <field name="product_id"/>-->
                                     <!--                                    <field name="qty"/>-->
                                     <!--                                    <field name="uom"/>-->
@@ -190,26 +188,26 @@
                         </page>
                         <page string="Direct Labours">
                             <field name="labor_ids" context="{'scope':scope_work}" force_save="1">
-                                <tree editable="bottom">
-                                    <field name="product_final"/>
-                                    <field name="product_id"/>
-                                    <field name="department"/>
-                                    <field name="job_id"/>
-                                    <field name="grade" required="True" domain="[('department','=',department),('designation','=',job_id)]"/>
+                                <tree editable="bottom" create="false">
+                                    <field name="product_final" domain="[('final_prod','=',True)]" readonly="1" options="{'no_create': True, 'no_open': True}"/>
+                                    <field name="product_id" readonly="1" options="{'no_create': True, 'no_open': True}"/>
+                                    <field name="department" options="{'no_create': True, 'no_open': True}"/>
+                                    <field name="job_id" options="{'no_create': True, 'no_open': True}"/>
+                                    <field name="grade" options="{'no_create': True, 'no_open': True}" required="True" domain="[('department','=',department),('designation','=',job_id)]"/>
 
                                     <field name="qty"/>
                                     <field name="uom"/>
 
-                                    <field name="days"/>
+<!--                                    <field name="days"/>-->
                                     <field name="hours"/>
-                                    <field name="rate"/>
+<!--                                    <field name="rate"/>-->
                                     <field name="subtotal"/>
                                 </tree>
                             </field>
 
                             <field name="scope_work" force_save="1">
-                                <tree editable="false">
-                                    <field name="product_id"/>
+                                <tree editable="false" >
+                                    <field name="product_id" domain="[('final_prod','=',True)]" options="{'no_create': True, 'no_open': True}"/>
                                     <!--                                    <field name="product_id"/>-->
                                     <!--                                    <field name="qty"/>-->
                                     <!--                                    <field name="uom"/>-->
@@ -221,20 +219,19 @@
                         <page string="Overheads">
                             <field name="overhead_ids" context="{'scope':scope_work}" force_save="1">
                                 <tree editable="bottom">
-                                    <field name="product_final"/>
-                                    <field name="product_id"/>
+                                    <field name="product_final" domain="[('final_prod','=',True)]" options="{'no_create': True, 'no_open': True}"/>
+                                    <field name="product_id" domain="[('overhead_mat','=',True)]"  options="{'no_create': True, 'no_open': True}"/>
                                     <field name="qty"/>
                                     <field name="uom"/>
                                     <field name="rate"/>
-                                    <field name="days"/>
-                                    <field name="hours"/>
+
                                     <field name="subtotal"/>
                                 </tree>
                             </field>
 
                             <field name="scope_work" force_save="1">
-                                <tree editable="false">
-                                    <field name="product_id"/>
+                                <tree editable="false" >
+                                    <field name="product_id"  options="{'no_create': True, 'no_open': True}"/>
                                     <!--                                    <field name="product_id"/>-->
                                     <!--                                    <field name="qty"/>-->
                                     <!--                                    <field name="uom"/>-->
@@ -247,21 +244,20 @@
                         <page string="Rental Internal">
                             <field name="internal_rental_ids" context="{'scope':scope_work}" force_save="1">
                                 <tree editable="bottom">
-                                    <field name="product_final"/>
+                                    <field name="product_final"  domain="[('final_prod','=',True)]" options="{'no_create': True, 'no_open': True}"/>
 
-                                    <field name="product_id"/>
+                                    <field name="product_id" options="{'no_create': True, 'no_open': True}"/>
                                     <field name="qty"/>
                                     <field name="uom"/>
                                     <field name="rate"/>
-                                    <field name="days"/>
-                                    <field name="hours"/>
+
                                     <field name="subtotal"/>
                                 </tree>
                             </field>
 
                             <field name="scope_work" force_save="1">
                                 <tree editable="false">
-                                    <field name="product_id"/>
+                                    <field name="product_id" options="{'no_create': True, 'no_open': True}"/>
                                     <!--                                    <field name="product_id"/>-->
                                     <!--                                    <field name="qty"/>-->
                                     <!--                                    <field name="uom"/>-->
@@ -275,21 +271,20 @@
                         <page string="Rental Outsource">
                             <field name="outsource_rental_ids" context="{'scope':scope_work}" force_save="1">
                                 <tree editable="bottom">
-                                    <field name="product_final"/>
+                                    <field name="product_final" domain="[('final_prod','=',True)]" readonly="1" options="{'no_create': True, 'no_open': True}"/>
 
-                                    <field name="product_id"/>
+                                    <field name="product_id" readonly="1" options="{'no_create': True, 'no_open': True}"/>
                                     <field name="qty"/>
                                     <field name="uom"/>
-                                    <field name="rate"/>
-                                    <field name="days"/>
-                                    <field name="hours"/>
+                                    <field name="rate" readonly="1"/>
+
                                     <field name="subtotal"/>
                                 </tree>
                             </field>
 
                             <field name="scope_work" force_save="1">
-                                <tree editable="false">
-                                    <field name="product_id"/>
+                                <tree editable="false" >
+                                    <field name="product_id" options="{'no_create': True, 'no_open': True}"/>
                                     <!--                                    <field name="product_id"/>-->
                                     <!--                                    <field name="qty"/>-->
                                     <!--                                    <field name="uom"/>-->

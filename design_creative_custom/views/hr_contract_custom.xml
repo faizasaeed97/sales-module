@@ -7,10 +7,10 @@
             <field name="model">hr.job</field>
             <field name="inherit_id" ref="hr.view_hr_job_form"/>
             <field name="arch" type="xml">
-               <xpath expr="//field[@name='department_id']" position="attributes">
-                                        <attribute name="required">1</attribute>
+                <xpath expr="//field[@name='department_id']" position="attributes">
+                    <attribute name="required">1</attribute>
 
-               </xpath>
+                </xpath>
             </field>
         </record>
 
@@ -53,8 +53,8 @@
                     <page name="Project_salery" string="Project salery">
                         <group col="4" colspan="12">
                             <field name="p_salery" required="1" force_save="1"/>
-<!--                            <field name="p_leave_salery" required="1" force_save="1"/>-->
-                            <field name="p_ideminity" required="1" force_save="1"/>
+                            <!--                            <field name="p_leave_salery" required="1" force_save="1"/>-->
+<!--                            <field name="p_ideminity" required="1" force_save="1"/>-->
                             <field name="p_airfair" required="1" force_save="1"/>
                             <field name="p_lmra" required="1" force_save="1"/>
                             <field name="p_visa" required="1" force_save="1"/>

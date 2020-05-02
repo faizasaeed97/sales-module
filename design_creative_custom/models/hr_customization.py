@@ -60,9 +60,9 @@ class inheritcontracts(models.Model):
     p_leave_salery_pd=fields.Monetary(string='Leave Salary / Day',digits=(16, 3),default=0.0,)
     p_leave_salery_ph=fields.Monetary(string='Leave Salary /  Hour',digits=(16, 3),default=0.0,)
 
-    p_ideminity=fields.Monetary(string='Ideminity',digits=(16, 3))
-    p_ideminity_pd =fields.Monetary(string='Ideminity / Day',digits=(16, 3),default=0.0,store=True,compute='ideminity_comp')
-    p_ideminity_ph =fields.Monetary(string='Ideminity / hour',digits=(16, 3),default=0.0,store=True,compute='ideminity_comp')
+    # p_ideminity=fields.Monetary(string='Ideminity',digits=(16, 3))
+    p_ideminity_pd =fields.Monetary(string='Ideminity / Day',digits=(16, 4),default=0.0)
+    p_ideminity_ph =fields.Monetary(string='Ideminity / hour',digits=(16, 4),default=0.0)
 
     p_airfair=fields.Monetary(string='Airfare',digits=(16, 3))
     p_airfair_pd =fields.Monetary(string='Airfare / Day',digits=(16, 3),default=0.0,store=True,compute='air_comp')
@@ -83,7 +83,7 @@ class inheritcontracts(models.Model):
     final_day_rate=fields.Monetary('Final / Day rate',compute='get_hourly_final')
 
 
-    @api.depends('p_salery','p_airfair','p_ideminity','p_lmra','p_visa')
+    @api.depends('p_salery','p_airfair','p_lmra','p_visa')
     def get_hourly_final(self):
         for rec in self:
             rec.final_hourly_rate= rec.p_salery_ph + rec.p_leave_salery_ph + rec.p_airfair_ph + rec.p_ideminity_ph + rec.p_lmra_ph + rec.p_visa_ph \
@@ -102,9 +102,15 @@ class inheritcontracts(models.Model):
                 if isleap(int(year)):
                     rec.p_leave_salery_pd = rec.p_salery / 366
                     rec.p_leave_salery_ph = rec.p_leave_salery_pd / 8
+
+                    rec.p_ideminity_pd = rec.p_salery / 366
+                    rec.p_ideminity_ph = rec.p_ideminity_pd / 8
                 else:
                     rec.p_leave_salery_pd = rec.p_salery / 365
                     rec.p_leave_salery_ph = rec.p_leave_salery_pd / 8
+
+                    rec.p_ideminity_pd = rec.p_salery / 365
+                    rec.p_ideminity_ph = rec.p_ideminity_pd / 8
 
                 #salery calculation
                 rec.p_salery_pd=rec.p_salery/30
@@ -115,9 +121,11 @@ class inheritcontracts(models.Model):
                 if citizen == 'Expats':
                     rec.p_gosi_pd = ((rec.p_salery * 3) / 100) / 30
                     rec.p_gosi_ph = rec.p_gosi_pd / 8
+
                 elif citizen == 'Bahraini':
                     rec.p_gosi_pd = ((rec.p_salery * 12) / 100) / 30
                     rec.p_gosi_ph = rec.p_gosi_pd / 8
+                # indiminity calculation
 
 
     @api.depends('p_leave_salery')
@@ -153,21 +161,21 @@ class inheritcontracts(models.Model):
                     rec.p_airfair_pd = rec.p_airfair / 730
                     rec.p_airfair_ph = rec.p_airfair_pd / 8
 
-    @api.depends('p_ideminity')
-    def ideminity_comp(self):
-        for rec in self:
-            if rec.p_ideminity:
-                # year = time.strftime('%Y', time.strptime(str(fields.Datetime.now().date().year), "%Y"))
-
-                year = datetime.datetime.strptime(str(fields.Datetime.now().date()), "%Y-%m-%d").strftime('%Y')
-
-                # year = datetime.datetime.strptime(fields.Datetime.now().strftime("%Y"))
-                if isleap(int(year)):
-                    rec.p_ideminity_pd = rec.p_ideminity / 366
-                    rec.p_ideminity_ph = rec.p_ideminity_pd / 8
-                else:
-                    rec.p_ideminity_pd = rec.p_ideminity / 365
-                    rec.p_ideminity_ph = rec.p_ideminity_pd / 8
+    # @api.depends('p_ideminity')
+    # def ideminity_comp(self):
+    #     for rec in self:
+    #         if rec.p_ideminity:
+    #             # year = time.strftime('%Y', time.strptime(str(fields.Datetime.now().date().year), "%Y"))
+    #
+    #             year = datetime.datetime.strptime(str(fields.Datetime.now().date()), "%Y-%m-%d").strftime('%Y')
+    #
+    #             # year = datetime.datetime.strptime(fields.Datetime.now().strftime("%Y"))
+    #             if isleap(int(year)):
+    #                 rec.p_ideminity_pd = rec.p_ideminity / 366
+    #                 rec.p_ideminity_ph = rec.p_ideminity_pd / 8
+    #             else:
+    #                 rec.p_ideminity_pd = rec.p_ideminity / 365
+    #                 rec.p_ideminity_ph = rec.p_ideminity_pd / 8
 
     @api.depends('p_lmra')
     def lmra_comp(self):
@@ -268,12 +276,12 @@ class hr_gradeclass(models.Model):
             if rec.grade and rec.department and rec.designation:
                 rec.name= rec.grade +'-'+rec.designation.name
 
-    @api.constrains('name','department')
-    def _check_name(self):
-        for rec in self:
-            record_exist = self.env['hr.grade'].search([('name', '=', rec.name),('department', '=', rec.department.id)])
-            if len(record_exist) > 1:
-                raise UserError('Grade for selected department already exist')
+    # @api.constrains('grade','department','designation')
+    # def _check_name(self):
+    #     for rec in self:
+    #         record_exist = self.env['hr.grade'].search([('grade', '=', rec.grade),('department', '=', rec.department.id),('designation', '=', rec.designation.id)])
+    #         if len(record_exist) > 1:
+    #             raise UserError('Grade for selected department and designation already exist')
 
 
 

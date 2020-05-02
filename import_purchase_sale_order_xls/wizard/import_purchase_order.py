@@ -52,10 +52,9 @@ class ImportPurchaseOrder(models.TransientModel):
 
             archive_lines.append(elm)
 
-        accmove = self.env['account.move']
+        contract = self.env['hr.contract']
         # contract = self.env['hr.product']
-        account = self.env['account.account']
-        uom_obj= self.env['uom.uom']
+        grade = self.env['hr.grade']
 
         # self.valid_columns_keys(archive_lines)
         # self.valid_product_code(archive_lines, product_obj)
@@ -70,92 +69,133 @@ class ImportPurchaseOrder(models.TransientModel):
         notlist=[]
         for line in archive_lines:
             cont += 1
-            accc = str(line.get('Account Name',False))
-            acc_id = account.search([('name', '=', accc)],limit=1)
-            # quantity = line.get(u'quantity',0)
-            # price_unit = self.get_valid_price(line.get('price',""),cont)
-            # product_uom = product_template_obj.search([('default_code','=',code)])
-            # taxes = product_id.supplier_taxes_id.filtered(lambda r: not product_id.company_id or r.company_id == product_id.company_id)
-            # tax_ids = taxes.ids
-            if acc_id.id or False:
+            if cont>0:
+                contrct = str(line.get('Employee Name',False))
+                emp_reg=line.get(u'Employee ID',0)
+                acc_id = contract.search([('employee_id.name', '=', contrct),('employee_id.identification_id','=',emp_reg)],limit=1)
                 # quantity = line.get(u'quantity',0)
-                debit=line.get('Debit')
-                credit=line.get('Credit')
+                # price_unit = self.get_valid_price(line.get('price',""),cont)
+                # product_uom = product_template_obj.search([('default_code','=',code)])
+                # taxes = product_id.supplier_taxes_id.filtered(lambda r: not product_id.company_id or r.company_id == product_id.company_id)
+                # tax_ids = taxes.ids
+                dept=str(line.get('Department',False))
+                desig=str(line.get('Div',False))
+                gradx=str(line.get('Grading',False))
 
-                if debit==None:
-                    debit=0.0
-                if credit==None:
-                    credit=0.0
+                department_idx=self.env['hr.department'].search([('name','=',dept)])
 
-
-
-                # if not cat_id:
-                #    cat_id = categ.search([('name', '=', sub), ('parent_id.name', '=', cat)])
-                #
-                # if not cat_id:
-                #     cat_id = categ.search([('parent_id.name', '=', cat)],limit=1).id
-                #
-                # if not cat_id:
-                #     cat_id=1
-
-                # if line.get('Travel Allowance', 0.0) == ' ':
-                #     ha = 0.0
-                # else:
-                #     ha = (line.get('Housing Allowance', 0.0)) or 0.0
-                #
-                # if line.get('Travel Allowance', 0.0) == ' ':
-                #     ta = 0.0
-                # else:
-                #     ta = line.get('Travel Allowance', 0.0) or 0.0
-                #
-                # if line.get('Basic Salary', 0.0) == ' ':
-                #     wa = 0.0
-                # else:
-                #     wa = line.get('Basic Salary', 0.0) or 0.0
-                #
-                # if line.get('GOSI Salary Deduction', 0.0) == ' ':
-                #     gos = 0.0
-                # else:
-                #     gos = line.get('GOSI Salary Deduction', 0.0) or 0.0
-
-                # movid=accmove.create(
-                #     {
-                #         'ref':"opening balance"
-                #     }
-                # )
-                #
-                # vald = {
-                #     'account_id': acc_id.id,
-                #     'debit': debit,
-                #     'credit':credit,
-                #     'move_id':movid.id,
-                #
-                # }
-                # valc = {
-                #     'account_id': acc_id.id,
-                #     'debit':  credit,
-                #     'credit': debit,
-                #     'move_id': movid.id,
-                #
-                # }
-                # has = accmove.search([('name', '=', acc_id.name)])
-                # if len(has) > 0:
-                #     has.write(vals)
-                # else:
-                # try:
-                # ct = self.env['account.move.line'].sudo().create([vald,valc])
-                # movid.post()
-                # except:
-                #     print("THIS IS THE SHIT------->",vals)
-
-                if debit>0.0:
-                    acc_id.opening_debit=debit
-                if credit>0.0:
-                    acc_id.opening_credit=credit
+                if not department_idx:
+                    department_idx = self.env['hr.job'].create({
+                        'name': dept,
+                    })
 
 
-            else:
-                notlist.append(str(line.get('Account Name',False)))
+                checkdesig=self.env['hr.job'].search([('name','=',desig)],limit=1)
+                if not checkdesig:
+                    checkdesig=self.env['hr.job'].create({
+                        'name':desig,
+                        'department_id': department_idx.id,
+                    })
+
+
+
+
+                grd=grade.create({
+                    'department': department_idx.id,
+                    'designation': checkdesig.id,
+                    'grade': gradx,
+                })
+                if not grd:
+                    raise UserError('fuck you')
+
+                basic=float(line.get(u'Basic Salary',0.0))
+                housing=float(line.get(u'Housing Allowance',0.0))
+
+                travel=float(line.get(u'Travel Allowance',0.0))
+
+                salery=basic+housing+travel
+
+                visa=line.get(u'VISA',0.0)
+
+                airfare=line.get(u'AIR FARE',0.0)
+                if acc_id.id:
+
+                    acc_id.p_salery=float(salery)
+                    acc_id.housing_allowance=housing
+                    acc_id.travel_allowance=travel
+                    acc_id.wage=basic
+                    acc_id.grade=grd.id
+                    acc_id.p_airfair=float(airfare)
+                    acc_id.p_visa=float(visa)
+
+
+
+                    # if not cat_id:
+                    #    cat_id = categ.search([('name', '=', sub), ('parent_id.name', '=', cat)])
+                    #
+                    # if not cat_id:
+                    #     cat_id = categ.search([('parent_id.name', '=', cat)],limit=1).id
+                    #
+                    # if not cat_id:
+                    #     cat_id=1
+
+                    # if line.get('Travel Allowance', 0.0) == ' ':
+                    #     ha = 0.0
+                    # else:
+                    #     ha = (line.get('Housing Allowance', 0.0)) or 0.0
+                    #
+                    # if line.get('Travel Allowance', 0.0) == ' ':
+                    #     ta = 0.0
+                    # else:
+                    #     ta = line.get('Travel Allowance', 0.0) or 0.0
+                    #
+                    # if line.get('Basic Salary', 0.0) == ' ':
+                    #     wa = 0.0
+                    # else:
+                    #     wa = line.get('Basic Salary', 0.0) or 0.0
+                    #
+                    # if line.get('GOSI Salary Deduction', 0.0) == ' ':
+                    #     gos = 0.0
+                    # else:
+                    #     gos = line.get('GOSI Salary Deduction', 0.0) or 0.0
+
+                    # movid=accmove.create(
+                    #     {
+                    #         'ref':"opening balance"
+                    #     }
+                    # )
+                    #
+                    # vald = {
+                    #     'account_id': acc_id.id,
+                    #     'debit': debit,
+                    #     'credit':credit,
+                    #     'move_id':movid.id,
+                    #
+                    # }
+                    # valc = {
+                    #     'account_id': acc_id.id,
+                    #     'debit':  credit,
+                    #     'credit': debit,
+                    #     'move_id': movid.id,
+                    #
+                    # }
+                    # has = accmove.search([('name', '=', acc_id.name)])
+                    # if len(has) > 0:
+                    #     has.write(vals)
+                    # else:
+                    # try:
+                    # ct = self.env['account.move.line'].sudo().create([vald,valc])
+                    # movid.post()
+                    # except:
+                    #     print("THIS IS THE SHIT------->",vals)
+
+
+
+                else:
+                    notlist.append({
+                      'name':str(line.get('Employee Name',False)),
+                    }
+                    )
 
 
         print(notlist)

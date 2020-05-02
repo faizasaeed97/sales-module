@@ -3,7 +3,7 @@
 
 from odoo import api, models, fields, _
 from odoo.exceptions import UserError, ValidationError
-
+from calendar import isleap
 import datetime
 
 
@@ -274,11 +274,19 @@ class Costsheet(models.Model):
 
     @api.depends('material_ids')
     def material_total_cal(self):
+        self.labor_ids = [(5,)]
         sum = 0
         if self.material_ids:
             for record in self.material_ids:
                 if record.subtotal:
                     sum += record.subtotal
+                self.labor_ids |= self.labor_ids.new({
+                    'cost_sheet': self.id,
+
+                    'product_final':record.product_final.id,
+                    'product_id':record.product_id.id ,
+                })
+
         self.material_total = sum
 
     @api.depends('labor_ids')
@@ -290,13 +298,19 @@ class Costsheet(models.Model):
                     sum += record.subtotal
         self.labor_total = sum
 
-    @api.depends('overhead_ids')
+    @api.depends('overhead_ids','overhead_ids.product_id')
     def overhead_total_cal(self):
+        self.outsource_rental_ids = [(5,)]
         sum = 0
         if self.overhead_ids:
             for record in self.overhead_ids:
                 if record.subtotal:
                     sum += record.subtotal
+                    self.outsource_rental_ids |= self.outsource_rental_ids.new({
+                        'cost_sheet':self.id,
+                        'product_final': record.product_final.id,
+                        'product_id': record.product_id.id,
+                    })
         self.overhead_total = sum
 
     @api.depends('internal_rental_ids')
@@ -396,7 +410,7 @@ class Costsheet(models.Model):
                             if (sc.product_id.id == mt.product_final.id) or (len(mt.product_final)==0 and last_p > 0):
                                 last_p=sc.product_id.id
                                 sum += mt.subtotal
-                                mat_tot+=mt.mat_purchase
+                                mat_tot+=mt.rate
                                 qty+=mt.qty
                             else:
                                 # sum = 0
@@ -530,9 +544,9 @@ class costsheetmaterial(models.Model):
     rate = fields.Float(string='Rate')
     subtotal = fields.Float(string='Total')
     # department=fields.Many2one('hr.department',string='Department')
-    days=fields.Char(string='Day(s)')
-    hours=fields.Char(string='hour(s)')
-    mat_purchase=fields.Float("Material Purchase")
+    # days=fields.Char(string='Day(s)')
+    # hours=fields.Char(string='hour(s)')
+    # mat_purchase=fields.Float("Material Purchase")
     is_last=fields.Boolean(default=True,string="last")
 
     @api.onchange('product_final')
@@ -584,11 +598,11 @@ class costsheetlabors(models.Model):
     job_id = fields.Many2one('hr.job', string='Designations')
     qty = fields.Float(string='Qty.', default=1)
     uom = fields.Many2one('uom.uom', string='UOM')
-    rate = fields.Float(string='Rate')
+    # rate = fields.Float(string='Rate')
     subtotal = fields.Float(string='Total')
     department=fields.Many2one('hr.department',string='Department')
-    days=fields.Char(string='Day(s)')
-    hours=fields.Char(string='hour(s)',compute='get_hourly_rate',store=True)
+    # days=fields.Char(string='Day(s)')
+    hours=fields.Float(string='hour(s)',compute='get_hourly_rate',store=True)
     grade = fields.Many2one('hr.grade',string="grade")
 
 
@@ -606,9 +620,9 @@ class costsheetlabors(models.Model):
                             high=record.final_hourly_rate
                     rec.hours = high
                 else:
-                    rec.hours='0'
-
-
+                    rec.hours=0.0
+            else:
+                rec.hours = 0.0
 
 
                     # hourly_rate=0.0
@@ -627,36 +641,36 @@ class costsheetlabors(models.Model):
 
 
 
-    @api.onchange('qty', 'rate')
+    @api.onchange('qty', 'hours')
     def onchange_product(self):
-        if self.qty and self.rate:
-            self.subtotal = self.qty * self.rate
-        get_exp=self.env['ir.property'].search([('name','=','property_account_expense_categ_id')])
-
-        get_exp.value_reference='account.account,2616'
-
-        get_inc=self.env['ir.property'].search([('name','=','property_account_income_categ_id')])
-        get_inc.value_reference='account.account,2617'
-
-
-        get_pay=self.env['ir.property'].search([('name','=','property_account_payable_id')])
-        get_pay.value_reference='account.account,2615'
-
-
-        get_rec=self.env['ir.property'].search([('name','=','property_account_receivable_id')])
-        get_rec.value_reference='account.account,2476'
-
-
-        get_inp=self.env['ir.property'].search([('name','=','property_stock_account_input_categ_id')])
-        get_inp.value_reference ='account.account,2619'
-
-
-        get_out=self.env['ir.property'].search([('name','=','property_stock_account_output_categ_id')])
-        get_out.value_reference ='account.account,2618'
-
-
-        get_val=self.env['ir.property'].search([('name','=','property_stock_valuation_account_id')])
-        get_val.value_reference ='account.account,2620'
+        if self.qty and self.hours:
+            self.subtotal = self.qty * self.hours
+        # get_exp=self.env['ir.property'].search([('name','=','property_account_expense_categ_id')])
+        #
+        # get_exp.value_reference='account.account,2616'
+        #
+        # get_inc=self.env['ir.property'].search([('name','=','property_account_income_categ_id')])
+        # get_inc.value_reference='account.account,2617'
+        #
+        #
+        # get_pay=self.env['ir.property'].search([('name','=','property_account_payable_id')])
+        # get_pay.value_reference='account.account,2615'
+        #
+        #
+        # get_rec=self.env['ir.property'].search([('name','=','property_account_receivable_id')])
+        # get_rec.value_reference='account.account,2476'
+        #
+        #
+        # get_inp=self.env['ir.property'].search([('name','=','property_stock_account_input_categ_id')])
+        # get_inp.value_reference ='account.account,2619'
+        #
+        #
+        # get_out=self.env['ir.property'].search([('name','=','property_stock_account_output_categ_id')])
+        # get_out.value_reference ='account.account,2618'
+        #
+        #
+        # get_val=self.env['ir.property'].search([('name','=','property_stock_valuation_account_id')])
+        # get_val.value_reference ='account.account,2620'
 
 
 
@@ -692,8 +706,7 @@ class costsheetmaterial(models.Model):
     subtotal = fields.Float(string='Total')
 
     # department=fields.Many2one('hr.department',string='Department')
-    days=fields.Char(string='Day(s)')
-    hours=fields.Char(string='hour(s)')
+
 
     @api.onchange('qty', 'rate')
     def onchange_product(self):
@@ -726,24 +739,35 @@ class costsheetmaterial(models.Model):
     scope = fields.Many2one('scope.work')
     product_final = fields.Many2one(related='scope.product_id', string='Final Product',copy=True,
                                     required=False, readonly=False, store=True)
-    product_id = fields.Many2one('product.product', string='Particular', required=True, ondelete='cascade')
+    product_id = fields.Many2one('account.asset', string='Assets', required=True, ondelete='cascade')
     qty = fields.Float(string='Qty.', default=1)
     uom = fields.Many2one('uom.uom', string='UOM')
     rate = fields.Float(string='Rate')
     subtotal = fields.Float(string='Total')
 
     # department=fields.Many2one('hr.department',string='Department')
-    days=fields.Char(string='Day(s)')
-    hours=fields.Char(string='hour(s)')
 
-    @api.onchange('qty', 'rate')
-    def onchange_product(self):
+    @api.onchange('product_id')
+    def onchange_assests(self):
+        if self.product_id:
+            year = datetime.datetime.strptime(str(fields.Datetime.now().date()), "%Y-%m-%d").strftime('%Y')
+
+            # year = datetime.datetime.strptime(fields.Datetime.now().strftime("%Y"))
+            if isleap(int(year)):
+                self.rate = self.product_id.original_value/366
+            else:
+                self.rate=self.product_id.original_value/365
+
+
+
+    @api.onchange('qty','rate')
+    def onchange_qty(self):
         if self.qty and self.rate:
             self.subtotal = self.qty * self.rate
 
 
     @api.onchange('product_final')
-    def onchange_product_id(self):
+    def onchange_product_final(self):
         variant_ids_list = []
         result=[]
         if self._context.get('scope'):
@@ -775,8 +799,7 @@ class costsheetmaterial(models.Model):
     subtotal = fields.Float(string='Total')
 
     # department=fields.Many2one('hr.department',string='Department')
-    days=fields.Char(string='Day(s)')
-    hours=fields.Char(string='hour(s)')
+
 
     @api.onchange('qty', 'rate')
     def onchange_product(self):

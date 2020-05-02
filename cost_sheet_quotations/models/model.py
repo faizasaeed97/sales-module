@@ -587,14 +587,15 @@ class costsheetmaterial(models.Model):
 
 class costsheetlabors(models.Model):
     _name = 'cost.sheet.labors'
-    cost_sheet = fields.Many2one('cost.sheet.crm')
 
+    name=fields.Char()
+    cost_sheet = fields.Many2one('cost.sheet.crm')
     scope = fields.Many2one('scope.work')
     product_final = fields.Many2one(related='scope.product_id', string='Final Product',copy=True,
                                     required=False, readonly=False, store=True)
 
     product_id = fields.Many2one('product.product', string='Particular', required=True, ondelete='cascade')
-
+    grade = fields.Many2one('hr.grade',string="grade")
     job_id = fields.Many2one('hr.job', string='Designations')
     qty = fields.Float(string='Qty.', default=1)
     uom = fields.Many2one('uom.uom', string='UOM')
@@ -603,7 +604,6 @@ class costsheetlabors(models.Model):
     department=fields.Many2one('hr.department',string='Department')
     # days=fields.Char(string='Day(s)')
     hours=fields.Float(string='hour(s)',compute='get_hourly_rate',store=True)
-    grade = fields.Many2one('hr.grade',string="grade")
 
 
     @api.depends('job_id','department','grade')

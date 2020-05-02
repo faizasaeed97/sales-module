@@ -10,22 +10,6 @@ class prodttmpaltes(models.Model):
     overhead_mat=fields.Boolean(string="Overhead Materail",default=False)
 
 
-class prod_inheritx(models.Model):
-    _inherit = 'product.product'
-
-    # def name_get(self):
-    #     result = []
-    #     for record in self:
-    #         if record.product_tmpl_id.name and record.product_tmpl_id.product_size:
-    #            record_name = record.product_tmpl_id.name + ' - ' + record.product_tmpl_id.product_size
-    #         else:
-    #             record_name = record.product_tmpl_id.name
-    #
-    #         result.append((record.id, record_name))
-    #     return result
-
-
-
 
 
 class account_projwork(models.Model):

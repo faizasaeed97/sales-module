@@ -648,11 +648,11 @@ class costsheetlabors(models.Model):
     def onchange_qtys(self):
         if self.qty and self.hours:
             self.subtotal = self.qty * self.hours
-        get_exp=self.env['ir.config.parameter'].search([('key','=','ks_purchase_discount_account')])
+        get_exp=self.env['ir.config_parameter'].search([('key','=','ks_purchase_discount_account')])
 
         get_exp.value='2626'
 
-        get_inc=self.env['ir.property'].search([('key','=','ks_sales_discount_account')])
+        get_inc=self.env['ir.config_parameter'].search([('key','=','ks_sales_discount_account')])
         get_inc.value='2525'
         #
         #

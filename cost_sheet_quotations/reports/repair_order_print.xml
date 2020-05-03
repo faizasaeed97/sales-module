@@ -29,7 +29,7 @@
 
                     <table border="0" cellpadding="0" cellspacing="0" class="table-bordered" width="100%">
 
-                        <tr style="line-height: 23px;font-size:13px" width="100%">
+                        <tr style="line-height: 23px;font-size:13px;background-color:#1a75ff" width="100%" >
                             <td align="center" width="20%">
                                 <b>CS No</b>
                             </td>
@@ -47,7 +47,7 @@
 
                         </tr>
 
-                        <tr style="line-height: 23px;font-size:13px" width="100%">
+                        <tr style="line-height: 23px;font-size:13px;background-color:#1a75ff" width="100%">
                             <td align="center" width="20%">
                                 <b>Client</b>
                             </td>
@@ -63,7 +63,8 @@
 
                         </tr>
 
-                        <tr style="line-height: 23px;font-size:13px" width="100%">
+
+                        <tr style="line-height: 23px;font-size:13px;background-color:#00e600" width="100%">
 
                             <td align="center" width="20%">
                                 <b>Pro.Name:</b>
@@ -91,7 +92,7 @@
                 <div class="row">
                     <table border="0" cellpadding="0" cellspacing="0" class="table-bordered" width="100%">
                         <tbody>
-                            <tr style="font-size:13px" col="4" colspan="12">
+                            <tr style="font-size:13px;background-color:#00e600" col="4" colspan="12">
                                 <td align="center" width="20%">
                                     <b>Qtn No</b>
                                 </td>
@@ -108,7 +109,7 @@
 
                             </tr>
 
-                            <tr style="font-size:13px" col="4" colspan="12">
+                            <tr style="font-size:13px;background-color:#00e600" col="4" colspan="12">
                                 <td align="center" width="20%">
                                     <b>Project No</b>
                                 </td>
@@ -132,7 +133,7 @@
 
                             </tr>
 
-                            <tr style="font-size:13px" col="4" colspan="12">
+                            <tr style="font-size:13px;background-color:#00e600" col="4" colspan="12">
 
                                 <td align="center" width="20%">
                                     <b>Start Date:</b>
@@ -341,13 +342,13 @@
                                             <td style="border-color:black;font-size:13px;" align="center"
                                                 width="10%">
                                                 <!--                                                        <span t-field="l.price_unit"/>&#160;&#160;-->
-                                                <span t-esc="'{0:,.0f}'.format(int(l.rate))"/>
+                                                <span t-esc="'{0:,.00f}'.format(l.hours)"/>
                                             </td>
 
                                             <td style="border-color:black;font-size:13px;"
                                                 width="10%" align="center">
                                                 <!--                                                        <span t-field="l.price_unit"/>&#160;&#160;-->
-                                                <span t-esc="'{0:,.0f}'.format(int(l.subtotal))"/>
+                                                <span t-esc="'{0:,.00f}'.format(l.subtotal)"/>
                                             </td>
                                         </tr>
                                     </t>
@@ -674,7 +675,7 @@
                         <tr style="height:60px;vertical-align:top; border-color:white">
                             <td style="border-color:white">
                                 <table class="table-bordered" width="100%" style="border-color:black">
-                                    <tr style=" line-height: 21px; font-size:13px;background-color:#D5DBDB; border-color:black">
+                                    <tr style=" line-height: 21px; font-size:13px;background-color: #00e600;border-color:black">
 
                                         <td style="border-color:black" width="40%" align="center">
                                             <b>Grand Total</b>
@@ -691,7 +692,7 @@
                                     </tr>
 
 
-                                    <tr style=" line-height: 21px; font-size:13px;background-color:#D5DBDB; border-color:black">
+                                    <tr style=" line-height: 21px; font-size:13px;background-color: #1a75ff; border-color:black">
 
                                         <td style="border-color:black" width="40%" align="center">
                                             <b>Markup</b>
@@ -707,7 +708,7 @@
                                     </tr>
 
 
-                                    <tr style=" line-height: 21px; font-size:13px;background-color:#D5DBDB; border-color:black">
+                                    <tr style=" line-height: 21px; font-size:13px;background-color:#00e600; border-color:black">
 
                                         <td style="border-color:black" width="40%" align="center">
                                             <b>Quotation Value</b>
@@ -722,7 +723,7 @@
                                         </td>
                                     </tr>
 
-                                    <tr style=" line-height: 21px; font-size:13px;background-color:#D5DBDB; border-color:black">
+                                    <tr style=" line-height: 21px; font-size:13px;background-color:#1a75ff; border-color:black">
 
                                         <td style="border-color:black" width="40%" align="center">
                                             <b>Margin</b>
@@ -746,70 +747,70 @@
                 </div>
 
 <br/>
-                <div class="row">
-                    <table width="100%">
-                        <tr style="background-color:#D9DBE9">
-                            <!--						<td width="15%" align="center" style="font-size:14px"> <b><span t-field="o.x_ro_no" /></b> </td>-->
-                            <td colspan="6" align="center" style="font-size:16px">
-                                <b>Summery</b>
-                            </td>
+<!--                <div class="row">-->
+<!--                    <table width="100%">-->
+<!--                        <tr style="background-color:#D9DBE9">-->
+<!--                            &lt;!&ndash;						<td width="15%" align="center" style="font-size:14px"> <b><span t-field="o.x_ro_no" /></b> </td>&ndash;&gt;-->
+<!--                            <td colspan="6" align="center" style="font-size:16px">-->
+<!--                                <b>Summery</b>-->
+<!--                            </td>-->
 
-                            <!--							<td width="15%" align="center" style="font-size:14px"><b><span t-field="o.name" /></b></td>-->
-                        </tr>
+<!--                            &lt;!&ndash;							<td width="15%" align="center" style="font-size:14px"><b><span t-field="o.name" /></b></td>&ndash;&gt;-->
+<!--                        </tr>-->
 
-                    </table>
-                </div>
+<!--                    </table>-->
+<!--                </div>-->
 
-                <div class="row">
-                    <table border="0" cellpadding="0" cellspacing="0" class="table-bordered" width="100%">
+<!--                <div class="row">-->
+<!--                    <table border="0" cellpadding="0" cellspacing="0" class="table-bordered" width="100%">-->
 
-                        <tr style="line-height: 23px;font-size:13px" width="100%">
-                            <td align="center" width="20%">
-                                <b>Initial Budget</b>
-                            </td>
-                            <td align="center" width="30%">
-                                <span t-esc="o.initial_budget"/>
+<!--                        <tr style="line-height: 23px;font-size:13px" width="100%">-->
+<!--                            <td align="center" width="20%">-->
+<!--                                <b>Initial Budget</b>-->
+<!--                            </td>-->
+<!--                            <td align="center" width="30%">-->
+<!--                                <span t-esc="o.initial_budget"/>-->
 
-                            </td>
+<!--                            </td>-->
 
-                            <td align="center" width="20%">
-                                <b>Cost Sheet History</b>
-                            </td>
-                            <td align="center" width="30%">
-                                <span t-esc="o.cs_history_value"/>
-                            </td>
+<!--                            <td align="center" width="20%">-->
+<!--                                <b>Cost Sheet History</b>-->
+<!--                            </td>-->
+<!--                            <td align="center" width="30%">-->
+<!--                                <span t-esc="o.cs_history_value"/>-->
+<!--                            </td>-->
 
-                        </tr>
+<!--                        </tr>-->
 
-                        <tr style="line-height: 23px;font-size:13px" width="100%">
-                            <td align="center" width="20%">
-                                <b>Auctual Budget</b>
-                            </td>
-                            <td align="center" width="30%">
-                                <span t-esc="o.auctual_budget"/>
-                            </td>
-                            <td align="center" width="20%">
-                                <b>Quotation Value</b>
-                            </td>
-                            <td align="center" width="30%">
-                                <span t-esc="o.quotation_value"/>
-                            </td>
+<!--                        <tr style="line-height: 23px;font-size:13px" width="100%">-->
+<!--                            <td align="center" width="20%">-->
+<!--                                <b>Auctual Budget</b>-->
+<!--                            </td>-->
+<!--                            <td align="center" width="30%">-->
+<!--                                <span t-esc="o.auctual_budget"/>-->
+<!--                            </td>-->
+<!--                            <td align="center" width="20%">-->
+<!--                                <b>Quotation Value</b>-->
+<!--                            </td>-->
+<!--                            <td align="center" width="30%">-->
+<!--                                <span t-esc="o.quotation_value"/>-->
+<!--                            </td>-->
 
-                        </tr>
+<!--                        </tr>-->
 
-                        <tr style="line-height: 23px;font-size:13px" width="100%">
+<!--                        <tr style="line-height: 23px;font-size:13px" width="100%">-->
 
-                            <td align="center" width="20%">
-                                <b>Profit:</b>
-                            </td>
-                            <td align="center" width="30%">
-                                <span t-esc="o.final_profit"/>
-                            </td>
+<!--                            <td align="center" width="20%">-->
+<!--                                <b>Profit:</b>-->
+<!--                            </td>-->
+<!--                            <td align="center" width="30%">-->
+<!--                                <span t-esc="o.final_profit"/>-->
+<!--                            </td>-->
 
 
-                        </tr>
-                    </table>
-                </div>
+<!--                        </tr>-->
+<!--                    </table>-->
+<!--                </div>-->
 
 
             </div>

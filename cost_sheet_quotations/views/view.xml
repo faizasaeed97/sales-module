@@ -189,17 +189,17 @@
                         <page string="Direct Labours">
                             <field name="labor_ids" context="{'scope':scope_work}" force_save="1">
                                 <tree editable="bottom" create="false">
-                                    <field name="product_final" domain="[('final_prod','=',True)]" readonly="1" options="{'no_create': True, 'no_open': True}"/>
-                                    <field name="product_id" readonly="1" options="{'no_create': True, 'no_open': True}"/>
-                                    <field name="department" options="{'no_create': True, 'no_open': True}"/>
-                                    <field name="job_id" options="{'no_create': True, 'no_open': True}"/>
-                                    <field name="grade" options="{'no_create': True, 'no_open': True}" required="True" domain="[('department','=',department),('designation','=',job_id)]"/>
+                                    <field name="product_final" force_save="1" domain="[('final_prod','=',True)]" readonly="1" options="{'no_create': True, 'no_open': True}"/>
+                                    <field name="product_id" force_save="1" readonly="1" options="{'no_create': True, 'no_open': True}"/>
+                                    <field name="department"  force_save="1" options="{'no_create': True, 'no_open': True}"/>
+                                    <field name="job_id" force_save="1" options="{'no_create': True, 'no_open': True}"/>
+                                    <field name="grade" force_save="1" options="{'no_create': True, 'no_open': True}" required="True" domain="[('department','=',department),('designation','=',job_id)]"/>
 
                                     <field name="qty"/>
                                     <field name="uom"/>
 
 <!--                                    <field name="days"/>-->
-                                    <field name="hours"/>
+                                    <field name="hours" force_save="1"/>
 <!--                                    <field name="rate"/>-->
                                     <field name="subtotal"/>
                                 </tree>
@@ -223,7 +223,7 @@
                                     <field name="product_id" domain="[('overhead_mat','=',True)]"  options="{'no_create': True, 'no_open': True}"/>
                                     <field name="qty"/>
                                     <field name="uom"/>
-                                    <field name="rate"/>
+                                    <field name="rate" readonly="1"/>
 
                                     <field name="subtotal"/>
                                 </tree>
@@ -273,7 +273,7 @@
                                 <tree editable="bottom">
                                     <field name="product_final" domain="[('final_prod','=',True)]"  options="{'no_create': True, 'no_open': True}"/>
 
-                                    <field name="product_id"  options="{'no_create': True, 'no_open': True}"/>
+                                    <field name="product_id" domain="[('overhead_mat','=',True)]" options="{'no_create': True, 'no_open': True}"/>
                                     <field name="qty"/>
                                     <field name="uom"/>
                                     <field name="rate" readonly="1"/>

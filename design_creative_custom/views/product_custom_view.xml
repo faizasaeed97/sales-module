@@ -73,7 +73,7 @@
         </record>
 
     <record model="ir.actions.act_window" id="action_product_final_win">
-        <field name="name">product final</field>
+        <field name="name">product Final</field>
         <field name="res_model">product.template</field>
         <field name="domain">[('final_prod', '=', True)]</field>
         <field name="view_mode">tree,kanban,form</field>
@@ -86,7 +86,7 @@
     </record>
 
     <record model="ir.actions.act_window" id="action_product_raw_win">
-        <field name="name">product final</field>
+        <field name="name">product Raw</field>
         <field name="res_model">product.template</field>
         <field name="domain">[('raw_mat', '=', True)]</field>
         <field name="view_mode">tree,kanban,form</field>
@@ -112,18 +112,25 @@
     </record>
 
 
-    <menuitem parent="stock.menu_stock_inventory_control"
+         -->
+        <menuitem
+            id="crm_menu_productsx"
+            name="Products"
+            parent="crm.crm_menu_root"
+            sequence="4"/>
+
+    <menuitem parent="crm_menu_productsx"
               id="menu_final_product_h"
               action="action_product_final_win"
               sequence="104"/>
 
-    <menuitem parent="stock.menu_stock_inventory_control"
+    <menuitem parent="crm_menu_productsx"
               id="menu_overhead_product_h"
               action="action_product_overhead_win"
               sequence="105"/>
 
-    <menuitem id="stock.menu_product_variant_config_stock" name="Products" action="action_product_raw_win"
-              parent="stock.menu_stock_inventory_control" sequence="1"/>
+    <menuitem id="raw_product_form" name="Products" action="action_product_raw_win"
+              parent="crm_menu_productsx" sequence="1"/>
 
 
 </odoo>

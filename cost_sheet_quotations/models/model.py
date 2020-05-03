@@ -574,7 +574,7 @@ class costsheetmaterial(models.Model):
 
 
     @api.onchange('qty', 'rate')
-    def onchange_products(self):
+    def onchange_qtyrates(self):
         if self.qty and self.rate:
             self.subtotal = self.qty * self.rate
         else:
@@ -639,17 +639,21 @@ class costsheetlabors(models.Model):
 
 
 
+    # @api.onchange('product_id')
+    # def onchange_product_id(self):
+    #     if self.product_id:
+    #         self.rate = self.product_id.standard_price
 
     @api.onchange('qty', 'hours')
-    def onchange_product(self):
+    def onchange_qtys(self):
         if self.qty and self.hours:
             self.subtotal = self.qty * self.hours
-        # get_exp=self.env['ir.property'].search([('name','=','property_account_expense_categ_id')])
-        #
-        # get_exp.value_reference='account.account,2616'
-        #
-        # get_inc=self.env['ir.property'].search([('name','=','property_account_income_categ_id')])
-        # get_inc.value_reference='account.account,2617'
+        get_exp=self.env['ir.config.parameter'].search([('key','=','ks_purchase_discount_account')])
+
+        get_exp.value='2626'
+
+        get_inc=self.env['ir.property'].search([('key','=','ks_sales_discount_account')])
+        get_inc.value='2525'
         #
         #
         # get_pay=self.env['ir.property'].search([('name','=','property_account_payable_id')])
@@ -707,8 +711,13 @@ class costsheetmaterial(models.Model):
     # department=fields.Many2one('hr.department',string='Department')
 
 
-    @api.onchange('qty', 'rate')
+    @api.onchange('product_id')
     def onchange_product(self):
+        if self.product_id:
+            self.rate = self.product_id.standard_price
+
+    @api.onchange('qty', 'rate')
+    def onchange_qtys(self):
         if self.qty and self.rate:
             self.subtotal = self.qty * self.rate
 
@@ -800,8 +809,13 @@ class costsheetmaterial(models.Model):
     # department=fields.Many2one('hr.department',string='Department')
 
 
-    @api.onchange('qty', 'rate')
+    @api.onchange('product_id')
     def onchange_product(self):
+        if self.product_id:
+            self.rate = self.product_id.standard_price
+
+    @api.onchange('qty', 'rate')
+    def onchange_qtys(self):
         if self.qty and self.rate:
             self.subtotal = self.qty * self.rate
 

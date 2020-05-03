@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_attendance" model="ir.actions.act_window">
+        <field name="name">Attendance</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">attendance.custom</field>
+        <field name="view_mode">tree,kanban,form</field>
+
+    </record>
+
+
+    <record id="view_attendance_ing_tree" model="ir.ui.view">
+        <field name="name">custom.attendance.tree</field>
+        <field name="model">attendance.custom</field>
+        <field name="arch" type="xml">
+            <tree string="Attendance list">
+                <field name="employee_id"/>
+
+                <field name="job_title"/>
+                <field name="attendance_date"/>
+                <field name="roll_number"/>
+
+            </tree>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="action_form">
+        <field name="name">attendance.custom.form</field>
+        <field name="model">attendance.custom</field>
+        <field name="arch" type="xml">
+            <form class="o_lead_opportunity_form">
+
+                <sheet>
+                    <separator style="color:black;font-weight:bold;font-size:28px;" string="Attendance Information"
+                               colspan="4"/>
+                    <group col="4" colspan="12">
+                        <field name="employee_id"/>
+                        <field name="attendance_date"/>
+                        <field name="roll_number"/>
+                        <field name="custom_ID"/>
+                        <field name="job_title"/>
+                        <field name="job_code"/>
+                        <field name="site"/>
+                        <field name="status"/>
+                    </group>
+
+                    <group col="2" string="First Shift" colspan="12">
+                        <field name="first_check_in" placeholder="00:00"/>
+                        <field name="first_check_out" placeholder="00:00"/>
+                        <field name="first_shift_total_hours" placeholder="00:00"/>
+                    </group>
+                    <group col="2" string="Second Shift" colspan="12">
+                        <field name="second_check_in" placeholder="00:00"/>
+                        <field name="second_check_out" placeholder="00:00"/>
+                        <field name="second_shift_total_hours" placeholder="00:00"/>
+                    </group>
+
+                    <group col="4" colspan="12">
+                        <field name="working" placeholder="00:00"/>
+                        <field name="late_in" placeholder="00:00"/>
+                        <field name="early_in" placeholder="00:00"/>
+                        <field name="early_out" placeholder="00:00"/>
+                        <field name="small_ot" placeholder="00:00"/>
+                        <field name="ot_125" placeholder="00:00"/>
+                        <field name="no_attend" placeholder="00:00"/>
+                        <field name="ignored" placeholder="00:00"/>
+                    </group>
+
+
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+
+    <menuitem id="menu_attendence" name="Attendance"
+              web_icon="attendance_customization,static/description/icon.png"
+              sequence="12"/>
+    <menuitem name="Attendance" id="ums_attendence_root"
+              parent="menu_attendence"
+              sequence="2" action="action_attendance"/>
+
+
+</odoo>

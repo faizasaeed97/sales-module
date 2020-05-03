@@ -40,7 +40,7 @@ class inherithremploye(models.Model):
             if res.p_height:
                 names += 'X' + res.p_height.name +' '
 
-            names+= res.p_color.name + res.p_type.name  + ' ' + res.p_made.name + ' ' + res.brand.name
+            names+= res.p_color.name+' ' + res.p_type.name  + ' ' + res.p_made.name + ' ' + res.brand.name
             res.name=str(names)
 
         return res

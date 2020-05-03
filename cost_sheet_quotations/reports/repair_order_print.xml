@@ -686,7 +686,8 @@
                                         </td>
 
                                         <td style="border-color:black" width="40%" align="center">
-                                            <span t-esc="o.grand_total"/>
+
+                                            <span t-esc="'{0:,.00f}'.format(int(o.grand_total))"/>
 
                                         </td>
                                     </tr>
@@ -703,7 +704,7 @@
                                         </td>
 
                                         <td style="border-color:black" width="40%" align="center">
-                                            <span t-esc="o.markup_value"/>
+                                            <span t-esc="'{0:,.00f}'.format(int(o.markup_value))"/>
                                         </td>
                                     </tr>
 
@@ -719,7 +720,7 @@
                                         </td>
 
                                         <td style="border-color:black" width="40%" align="center">
-                                            <span t-esc="o.quotation_value"/>
+                                            <span t-esc="'{0:,.00f}'.format(int(o.quotation_value))"/>
                                         </td>
                                     </tr>
 
@@ -734,7 +735,7 @@
                                         </td>
 
                                         <td style="border-color:black" width="40%" align="center">
-                                            <span t-esc="o.final_profit"/>
+                                            <span t-esc="'{0:,.00f}'.format(int(o.final_profit))"/>
 
                                         </td>
                                     </tr>

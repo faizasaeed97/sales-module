@@ -687,7 +687,7 @@
 
                                         <td style="border-color:black" width="40%" align="center">
 
-                                            <span t-esc="'{0:,.00f}'.format(int(o.grand_total))"/>
+                                            <span t-esc="round(o.grand_total,3)"/>
 
                                         </td>
                                     </tr>
@@ -704,7 +704,7 @@
                                         </td>
 
                                         <td style="border-color:black" width="40%" align="center">
-                                            <span t-esc="'{0:,.00f}'.format(int(o.markup_value))"/>
+                                            <span t-esc="round(o.markup_value,3)"/>
                                         </td>
                                     </tr>
 
@@ -720,7 +720,7 @@
                                         </td>
 
                                         <td style="border-color:black" width="40%" align="center">
-                                            <span t-esc="'{0:,.00f}'.format(int(o.quotation_value))"/>
+                                            <span t-esc="round(o.quotation_value,3)"/>
                                         </td>
                                     </tr>
 
@@ -735,7 +735,7 @@
                                         </td>
 
                                         <td style="border-color:black" width="40%" align="center">
-                                            <span t-esc="'{0:,.00f}'.format(int(o.final_profit))"/>
+                                            <span t-esc="round(o.final_profit,3)"/>
 
                                         </td>
                                     </tr>

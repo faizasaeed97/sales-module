@@ -29,12 +29,12 @@ class Costsheet(models.Model):
 
     outsource_rental_ids = fields.One2many('cost.sheet.rental.outsource', 'cost_sheet',store=True,copy=True, ondelete='cascade')
 
-    initial_budget = fields.Float(string="initial budget", compute="get_costsheet_summery", )
-    cs_history_value = fields.Float(string="Cost Sheet history", compute="get_costsheet_summery", )
-
-    auctual_budget = fields.Float(string="auctual budget", compute="get_costsheet_summery", )
-    quotation_value = fields.Float(string="Quotation value", compute="get_costsheet_summery")
-    final_profit = fields.Float(string="Final profit", compute="get_costsheet_summery",digits=(16, 2))
+    # initial_budget = fields.Float(string="initial budget", compute="get_costsheet_summery", )
+    # cs_history_value = fields.Float(string="Cost Sheet history", compute="get_costsheet_summery", )
+    #
+    # auctual_budget = fields.Float(string="auctual budget", compute="get_costsheet_summery", )
+    # quotation_value = fields.Float(string="Quotation value", compute="get_costsheet_summery")
+    # final_profit = fields.Float(string="Final profit", compute="get_costsheet_summery",digits=(16, 2))
 
     material_total = fields.Float(compute='material_total_cal',store=True)
     labor_total = fields.Float(compute='labor_total_cal',store=True)
@@ -66,55 +66,55 @@ class Costsheet(models.Model):
 
 
 
-    def get_costsheet_summery(self):
-        cost_sheetx = self.env['cost.sheet.crm'].search(
-            [('name', '=', self.name), ('is_a_revision', '=', False)])
-        if  cost_sheetx:
-            # means this cost shet has revisions
-            self.initial_budget= cost_sheetx.grand_total
-            self.cs_history_value=0.0
-            cs_history=self.env['cost.sheet.crm'].search([('dafult_cost_sheet_ref.id','=', cost_sheetx.id),('is_a_revision','=',True)])
-            grand_totalx=0.0
-            for rec in cs_history:
-                grand_totalx += (rec.material_total + rec.labor_total + rec.overhead_total + rec.rental_total+rec.rental_total_out)
-
-            self.cs_history_value=grand_totalx
-
-            final_cs=self.env['cost.sheet.crm'].search([('dafult_cost_sheet_ref.id','=', cost_sheetx.id),('is_final_cs','=',True)])
-            auctual_budget=0.0
-            final_quotation=0.0
-            profit=0.0
-            if len(final_cs)==1:
-                auctual_budget=final_cs.grand_total
-                final_quotation=final_cs.quotation_value
-                profit=final_quotation-auctual_budget
-
-            else:
-                last_cs = self.env['cost.sheet.crm'].search(
-                    [('dafult_cost_sheet_ref.id', '=',  cost_sheetx.id)],limit=1,order='id desc')
-
-                if last_cs:
-                    auctual_budget = last_cs.grand_total
-                    final_quotation = last_cs.quotation_value
-                    profit = final_quotation - auctual_budget
-                else:
-                    auctual_budget = self.grand_total
-                    final_quotation = self.quotation_value
-                    profit = final_quotation - auctual_budget
-
-
-            self.auctual_budget=auctual_budget
-            self.quotation_value=final_quotation
-            self.final_profit=profit
-
-        elif not  cost_sheetx:
-            # means this cost shet has no revision
-                self.initial_budget = self.grand_total
-                self.cs_history_value = self.grand_total
-                self.auctual_budget = self.grand_total
-                self.quotation_value = self.quotation_value
-                profit = self.quotation_value - self.auctual_budget
-                self.final_profit = profit
+    # def get_costsheet_summery(self):
+    #     cost_sheetx = self.env['cost.sheet.crm'].search(
+    #         [('name', '=', self.name), ('is_a_revision', '=', False)])
+    #     if  cost_sheetx:
+    #         # means this cost shet has revisions
+    #         self.initial_budget= cost_sheetx.grand_total
+    #         self.cs_history_value=0.0
+    #         cs_history=self.env['cost.sheet.crm'].search([('dafult_cost_sheet_ref.id','=', cost_sheetx.id),('is_a_revision','=',True)])
+    #         grand_totalx=0.0
+    #         for rec in cs_history:
+    #             grand_totalx += (rec.material_total + rec.labor_total + rec.overhead_total + rec.rental_total+rec.rental_total_out)
+    #
+    #         self.cs_history_value=grand_totalx
+    #
+    #         final_cs=self.env['cost.sheet.crm'].search([('dafult_cost_sheet_ref.id','=', cost_sheetx.id),('is_final_cs','=',True)])
+    #         auctual_budget=0.0
+    #         final_quotation=0.0
+    #         profit=0.0
+    #         if len(final_cs)==1:
+    #             auctual_budget=final_cs.grand_total
+    #             final_quotation=final_cs.quotation_value
+    #             profit=final_quotation-auctual_budget
+    #
+    #         else:
+    #             last_cs = self.env['cost.sheet.crm'].search(
+    #                 [('dafult_cost_sheet_ref.id', '=',  cost_sheetx.id)],limit=1,order='id desc')
+    #
+    #             if last_cs:
+    #                 auctual_budget = last_cs.grand_total
+    #                 final_quotation = last_cs.quotation_value
+    #                 profit = final_quotation - auctual_budget
+    #             else:
+    #                 auctual_budget = self.grand_total
+    #                 final_quotation = self.quotation_value
+    #                 profit = final_quotation - auctual_budget
+    #
+    #
+    #         self.auctual_budget=auctual_budget
+    #         self.quotation_value=final_quotation
+    #         self.final_profit=profit
+    #
+    #     elif not  cost_sheetx:
+    #         # means this cost shet has no revision
+    #             self.initial_budget = self.grand_total
+    #             self.cs_history_value = self.grand_total
+    #             self.auctual_budget = self.grand_total
+    #             self.quotation_value = self.quotation_value
+    #             profit = self.quotation_value - self.auctual_budget
+    #             self.final_profit = profit
 
 
 
@@ -173,7 +173,7 @@ class Costsheet(models.Model):
         if markup_amount:
             # now check for
             if self.labor_ids:
-                count += 1
+                count += len(self.labor_ids)
             if self.material_ids:
                 count += len(self.material_ids)
             if self.overhead_ids:
@@ -594,30 +594,30 @@ class costsheetmaterial(models.Model):
 class costsheetlabors(models.Model):
     _name = 'cost.sheet.labors'
 
-    name=fields.Char()
+    name=fields.Char(string="name")
     cost_sheet = fields.Many2one('cost.sheet.crm')
     scope = fields.Many2one('scope.work')
     product_final = fields.Many2one(related='scope.product_id', string='Final Product',copy=True,
                                     required=False, readonly=False, store=True)
 
     product_id = fields.Many2one('product.product', string='Particular', required=True, ondelete='cascade')
-    grade = fields.Many2one('hr.grade',string="grade")
-    job_id = fields.Many2one('hr.job', string='Designations')
+    # grade = fields.Many2one('hr.grade',string="grade",store=True)
+    job_id = fields.Many2one('hr.job', string='Designations',store=True)
     qty = fields.Float(string='Qty.', default=1)
     uom = fields.Many2one('uom.uom', string='UOM')
     # rate = fields.Float(string='Rate')
     subtotal = fields.Float(string='Total')
-    department=fields.Many2one('hr.department',string='Department')
+    department=fields.Many2one('hr.department',string='Department',store=True)
     # days=fields.Char(string='Day(s)')
     hours=fields.Float(string='hour(s)',compute='get_hourly_rate',store=True)
 
 
-    @api.depends('job_id','department','grade')
+    @api.depends('job_id','department')
     def get_hourly_rate(self):
         for rec in self:
-            if rec.job_id and rec.department and rec.grade:
+            if rec.job_id and rec.department:
                 contract=self.env['hr.contract'].search([('grade.department','=',rec.department.id)
-                                                         ,('grade','=',rec.grade.id)
+                                                         ,('grade.designation','=',rec.job_id.id)
                                                          ],order='final_hourly_rate ASC')
                 if contract:
                     high=contract[0].final_hourly_rate
@@ -645,11 +645,14 @@ class costsheetlabors(models.Model):
                     #             grade -=1
 
 
-
-    # @api.onchange('product_id')
-    # def onchange_product_id(self):
-    #     if self.product_id:
-    #         self.rate = self.product_id.standard_price
+    #
+    # @api.onchange('job_id','department')
+    # def onchange_job(self):
+    #     if self.job_id and self.department:
+    #         gradlst=self.env['hr.grade'].search([('designation','=',self.job_id.id),('department','=',self.department.id)])
+    #         if gradlst:
+    #             name=gradlst.mapped('grade')
+    #             return {'domain': {'grade': [('grade', 'in', name)]}}
 
     @api.onchange('qty', 'hours')
     def onchange_qtys(self):

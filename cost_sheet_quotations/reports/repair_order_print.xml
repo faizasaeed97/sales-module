@@ -29,7 +29,7 @@
 
                     <table border="0" cellpadding="0" cellspacing="0" class="table-bordered" width="100%">
 
-                        <tr style="line-height: 23px;font-size:13px;background-color:#1a75ff" width="100%" >
+                        <tr style="line-height: 23px;font-size:13px;background-color:#1a75ff" width="100%">
                             <td align="center" width="20%">
                                 <b>CS No</b>
                             </td>
@@ -166,7 +166,7 @@
 
                     </table>
                 </div>
-
+                <t t-set="mat_tot" t-value="0.0"/>
                 <div class="row">
                     <table class="table-bordered" width="100%" style="border-color:black">
                         <tr style="height:60px;vertical-align:top; border-color:white">
@@ -178,9 +178,9 @@
                                             <b>S.No</b>
                                         </td>
 
-<!--                                        <td style="border-color:black" width="20%" align="center">-->
-<!--                                            <b>Final Product</b>-->
-<!--                                        </td>-->
+                                        <!--                                        <td style="border-color:black" width="20%" align="center">-->
+                                        <!--                                            <b>Final Product</b>-->
+                                        <!--                                        </td>-->
 
                                         <td style="border-color:black" width="20%" align="center">
                                             <b>Material/Service</b>
@@ -214,10 +214,10 @@
                                                         t-esc="l_index+1"/>
                                             </td>
 
-<!--                                            <td style="border-color:black;font-size:13px;" align="center"-->
-<!--                                                width="20%">-->
-<!--                                                <span t-field="l.product_final.name"/>-->
-<!--                                            </td>-->
+                                            <!--                                            <td style="border-color:black;font-size:13px;" align="center"-->
+                                            <!--                                                width="20%">-->
+                                            <!--                                                <span t-field="l.product_final.name"/>-->
+                                            <!--                                            </td>-->
 
                                             <td style="border-color:black;font-size:13px;" align="center"
                                                 width="20%">
@@ -248,8 +248,37 @@
                                                 <!--                                                        <span t-field="l.price_unit"/>&#160;&#160;-->
                                                 <span t-esc="round(l.subtotal,3)"/>
                                             </td>
+
+                                            <t t-set="mat_tot" t-value="mat_tot + l.subtotal"/>
+
                                         </tr>
                                     </t>
+                                    <tr style="line-height: 15px;border-top-color:white; border-bottom-color:white">
+                                        <td style="border-color:black" width="5%" align="center">
+
+                                        </td>
+
+                                        <!--                                        <td style="border-color:black" width="20%" align="center">-->
+                                        <!--                                            <b>Final Product</b>-->
+                                        <!--                                        </td>-->
+
+                                        <td style="border-color:black" width="20%" align="center">
+                                        </td>
+
+                                        <td style="border-color:black" width="10%" align="center">
+                                        </td>
+                                        <td style="border-color:black" width="10%" align="center">
+                                        </td>
+                                        <td style="border-color:black" width="20%" align="center">
+                                            <b>TOTAL</b>
+                                        </td>
+                                        <td style="border-color:black" width="20%" align="center">
+                                            <b>
+                                                <span t-esc="mat_tot"/>
+                                            </b>
+                                        </td>
+
+                                    </tr>
 
 
                                 </table>
@@ -274,7 +303,7 @@
                     </table>
                 </div>
 
-
+                <t t-set="labor_tot" t-value="0.0"/>
                 <div class="row">
                     <table class="table-bordered" width="100%" style="border-color:black">
                         <tr style="height:60px;vertical-align:top; border-color:white">
@@ -320,7 +349,6 @@
                                             </td>
 
 
-
                                             <td style="border-color:black;font-size:13px;" align="center"
                                                 width="20%">
                                                 <span
@@ -350,8 +378,36 @@
                                                 <!--                                                        <span t-field="l.price_unit"/>&#160;&#160;-->
                                                 <span t-esc="round(l.subtotal,3)"/>
                                             </td>
+                                            <t t-set="labor_tot" t-value="labor_tot + l.subtotal"/>
+
                                         </tr>
                                     </t>
+                                        <tr style="line-height: 15px;border-top-color:white; border-bottom-color:white">
+                                            <td style="border-color:black" width="5%" align="center">
+
+                                            </td>
+
+                                            <!--                                        <td style="border-color:black" width="20%" align="center">-->
+                                            <!--                                            <b>Final Product</b>-->
+                                            <!--                                        </td>-->
+
+                                            <td style="border-color:black" width="20%" align="center">
+                                            </td>
+
+                                            <td style="border-color:black" width="10%" align="center">
+                                            </td>
+                                            <td style="border-color:black" width="10%" align="center">
+                                            </td>
+                                            <td style="border-color:black" width="20%" align="center">
+                                                <b>TOTAL</b>
+                                            </td>
+                                            <td style="border-color:black" width="20%" align="center">
+                                                <b>
+                                                    <span t-esc="round(labor_tot,3)"/>
+                                                </b>
+                                            </td>
+
+                                        </tr>
 
 
                                 </table>
@@ -379,6 +435,7 @@
                     </table>
                 </div>
 
+                <t t-set="overhead_tot" t-value="0.0"/>
 
                 <div class="row">
                     <table class="table-bordered" width="100%" style="border-color:black">
@@ -454,7 +511,36 @@
                                                 <!--                                                        <span t-field="l.price_unit"/>&#160;&#160;-->
                                                 <span t-esc="round(l.subtotal,3)"/>
                                             </td>
+                                            <t t-set="overhead_tot" t-value="overhead_tot + l.subtotal"/>
+
                                         </tr>
+                                        <tr style="line-height: 15px;border-top-color:white; border-bottom-color:white">
+                                            <td style="border-color:black" width="5%" align="center">
+
+                                            </td>
+
+                                            <!--                                        <td style="border-color:black" width="20%" align="center">-->
+                                            <!--                                            <b>Final Product</b>-->
+                                            <!--                                        </td>-->
+
+                                            <td style="border-color:black" width="20%" align="center">
+                                            </td>
+
+                                            <td style="border-color:black" width="10%" align="center">
+                                            </td>
+                                            <td style="border-color:black" width="10%" align="center">
+                                            </td>
+                                            <td style="border-color:black" width="20%" align="center">
+                                                <b>TOTAL</b>
+                                            </td>
+                                            <td style="border-color:black" width="20%" align="center">
+                                                <b>
+                                                    <span t-esc="round(overhead_tot,3)"/>
+                                                </b>
+                                            </td>
+
+                                        </tr>
+
                                     </t>
 
 
@@ -481,6 +567,7 @@
                     </table>
                 </div>
 
+                <t t-set="internal_tot" t-value="0.0"/>
 
                 <div class="row">
                     <table class="table-bordered" width="100%" style="border-color:black">
@@ -527,7 +614,6 @@
                                             </td>
 
 
-
                                             <td style="border-color:black;font-size:13px;" align="center"
                                                 width="20%">
                                                 <span
@@ -557,7 +643,36 @@
                                                 <!--                                                        <span t-field="l.price_unit"/>&#160;&#160;-->
                                                 <span t-esc="round(l.subtotal,3)"/>
                                             </td>
+                                            <t t-set="internal_tot" t-value="internal_tot + l.subtotal"/>
+
                                         </tr>
+                                        <tr style="line-height: 15px;border-top-color:white; border-bottom-color:white">
+                                            <td style="border-color:black" width="5%" align="center">
+
+                                            </td>
+
+                                            <!--                                        <td style="border-color:black" width="20%" align="center">-->
+                                            <!--                                            <b>Final Product</b>-->
+                                            <!--                                        </td>-->
+
+                                            <td style="border-color:black" width="20%" align="center">
+                                            </td>
+
+                                            <td style="border-color:black" width="10%" align="center">
+                                            </td>
+                                            <td style="border-color:black" width="10%" align="center">
+                                            </td>
+                                            <td style="border-color:black" width="20%" align="center">
+                                                <b>TOTAL</b>
+                                            </td>
+                                            <td style="border-color:black" width="20%" align="center">
+                                                <b>
+                                                    <span t-esc="round(internal_tot,3)"/>
+                                                </b>
+                                            </td>
+
+                                        </tr>
+
                                     </t>
 
 
@@ -582,6 +697,7 @@
                     </table>
                 </div>
 
+                <t t-set="outsource_tot" t-value="0.0"/>
 
                 <div class="row">
                     <table class="table-bordered" width="100%" style="border-color:black">
@@ -657,7 +773,36 @@
                                                 <!--                                                        <span t-field="l.price_unit"/>&#160;&#160;-->
                                                 <span t-esc="round(l.subtotal,3)"/>
                                             </td>
+                                            <t t-set="outsource_tot" t-value="outsource_tot + l.subtotal"/>
+
                                         </tr>
+                                        <tr style="line-height: 15px;border-top-color:white; border-bottom-color:white">
+                                            <td style="border-color:black" width="5%" align="center">
+
+                                            </td>
+
+                                            <!--                                        <td style="border-color:black" width="20%" align="center">-->
+                                            <!--                                            <b>Final Product</b>-->
+                                            <!--                                        </td>-->
+
+                                            <td style="border-color:black" width="20%" align="center">
+                                            </td>
+
+                                            <td style="border-color:black" width="10%" align="center">
+                                            </td>
+                                            <td style="border-color:black" width="10%" align="center">
+                                            </td>
+                                            <td style="border-color:black" width="20%" align="center">
+                                                <b>TOTAL</b>
+                                            </td>
+                                            <td style="border-color:black" width="20%" align="center">
+                                                <b>
+                                                    <span t-esc="round(outsource_tot,3)"/>
+                                                </b>
+                                            </td>
+
+                                        </tr>
+
                                     </t>
 
 
@@ -735,7 +880,7 @@
                                         </td>
 
                                         <td style="border-color:black" width="40%" align="center">
-                                            <span t-esc="round(o.final_profit,3)"/>
+                                            <!--                                            <span t-esc="round(o.final_profit,3)"/>-->
 
                                         </td>
                                     </tr>
@@ -747,71 +892,71 @@
                     </table>
                 </div>
 
-<br/>
-<!--                <div class="row">-->
-<!--                    <table width="100%">-->
-<!--                        <tr style="background-color:#D9DBE9">-->
-<!--                            &lt;!&ndash;						<td width="15%" align="center" style="font-size:14px"> <b><span t-field="o.x_ro_no" /></b> </td>&ndash;&gt;-->
-<!--                            <td colspan="6" align="center" style="font-size:16px">-->
-<!--                                <b>Summery</b>-->
-<!--                            </td>-->
+                <br/>
+                <!--                <div class="row">-->
+                <!--                    <table width="100%">-->
+                <!--                        <tr style="background-color:#D9DBE9">-->
+                <!--                            &lt;!&ndash;						<td width="15%" align="center" style="font-size:14px"> <b><span t-field="o.x_ro_no" /></b> </td>&ndash;&gt;-->
+                <!--                            <td colspan="6" align="center" style="font-size:16px">-->
+                <!--                                <b>Summery</b>-->
+                <!--                            </td>-->
 
-<!--                            &lt;!&ndash;							<td width="15%" align="center" style="font-size:14px"><b><span t-field="o.name" /></b></td>&ndash;&gt;-->
-<!--                        </tr>-->
+                <!--                            &lt;!&ndash;							<td width="15%" align="center" style="font-size:14px"><b><span t-field="o.name" /></b></td>&ndash;&gt;-->
+                <!--                        </tr>-->
 
-<!--                    </table>-->
-<!--                </div>-->
+                <!--                    </table>-->
+                <!--                </div>-->
 
-<!--                <div class="row">-->
-<!--                    <table border="0" cellpadding="0" cellspacing="0" class="table-bordered" width="100%">-->
+                <!--                <div class="row">-->
+                <!--                    <table border="0" cellpadding="0" cellspacing="0" class="table-bordered" width="100%">-->
 
-<!--                        <tr style="line-height: 23px;font-size:13px" width="100%">-->
-<!--                            <td align="center" width="20%">-->
-<!--                                <b>Initial Budget</b>-->
-<!--                            </td>-->
-<!--                            <td align="center" width="30%">-->
-<!--                                <span t-esc="o.initial_budget"/>-->
+                <!--                        <tr style="line-height: 23px;font-size:13px" width="100%">-->
+                <!--                            <td align="center" width="20%">-->
+                <!--                                <b>Initial Budget</b>-->
+                <!--                            </td>-->
+                <!--                            <td align="center" width="30%">-->
+                <!--                                <span t-esc="o.initial_budget"/>-->
 
-<!--                            </td>-->
+                <!--                            </td>-->
 
-<!--                            <td align="center" width="20%">-->
-<!--                                <b>Cost Sheet History</b>-->
-<!--                            </td>-->
-<!--                            <td align="center" width="30%">-->
-<!--                                <span t-esc="o.cs_history_value"/>-->
-<!--                            </td>-->
+                <!--                            <td align="center" width="20%">-->
+                <!--                                <b>Cost Sheet History</b>-->
+                <!--                            </td>-->
+                <!--                            <td align="center" width="30%">-->
+                <!--                                <span t-esc="o.cs_history_value"/>-->
+                <!--                            </td>-->
 
-<!--                        </tr>-->
+                <!--                        </tr>-->
 
-<!--                        <tr style="line-height: 23px;font-size:13px" width="100%">-->
-<!--                            <td align="center" width="20%">-->
-<!--                                <b>Auctual Budget</b>-->
-<!--                            </td>-->
-<!--                            <td align="center" width="30%">-->
-<!--                                <span t-esc="o.auctual_budget"/>-->
-<!--                            </td>-->
-<!--                            <td align="center" width="20%">-->
-<!--                                <b>Quotation Value</b>-->
-<!--                            </td>-->
-<!--                            <td align="center" width="30%">-->
-<!--                                <span t-esc="o.quotation_value"/>-->
-<!--                            </td>-->
+                <!--                        <tr style="line-height: 23px;font-size:13px" width="100%">-->
+                <!--                            <td align="center" width="20%">-->
+                <!--                                <b>Auctual Budget</b>-->
+                <!--                            </td>-->
+                <!--                            <td align="center" width="30%">-->
+                <!--                                <span t-esc="o.auctual_budget"/>-->
+                <!--                            </td>-->
+                <!--                            <td align="center" width="20%">-->
+                <!--                                <b>Quotation Value</b>-->
+                <!--                            </td>-->
+                <!--                            <td align="center" width="30%">-->
+                <!--                                <span t-esc="o.quotation_value"/>-->
+                <!--                            </td>-->
 
-<!--                        </tr>-->
+                <!--                        </tr>-->
 
-<!--                        <tr style="line-height: 23px;font-size:13px" width="100%">-->
+                <!--                        <tr style="line-height: 23px;font-size:13px" width="100%">-->
 
-<!--                            <td align="center" width="20%">-->
-<!--                                <b>Profit:</b>-->
-<!--                            </td>-->
-<!--                            <td align="center" width="30%">-->
-<!--                                <span t-esc="o.final_profit"/>-->
-<!--                            </td>-->
+                <!--                            <td align="center" width="20%">-->
+                <!--                                <b>Profit:</b>-->
+                <!--                            </td>-->
+                <!--                            <td align="center" width="30%">-->
+                <!--                                <span t-esc="o.final_profit"/>-->
+                <!--                            </td>-->
 
 
-<!--                        </tr>-->
-<!--                    </table>-->
-<!--                </div>-->
+                <!--                        </tr>-->
+                <!--                    </table>-->
+                <!--                </div>-->
 
 
             </div>

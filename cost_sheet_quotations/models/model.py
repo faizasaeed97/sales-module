@@ -216,7 +216,7 @@ class Costsheet(models.Model):
                 markup_amount_line = self.get_each_line_markup_division_amount(
                     self.get_markup_amount(self.grand_total, self.markup_type, self.markup_value))
                 sale_order = self.env['sale.order'].create(
-                    {'cost_sheet_id': self.id, 'partner_id': self.client.id,'project':self.opportunity_id,
+                    {'cost_sheet_id': self.id, 'partner_id': self.client.id,'project':self.opportunity_id.id,
                      'date_order': self.cost_sheet_date}
                      )
                 if len(self.scope_work) > 0:
@@ -233,9 +233,16 @@ class Costsheet(models.Model):
                              'name': obj.product_id.name,
                              'product_uom_qty': obj.qty, 'price_unit': obj.rate + markup_amount_line})
                 if len(self.internal_rental_ids) > 0:
+                    aset=self.env['product.product'].search([('name','=','Asset'),('final_prod','=',True)])
+                    if not aset:
+                        aset = self.env['product.product'].create({
+                            'name': 'Asset',
+                            'final_prod':True ,
+                        })
+
                     for obj in self.internal_rental_ids:
                         sale_order_line = self.env['sale.order.line'].create(
-                            {'order_id': sale_order.id, 'product_id': obj.product_id.id,
+                            {'order_id': sale_order.id, 'product_id': aset.id,
                              'name': obj.product_id.name,
                              'product_uom_qty': obj.qty, 'price_unit': obj.rate + markup_amount_line})
                 if len(self.outsource_rental_ids) > 0:
@@ -1006,7 +1013,7 @@ class saleorder(models.Model):
         res = super(saleorder, self).action_confirm()
         if self.cost_sheet_id:
             # self.check_material_availbility(self.cost_sheet_id)
-            proj = self.env['project.project'].search([('name', '=', self.cost_sheet_id.opportunity_id.name)])
+            proj = self.env['project.project'].search([('id', '=',self.project.id)],limit=1)
             self.write({'project': proj.id})
             # now update opportunity to won
             lead = self.env['crm.lead'].search([('name', '=', proj.name)], limit=1)

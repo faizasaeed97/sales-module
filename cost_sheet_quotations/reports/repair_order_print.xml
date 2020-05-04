@@ -240,13 +240,13 @@
                                             <td style="border-color:black;font-size:13px;" align="center"
                                                 width="10%">
                                                 <!--                                                        <span t-field="l.price_unit"/>&#160;&#160;-->
-                                                <span t-esc="'{0:,.0f}'.format(int(l.rate))"/>
+                                                <span t-esc="round(l.rate,3)"/>
                                             </td>
 
                                             <td style="border-color:black;font-size:13px;"
                                                 width="10%" align="center">
                                                 <!--                                                        <span t-field="l.price_unit"/>&#160;&#160;-->
-                                                <span t-esc="'{0:,.0f}'.format(int(l.subtotal))"/>
+                                                <span t-esc="round(l.subtotal,3)"/>
                                             </td>
                                         </tr>
                                     </t>
@@ -348,7 +348,7 @@
                                             <td style="border-color:black;font-size:13px;"
                                                 width="10%" align="center">
                                                 <!--                                                        <span t-field="l.price_unit"/>&#160;&#160;-->
-                                                <span t-esc="'{0:,.00f}'.format(l.subtotal)"/>
+                                                <span t-esc="round(l.subtotal,3)"/>
                                             </td>
                                         </tr>
                                     </t>
@@ -446,13 +446,13 @@
                                             <td style="border-color:black;font-size:13px;" align="center"
                                                 width="10%">
                                                 <!--                                                        <span t-field="l.price_unit"/>&#160;&#160;-->
-                                                <span t-esc="'{0:,.0f}'.format(int(l.rate))"/>
+                                                <span t-esc="round(l.rate,3)"/>
                                             </td>
 
                                             <td style="border-color:black;font-size:13px;"
                                                 width="10%" align="center">
                                                 <!--                                                        <span t-field="l.price_unit"/>&#160;&#160;-->
-                                                <span t-esc="'{0:,.0f}'.format(int(l.subtotal))"/>
+                                                <span t-esc="round(l.subtotal,3)"/>
                                             </td>
                                         </tr>
                                     </t>
@@ -549,13 +549,13 @@
                                             <td style="border-color:black;font-size:13px;" align="center"
                                                 width="10%">
                                                 <!--                                                        <span t-field="l.price_unit"/>&#160;&#160;-->
-                                                <span t-esc="'{0:,.0f}'.format(int(l.rate))"/>
+                                                <span t-esc="round(l.rate,3)"/>
                                             </td>
 
                                             <td style="border-color:black;font-size:13px;"
                                                 width="10%" align="center">
                                                 <!--                                                        <span t-field="l.price_unit"/>&#160;&#160;-->
-                                                <span t-esc="'{0:,.0f}'.format(int(l.subtotal))"/>
+                                                <span t-esc="round(l.subtotal,3)"/>
                                             </td>
                                         </tr>
                                     </t>
@@ -649,13 +649,13 @@
                                             <td style="border-color:black;font-size:13px;" align="center"
                                                 width="10%">
                                                 <!--                                                        <span t-field="l.price_unit"/>&#160;&#160;-->
-                                                <span t-esc="'{0:,.0f}'.format(int(l.rate))"/>
+                                                <span t-esc="round(l.rate,3)"/>
                                             </td>
 
                                             <td style="border-color:black;font-size:13px;"
                                                 width="10%" align="center">
                                                 <!--                                                        <span t-field="l.price_unit"/>&#160;&#160;-->
-                                                <span t-esc="'{0:,.0f}'.format(int(l.subtotal))"/>
+                                                <span t-esc="round(l.subtotal,3)"/>
                                             </td>
                                         </tr>
                                     </t>

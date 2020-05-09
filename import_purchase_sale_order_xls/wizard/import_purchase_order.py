@@ -133,7 +133,7 @@ class ImportPurchaseOrder(models.TransientModel):
                 # else:
                 #     gos = line.get('GOSI Salary Deduction', 0.0) or 0.0
 
-                movid = self.create_invoices(amount=amount, type='out_invoice', product=prd, partner=prtnr.id,jrnl=jrn,
+                movid = self.create_invoices(amount=amount, type='in_invoice', product=prd, partner=prtnr.id,jrnl=jrn,
                                              date=inv_date, acc_r=acc_rec,acc_p=acc_pay, inv=inv_num)
                 #
                 # vald = {
@@ -178,7 +178,7 @@ class ImportPurchaseOrder(models.TransientModel):
 
         print(notlist)
 
-    def create_invoices(self, amount=0.0, type='out_invoice', product=None, partner=None, date=None, acc_r=None,acc_p=None,jrnl=None,
+    def create_invoices(self, amount=0.0, type='in_invoice', product=None, partner=None, date=None, acc_r=None,acc_p=None,jrnl=None,
                         inv="0000"):
         """ Returns an open invoice """
         # date_datetime = datetime.datetime.strptime(date, "%Y-%m-%d %H:%M:%S")

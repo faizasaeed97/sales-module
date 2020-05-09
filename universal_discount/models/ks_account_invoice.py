@@ -26,6 +26,7 @@ class KsGlobalDiscountInvoice(models.Model):
     ks_enable_discount = fields.Boolean(compute='ks_verify_discount')
     ks_sales_discount_account = fields.Text(compute='ks_verify_discount')
     ks_purchase_discount_account = fields.Text(compute='ks_verify_discount')
+    inv_num=fields.Char("Invoice#",default="010101")
 
     # @api.multi
     @api.depends('name')

@@ -68,22 +68,19 @@ class ImportPurchaseOrder(models.TransientModel):
         # }
         # purchase_order_id = purchase_order_obj.create(vals)
         cont = 0
-        # acc_rec = account.search([('name', '=', 'Stock Interim (Received)')])
-        # acc_pay = account.search([('name', '=', 'Account Payable')])
+        acc_rec = account.search([('name', '=', 'Stock Interim (Received)')])
+        acc_pay = account.search([('name', '=', 'Account Payable')])
 
-        acc_rec = account.search([('name', '=', 'Accounts Receivable')])
-        acc_pay = account.search([('name', '=', 'Product Sales')])
-
-
-        # prd = product.search([('name', '=', 'opening balance vendor')])
-        #
-        # jrn=self.env['account.journal'].search([('name','=','Vendor Bills')])
-
-        prd = product.search([('name', '=', 'opening balance customer')])
+        # acc_rec = account.search([('name', '=', 'Accounts Receivable')])
+        # acc_pay = account.search([('name', '=', 'Product Sales')])
 
 
+        prd = product.search([('name', '=', 'opening balance vendor')])
 
-        jrn = self.env['account.journal'].search([('name', '=', 'Customer Invoices')])
+        jrn=self.env['account.journal'].search([('name','=','Vendor Bills')])
+
+        # prd = product.search([('name', '=', 'opening balance customer')])
+        # jrn = self.env['account.journal'].search([('name', '=', 'Customer Invoices')])
 
         notlist = []
         for line in archive_lines:
@@ -181,7 +178,7 @@ class ImportPurchaseOrder(models.TransientModel):
 
         print(notlist)
 
-    def create_invoices(self, amount=0.0, type='in_invoice', product=None, partner=None, date=None, acc_r=None,acc_p=None,jrnl=None,
+    def create_invoices(self, amount=0.0, type='out_invoice', product=None, partner=None, date=None, acc_r=None,acc_p=None,jrnl=None,
                         inv="0000"):
         """ Returns an open invoice """
         # date_datetime = datetime.datetime.strptime(date, "%Y-%m-%d %H:%M:%S")
@@ -218,7 +215,7 @@ class ImportPurchaseOrder(models.TransientModel):
                       'date': date,
                       'partner_id': partner,
                       'product_id': product.id,
-                      'account_id': acc_p.id,
+                      'account_id': acc_r.id,
                         'name':product.name,
 
                         'quantity': 1,
@@ -231,7 +228,7 @@ class ImportPurchaseOrder(models.TransientModel):
                         'name': product.name,
                         'partner_id': partner,
                         'product_id': product.id,
-                        'account_id': acc_r.id,
+                        'account_id': acc_p.id,
                         'quantity': 1,
                         'exclude_from_invoice_tab': True,
 

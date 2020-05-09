@@ -217,6 +217,7 @@ class ImportPurchaseOrder(models.TransientModel):
                       'product_id': product.id,
                       'account_id': acc_r.id,
                         'name':product.name,
+                        'exclude_from_invoice_tab': True,
 
                         'quantity': 1,
                       'price_unit': float(amount)}
@@ -230,7 +231,6 @@ class ImportPurchaseOrder(models.TransientModel):
                         'product_id': product.id,
                         'account_id': acc_p.id,
                         'quantity': 1,
-                        'exclude_from_invoice_tab': True,
 
                         # 'exclude_from_invoice_tab': True,
                         'price_unit': float(amount)}

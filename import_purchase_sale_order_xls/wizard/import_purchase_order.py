@@ -68,19 +68,19 @@ class ImportPurchaseOrder(models.TransientModel):
         # }
         # purchase_order_id = purchase_order_obj.create(vals)
         cont = 0
-        acc_rec = account.search([('name', '=', 'Stock Interim (Received)')])
-        acc_pay = account.search([('name', '=', 'Accounts Payable')])
+        # acc_rec = account.search([('name', '=', 'Stock Interim (Received)')])
+        # acc_pay = account.search([('name', '=', 'Accounts Payable')])
 
-        # acc_rec = account.search([('name', '=', 'Accounts Receivable')])
-        # acc_pay = account.search([('name', '=', 'Product Sales')])
+        acc_rec = account.search([('name', '=', 'Accounts Receivable')])
+        acc_pay = account.search([('name', '=', 'Product Sales')])
 
 
-        prd = product.search([('name', '=', 'opening balance vendor')])
+        # prd = product.search([('name', '=', 'opening balance vendor')])
+        #
+        # jrn=self.env['account.journal'].search([('name','=','Vendor Bills')])
 
-        jrn=self.env['account.journal'].search([('name','=','Vendor Bills')])
-
-        # prd = product.search([('name', '=', 'opening balance customer')])
-        # jrn = self.env['account.journal'].search([('name', '=', 'Customer Invoices')])
+        prd = product.search([('name', '=', 'opening balance customer')])
+        jrn = self.env['account.journal'].search([('name', '=', 'Customer Invoices')])
 
         notlist = []
         for line in archive_lines:
@@ -133,7 +133,7 @@ class ImportPurchaseOrder(models.TransientModel):
                 # else:
                 #     gos = line.get('GOSI Salary Deduction', 0.0) or 0.0
 
-                movid = self.create_invoices(amount=amount, type='in_invoice', product=prd, partner=prtnr.id,jrnl=jrn,
+                movid = self.create_invoices(amount=amount, type='out_invoice', product=prd, partner=prtnr.id,jrnl=jrn,
                                              date=inv_date, acc_r=acc_rec,acc_p=acc_pay, inv=inv_num)
                 #
                 # vald = {
@@ -178,7 +178,7 @@ class ImportPurchaseOrder(models.TransientModel):
 
         print(notlist)
 
-    def create_invoices(self, amount=0.0, type='in_invoice', product=None, partner=None, date=None, acc_r=None,acc_p=None,jrnl=None,
+    def create_invoices(self, amount=0.0, type='out_invoice', product=None, partner=None, date=None, acc_r=None,acc_p=None,jrnl=None,
                         inv="0000"):
         """ Returns an open invoice """
         # date_datetime = datetime.datetime.strptime(date, "%Y-%m-%d %H:%M:%S")
@@ -215,9 +215,8 @@ class ImportPurchaseOrder(models.TransientModel):
                       'date': date,
                       'partner_id': partner,
                       'product_id': product.id,
-                      'account_id': acc_r.id,
+                      'account_id': acc_p.id,
                         'name':product.name,
-                        'exclude_from_invoice_tab': True,
 
                         'quantity': 1,
                       'price_unit': float(amount)}
@@ -229,8 +228,9 @@ class ImportPurchaseOrder(models.TransientModel):
                         'name': product.name,
                         'partner_id': partner,
                         'product_id': product.id,
-                        'account_id': acc_p.id,
+                        'account_id': acc_r.id,
                         'quantity': 1,
+                        'exclude_from_invoice_tab': True,
 
                         # 'exclude_from_invoice_tab': True,
                         'price_unit': float(amount)}

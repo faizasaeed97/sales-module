@@ -71,7 +71,7 @@ class ImportPurchaseOrder(models.TransientModel):
         # acc_rec = account.search([('name', '=', 'Stock Interim (Received)')])
         # acc_pay = account.search([('name', '=', 'Account Payable')])
 
-        acc_rec = account.search([('name', '=', 'Account Receivable')])
+        acc_rec = account.search([('name', '=', 'Accounts Receivable')])
         acc_pay = account.search([('name', '=', 'Product Sales')])
 
 

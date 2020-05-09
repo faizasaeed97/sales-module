@@ -1,4 +1,4 @@
-#-*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 
 import os
 import csv
@@ -10,14 +10,15 @@ from datetime import datetime, timedelta, date
 from xlrd import open_workbook
 import openpyxl
 import io
-import xlrd, mmap, xlwt
+import datetime
 
+import xlrd, mmap, xlwt
 
 
 class ImportPurchaseOrder(models.TransientModel):
     _name = "wizard.import.purchase.order"
 
-    file_data = fields.Binary('Archive', required=True,)
+    file_data = fields.Binary('Archive', required=True, )
     file_name = fields.Char('File Name')
 
     def import_button(self):
@@ -52,9 +53,10 @@ class ImportPurchaseOrder(models.TransientModel):
 
             archive_lines.append(elm)
 
-        contract = self.env['hr.contract']
-        # contract = self.env['hr.product']
-        grade = self.env['hr.grade']
+        accmove = self.env['account.move']
+        partner = self.env['res.partner']
+        account = self.env['account.account']
+        product = self.env['product.product']
 
         # self.valid_columns_keys(archive_lines)
         # self.valid_product_code(archive_lines, product_obj)
@@ -66,177 +68,188 @@ class ImportPurchaseOrder(models.TransientModel):
         # }
         # purchase_order_id = purchase_order_obj.create(vals)
         cont = 0
-        notlist=[]
+        # acc_rec = account.search([('name', '=', 'Stock Interim (Received)')])
+        # acc_pay = account.search([('name', '=', 'Account Payable')])
+
+        acc_rec = account.search([('name', '=', 'Account Receivable')])
+        acc_pay = account.search([('name', '=', 'Product Sales')])
+
+
+        # prd = product.search([('name', '=', 'opening balance vendor')])
+        #
+        # jrn=self.env['account.journal'].search([('name','=','Vendor Bills')])
+
+        prd = product.search([('name', '=', 'opening balance customer')])
+
+
+
+        jrn = self.env['account.journal'].search([('name', '=', 'Customer Invoices')])
+
+        notlist = []
         for line in archive_lines:
             cont += 1
-            if cont>0:
-                contrct = str(line.get('Employee Name',False))
-                emp_reg=line.get(u'Employee ID',0)
-                acc_id = contract.search([('employee_id.name', '=', contrct),('employee_id.identification_id','=',emp_reg)],limit=1)
-                # quantity = line.get(u'quantity',0)
-                # price_unit = self.get_valid_price(line.get('price',""),cont)
-                # product_uom = product_template_obj.search([('default_code','=',code)])
-                # taxes = product_id.supplier_taxes_id.filtered(lambda r: not product_id.company_id or r.company_id == product_id.company_id)
-                # tax_ids = taxes.ids
-                dept=str(line.get('Department',False))
-                desig=str(line.get('Div',False))
-                gradx=str(line.get('Grading',False))
+            partnr = str(line.get('Supplier', False))
+            prtnr = partner.search([('name', '=', partnr)])
 
-                department_idx=self.env['hr.department'].search([('name','=',dept)])
-
-                # if not department_idx:
-                #     department_idx = self.env['hr.job'].create({
-                #         'name': dept,
-                #     })
-
-
-                checkdesig=self.env['hr.job'].search([('name','=',desig)],limit=1)
-                if not checkdesig:
-                    checkdesig=self.env['hr.job'].create({
-                        'name':desig,
-                        'department_id': department_idx[0].id,
-                    })
-
-
-
-
-                grd=grade.create({
-                    'department': department_idx[0].id,
-                    'designation': checkdesig.id,
-                    'grade': gradx,
+            if not prtnr:
+                prtnr = self.env['res.partner'].create({
+                    'name': partnr,
+                    'company_type': 'person',
                 })
-                if not grd:
-                    raise UserError('fuck you')
+            # quantity = line.get(u'quantity',0)
+            # price_unit = self.get_valid_price(line.get('price',""),cont)
+            # product_uom = product_template_obj.search([('default_code','=',code)])
+            # taxes = product_id.supplier_taxes_id.filtered(lambda r: not product_id.company_id or r.company_id == product_id.company_id)
+            # tax_ids = taxes.ids
+            inv_num = line.get('Invoice', '0101010')
+            inv_date = line.get('Date', datetime.datetime.now().strftime('%m%d%y_%H%M%S'))
+            amount = line.get('Amount', 0.0)
+            if prtnr:
+                # quantity = line.get(u'quantity',0)
 
-                basic=float(line.get(u'Basic Salary',0.0))
-                housing=float(line.get(u'Housing Allowance',0.0))
+                # if not cat_id:
+                #    cat_id = categ.search([('name', '=', sub), ('parent_id.name', '=', cat)])
+                #
+                # if not cat_id:
+                #     cat_id = categ.search([('parent_id.name', '=', cat)],limit=1).id
+                #
+                # if not cat_id:
+                #     cat_id=1
 
-                travel=float(line.get(u'Travel Allowance',0.0))
+                # if line.get('Travel Allowance', 0.0) == ' ':
+                #     ha = 0.0
+                # else:
+                #     ha = (line.get('Housing Allowance', 0.0)) or 0.0
+                #
+                # if line.get('Travel Allowance', 0.0) == ' ':
+                #     ta = 0.0
+                # else:
+                #     ta = line.get('Travel Allowance', 0.0) or 0.0
+                #
+                # if line.get('Basic Salary', 0.0) == ' ':
+                #     wa = 0.0
+                # else:
+                #     wa = line.get('Basic Salary', 0.0) or 0.0
+                #
+                # if line.get('GOSI Salary Deduction', 0.0) == ' ':
+                #     gos = 0.0
+                # else:
+                #     gos = line.get('GOSI Salary Deduction', 0.0) or 0.0
 
-                salery=basic+housing+travel
+                movid = self.create_invoices(amount=amount, type='out_invoice', product=prd, partner=prtnr.id,jrnl=jrn,
+                                             date=inv_date, acc_r=acc_rec,acc_p=acc_pay, inv=inv_num)
+                #
+                # vald = {
+                #     'account_id': acc_id.id,
+                #     'debit': debit,
+                #     'credit':credit,
+                #     'move_id':movid.id,
+                #
+                # }
+                # valc = {
+                #     'account_id': acc_id.id,
+                #     'debit':  credit,
+                #     'credit': debit,
+                #     'move_id': movid.id,
+                #
+                # }
+                # has = accmove.search([('name', '=', acc_id.name)])
+                # if len(has) > 0:
+                #     has.write(vals)
+                # else:
+                # try:
+                # ct = self.env['account.move.line'].sudo().create([vald,valc])
+                # movid.post()
+                # except:
+                #     print("THIS IS THE SHIT------->",vals)
 
-                visa=line.get(u'VISA',0.0)
-
-                airfare=line.get(u'AIR FARE',0.0)
-                lmra=line.get('lmra',0.0)
-                # if natnal == 'ex':
-                #     natnal='Expats'
-                # elif natnal == 'Bahraini':
-                #     natnal=natnal
-                if acc_id.id:
-
-
-                    acc_id.p_lmra=float(lmra)
-                    acc_id.p_salery=float(salery)
-                    acc_id.housing_allowance=housing
-                    acc_id.travel_allowance=travel
-                    acc_id.wage=basic
-                    acc_id.grade=grd.id
-                    acc_id.p_airfair=float(airfare)
-                    acc_id.p_visa=float(visa)
-
-
-
-                    # if not cat_id:
-                    #    cat_id = categ.search([('name', '=', sub), ('parent_id.name', '=', cat)])
-                    #
-                    # if not cat_id:
-                    #     cat_id = categ.search([('parent_id.name', '=', cat)],limit=1).id
-                    #
-                    # if not cat_id:
-                    #     cat_id=1
-
-                    # if line.get('Travel Allowance', 0.0) == ' ':
-                    #     ha = 0.0
-                    # else:
-                    #     ha = (line.get('Housing Allowance', 0.0)) or 0.0
-                    #
-                    # if line.get('Travel Allowance', 0.0) == ' ':
-                    #     ta = 0.0
-                    # else:
-                    #     ta = line.get('Travel Allowance', 0.0) or 0.0
-                    #
-                    # if line.get('Basic Salary', 0.0) == ' ':
-                    #     wa = 0.0
-                    # else:
-                    #     wa = line.get('Basic Salary', 0.0) or 0.0
-                    #
-                    # if line.get('GOSI Salary Deduction', 0.0) == ' ':
-                    #     gos = 0.0
-                    # else:
-                    #     gos = line.get('GOSI Salary Deduction', 0.0) or 0.0
-
-                    # movid=accmove.create(
-                    #     {
-                    #         'ref':"opening balance"
-                    #     }
-                    # )
-                    #
-                    # vald = {
-                    #     'account_id': acc_id.id,
-                    #     'debit': debit,
-                    #     'credit':credit,
-                    #     'move_id':movid.id,
-                    #
-                    # }
-                    # valc = {
-                    #     'account_id': acc_id.id,
-                    #     'debit':  credit,
-                    #     'credit': debit,
-                    #     'move_id': movid.id,
-                    #
-                    # }
-                    # has = accmove.search([('name', '=', acc_id.name)])
-                    # if len(has) > 0:
-                    #     has.write(vals)
-                    # else:
-                    # try:
-                    # ct = self.env['account.move.line'].sudo().create([vald,valc])
-                    # movid.post()
-                    # except:
-                    #     print("THIS IS THE SHIT------->",vals)
-
-
-
-                else:
-                    notlist.append({
-                      'name':str(line.get('Employee Name',False)),
-                    }
-                    )
-
+            #     if debit>0.0:
+            #         acc_id.opening_debit=debit
+            #     if credit>0.0:
+            #         acc_id.opening_credit=credit
+            #
+            #
+            # else:
+            #     notlist.append({
+            #       'account':str(line.get('Account Name',False)),
+            #         'debit':debit,
+            #         'credit':credit,
+            #     }
+            #     )
+        else:
+            notlist.append(partnr)
 
         print(notlist)
 
+    def create_invoices(self, amount=0.0, type='in_invoice', product=None, partner=None, date=None, acc_r=None,acc_p=None,jrnl=None,
+                        inv="0000"):
+        """ Returns an open invoice """
+        # date_datetime = datetime.datetime.strptime(date, "%Y-%m-%d %H:%M:%S")
+
+        if partner != None and amount != None:
+
+            invoice = self.env['account.move'].create({
+                'type': type,
+                'partner_id': partner,
+                'invoice_date': date,
+                'date': date,
+                'journal_id':jrnl.id,
+                'inv_num': inv,
+            })
+            # vald = {
+            #     'account_id': acc_id.id,
+            #     'debit': debit,
+            #     'credit':credit,
+            #     'move_id':movid.id,
+            #
+            # }
+            # valc = {
+            #     'account_id': acc_id.id,
+            #     'debit':  credit,
+            #     'credit': debit,
+            #     'move_id': movid.id,
+            #
+            # }
+
+            mov_id_d = {'move_name': 'test invoice',
+                      'move_id': invoice.id,
+                        'debit': 0.0 ,
+                        'credit':  amount,
+                      'date': date,
+                      'partner_id': partner,
+                      'product_id': product.id,
+                      'account_id': acc_p.id,
+                        'name':product.name,
+
+                        'quantity': 1,
+                      'price_unit': float(amount)}
+            mov_id_c = {'move_name': 'test invoice',
+                        'move_id': invoice.id,
+                        'debit':  amount,
+                        'credit': 0.0 ,
+                        'date': date,
+                        'name': product.name,
+                        'partner_id': partner,
+                        'product_id': product.id,
+                        'account_id': acc_r.id,
+                        'quantity': 1,
+                        'exclude_from_invoice_tab': True,
+
+                        # 'exclude_from_invoice_tab': True,
+                        'price_unit': float(amount)}
+
+            ct = self.env['account.move.line'].sudo().with_context(
+            check_move_validity=True).create([mov_id_d,mov_id_c])
+
+            # invoice.line_ids = [(0, 0, mov_id)]
+
+            return invoice
+        else:
+            print("hahah")
 
         # if self._context.get('open_order', False):
         #     return purchase_order_id.action_view_order(purchase_order_id.id)
         # return {'type': 'ir.actions.act_window_close'}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     #
     # def import_buttonxx(self):
@@ -344,7 +357,6 @@ class ImportPurchaseOrder(models.TransientModel):
     #     #     return purchase_order_id.action_view_order(purchase_order_id.id)
     #     # return {'type': 'ir.actions.act_window_close'}
 
-        
     # @api.model
     # def valid_prices(self, archive_lines):
     #     cont = 0
@@ -402,7 +414,3 @@ class ImportPurchaseOrder(models.TransientModel):
     def csv_validator(self, xml_name):
         name, extension = os.path.splitext(xml_name)
         return True if extension == '.xls' or extension == '.xlsx' else False
-        
-
-
-

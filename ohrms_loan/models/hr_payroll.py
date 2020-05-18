@@ -25,7 +25,7 @@ class HrPayslip(models.Model):
         date_from = self.date_from
         date_to = self.date_to
 
-        ttyme = datetime.fromtimestamp(time.mktime(str(time.strptime(date_from), "%Y-%m-%d")))
+        ttyme = datetime.fromtimestamp(time.mktime(str(time.strptime(date_from)), "%Y-%m-%d"))
         locale = self.env.context.get('lang') or 'en_US'
         self.name = _('Salary Slip of %s for %s') % (
         employee.name, tools.ustr(babel.dates.format_date(date=ttyme, format='MMMM-y', locale=locale)))

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-         <record id="paper_format_jobcard" model="report.paperformat">
+        <record id="paper_format_jobcard" model="report.paperformat">
             <field name="name">A4 JobCard</field>
-<!--            <field name="default" eval="False" />-->
+            <!--            <field name="default" eval="False" />-->
             <field name="format">A4</field>
             <field name="page_height">0</field>
             <field name="page_width">0</field>
@@ -12,19 +12,67 @@
             <field name="margin_bottom">10</field>
             <field name="margin_left">5</field>
             <field name="margin_right">5</field>
-<!--            <field name="header_line" eval="False" />-->
+            <!--            <field name="header_line" eval="False" />-->
             <field name="header_spacing">15</field>
             <field name="dpi">100</field>
         </record>
 
-	<report
-        id="action_repair_order_print"
-		string="Print Cost Sheet"
-		model ="cost.sheet.crm"
-		report_type="qweb-pdf"
-		name = "cost_sheet_quotations.repair_order_print_template"
-        file="cost_sheet_quotations.repair_order_print_template" />
-<!--        paperformat="paper_format_jobcard"-->
+        <report
+                id="action_repair_order_print"
+                string="Print Cost Sheet"
+                model="cost.sheet.crm"
+                report_type="qweb-pdf"
+                name="cost_sheet_quotations.repair_order_print_template"
+                file="cost_sheet_quotations.repair_order_print_template"/>
+
+
+        <report
+                id="action_credit_note_print"
+                string="Print Credit Note"
+                model="account.move"
+                report_type="qweb-pdf"
+                name="cost_sheet_quotations.report_credit_note"
+                file="cost_sheet_quotations.report_credit_note"/>
+
+
+        <report
+                id="action_goods_recieved_print"
+                string="Goods Recieved(WH/IN)"
+                model="stock.picking"
+                report_type="qweb-pdf"
+                name="cost_sheet_quotations.report_goods_sold"
+                file="cost_sheet_quotations.report_goods_sold"/>
+
+                <report
+                id="action_goods_return_print"
+                string="Goods Return(WH/Out)"
+                model="stock.picking"
+                report_type="qweb-pdf"
+                name="cost_sheet_quotations.report_goods_return"
+                file="cost_sheet_quotations.report_goods_return"/>
+
+
+
+        <report
+                id="action_material_issues_return_print"
+                string="Material Issue Return(WH/Out)"
+                 model="stock.picking"
+                report_type="qweb-pdf"
+                name="cost_sheet_quotations.report_material_issue"
+                file="cost_sheet_quotations.report_material_issue"/>
+
+
+        <report
+                id="action_payment_voucher_petty_print"
+                string="Vendor Payment voucher"
+                model="account.payment"
+                report_type="qweb-pdf"
+                name="cost_sheet_quotations.report_payment_voucher_petty"
+                file="cost_sheet_quotations.report_payment_voucher_petty"/>
+
+
+
+        <!--        paperformat="paper_format_jobcard"-->
 
     </data>
 </odoo>

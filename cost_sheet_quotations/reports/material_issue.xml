@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <template id="report_design_footer" inherit_id="web.external_layout_standard">
+        <xpath expr="//div[@class='footer o_standard_footer']" position="replace">
+        <div class="footer o_standard_footer">
+            <div class="text-center" style="border-top: 1px solid black;">
+                <div name="financial_infos">
+                    <span t-field="company.report_footer"/>
+                </div>
+            </div>
+            <div t-if="report_type == 'pdf'" class="text-muted" align="right">
+                    Page: <span class="page"/> of <span class="topage"/>
+                </div>
+        </div>
+        </xpath>
+    </template>
+    <template id ="report_material_issue">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+                <t t-foreach="docs" t-as="doc">
+                    <table  cellpadding="0" cellspacing="0" width="1200px">
+                        <tbody>
+                            <tr t-attf-style="page-break-inside:avoid !important;border-bottom:2px solid black; font-weight:bold;background-color:white; color:black;};">
+                                <td align="right" t-attf-style="font-weight:bold;color:black;border-bottom:2px solid black;" width="25%">
+                                    <span style="font-size:30px;">Issue Note Return</span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <br />
+                    <table  cellpadding="0" cellspacing="0" width="1200px">
+                        <tbody>
+                            <tr t-attf-style="page-break-inside:avoid !important;border:1px solid black;border-bottom:5px solid black; font-weight:bold;background-color:white; color:black;};">
+                                <td align="left" t-attf-style="font-weight:bold;color:black;border-right:0px solid black;" width="25%">
+                                    <span style="font-size:20px;margin-left:10px">Customer</span>
+                                    <span></span><br />
+                                    <span style="font-size:20px;margin-left:10px">Divisions</span>
+                                    <span></span>
+                                </td>
+                                <td align="left" t-attf-style="font-weight:bold;color:black;border:1px solid black;border-left:0px"
+                                    width="25%">
+                                    <span style="font-size:20px;margin-left:10px">Electricals</span>
+                                    <span></span>
+                                </td>
+                                 <td align="left" t-attf-style="font-weight:bold;color:black;border:1px solid black;"
+                                    width="25%">
+                                </td>
+                                 <td align="left" cellspacing="20px" t-attf-style="font-weight:bold;color:black;border:1px solid black;"
+                                    width="20%">
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <br />
+                    <table BORDERCOLOR="#{'#00000'}" style="-moz-border-radius:10px;-webkit-border-radius:10px;border-radius:10px;" border="1" cellpadding="0" cellspacing="0" width="1200px">
+                        <tbody>
+                            <tr t-attf-style="page-break-inside:avoid !important;border:1px solid black; font-weight:bold;background-color:white; color:black;};">
+                                <td align="center" t-attf-style="font-weight:bold;color:black;border:1px solid black;" width="15%">
+                                    <span style="font-size:18px;">Item Code</span>
+                                </td>
+                                <td align="center" t-attf-style="font-weight:bold;color:black;border-right:1px solid black;" width="40%">
+                                    <span style="font-size:18px;">Item Name</span>
+                                </td>
+                                <td align="center" t-attf-style="font-weight:bold;color:black;border-right:1px solid black;" width="15%">
+                                    <span style="font-size:18px;">Quantity</span>
+                                </td>
+                                <td align="center" t-attf-style="font-weight:bold;color:black;border-right:1px solid black;" width="15%">
+                                    <span style="font-size:18px;">Price</span>
+                                </td>
+                                <td align="center" t-attf-style="font-weight:bold;color:black;border-right:1px solid black;" width="15%">
+                                    <span style="font-size:18px;">Amount</span>
+                                </td>
+                            </tr>
+                            <tr t-attf-style="page-break-inside:avoid !important;border:1px solid black; font-weight:bold;background-color:white; color:black;};">
+                                <td align="center" t-attf-style="font-weight:bold;color:black;border:1px solid black;" width="15%">
+                                    <span style="font-size:15px;">ELECT39908</span>
+                                </td>
+                                <td align="center" t-attf-style="font-weight:bold;color:black;border-right:1px solid black;" width="40%">
+                                    <span style="font-size:15px;">ELECTRICALS-HDMI EXTENDER 30M</span>
+                                </td>
+                                <td align="center" t-attf-style="font-weight:bold;color:black;border-right:1px solid black;" width="15%">
+                                    <span style="font-size:15px;">1.000 Pcs</span>
+                                </td>
+                                <td align="center" t-attf-style="font-weight:bold;color:black;border-right:1px solid black;" width="15%">
+                                    <span style="font-size:15px;">10.000</span>
+                                </td>
+                                <td align="center" t-attf-style="font-weight:bold;color:black;border-right:1px solid black;" width="15%">
+                                    <span style="font-size:15px;">-10.000</span>
+                                </td>
+                            </tr>
+                            <tr t-attf-style="-moz-border-radius:10px;-webkit-border-radius:10px;border-radius:10px;page-break-inside:avoid !important;border:1px solid black; font-weight:bold;background-color:white; color:black;};">
+                                <td align="center" t-attf-style="font-weight:bold;color:black;border:1px solid black;" width="12%">
+                                    <span style="font-size:18px;">Notes</span>
+                                    <br />
+                                    <br />
+                                </td>
+                                <td align="center" colspan="4" t-attf-style="font-weight:bold;color:black;border-right:1px solid black;" >
+                                </td>
+                            </tr>
+                            <tr t-attf-style="page-break-inside:avoid !important;border:1px solid black;border-bottom:0px solid black; font-weight:bold;background-color:white; color:black;};">
+                                <td align="left" colspan="2" t-attf-style="font-weight:bold;color:black;border:1px solid black;border-bottom:0px solid black;">
+                                <span style="font-size:18px;">Ten Only</span>
+                                    <br />
+                                    <br />
+                                    <br />
+                                    <br />
+                                </td>
+                                <td align="center" t-attf-style="font-weight:bold;color:black;border-right:0px solid black;border-bottom:0px solid black;" width="12%" >
+                                </td>
+                                <td align="center" t-attf-style="font-weight:bold;color:black;border-right:0px solid black;border-bottom:0px solid black;" width="12%" >
+                                Total
+                                </td>
+                                <td align="center" t-attf-style="font-weight:bold;color:black;border-right:1px solid black;border-bottom:0px solid black;" width="12%" >
+                                <span>10.00</span>
+                                </td>
+                            </tr>
+                            <tr t-attf-style="page-break-inside:avoid !important;border:1px solid black;border-top:0px solid black; font-weight:bold;background-color:white; color:black;};">
+                                <td  colspan="2" t-attf-style="font-weight:bold;color:black;border-right:1px solid black;" >
+                                </td>
+                                <td align="right" t-attf-style="font-weight:bold;color:black;border-right:0px solid black;border-top:1px solid black;" width="12%" >
+                                <span>Print on</span>
+                                </td>
+                                <td align="right" colspan="2" t-attf-style="font-weight:bold;color:black;border-top:1px solid black;border-right:1px solid black;">
+                                <span>11/05/2020 8:57:37AM</span><br />
+                                <span>HITHA,0</span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

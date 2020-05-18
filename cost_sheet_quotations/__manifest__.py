@@ -4,7 +4,8 @@
     'name': 'Cost Sheet',
     'sequence': 1222,
     'version': '1.0',
-    'depends': ['mail', 'base', 'crm', 'mrp', 'project', 'product', 'sale', 'product','account','design_creative_custom'],
+    'depends': ['mail', 'base', 'crm', 'mrp', 'project', 'product', 'sale', 'product', 'account',
+                'design_creative_custom'],
     'category': 'sale', 'crm'
                         'summary': 'Handle lunch orders of your employees',
     'description': """
@@ -24,6 +25,12 @@ Cost sheet from CRM, Generate Quotation
         'reports/repair_order_print.xml',
         'reports/report.xml',
         'reports/quotation_print.xml',
+        'reports/credit_note.xml',
+        'reports/goods_recipt_note_report.xml',
+        'reports/goods_recipt_return_report.xml',
+
+        'reports/material_issue.xml',
+        'reports/vendor_payment_pettycash_report.xml'
     ],
     'installable': True,
     'application': True,

@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <template id="report_design_footer" inherit_id="web.external_layout_standard">
+        <xpath expr="//div[@class='footer o_standard_footer']" position="replace">
+            <div class="footer o_standard_footer">
+                <div class="text-center" style="border-top: 1px solid black;">
+                    <span>Goods once sold will not be taken back</span>
+                    <div name="financial_infos">
+                        <span t-field="company.report_footer"/>
+                    </div>
+                </div>
+                <div t-if="report_type == 'pdf'" class="text-muted" align="right">
+                    Page:
+                    <span class="page"/>
+                    -
+                    <span class="topage"/>
+                </div>
+            </div>
+        </xpath>
+    </template>
+    <template id="report_goods_return">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+                <t t-foreach="docs" t-as="o">
+                    <div>
+                        <h3 class="text-right mb32">
+                            <strong>Goods recipt Return</strong>
+                        </h3>
+                    </div>
+                    <table cellpadding="0" cellspacing="0" width="1200px">
+                        <tbody>
+                            <tr t-attf-style="page-break-inside:avoid !important;border:1px solid black; font-weight:bold;background-color:white; color:black;};">
+                                <td align="left" t-attf-style="font-weight:bold;color:black;border:1px solid black;"
+                                    width="50%">
+                                    <span>Division Code</span>
+                                    <span></span>
+                                    <br/>
+                                    <span>Division Name</span>
+                                    <span></span>
+                                    <br/>
+                                    <span>Date</span>
+                                    <span></span>
+                                    <br/>
+                                    <span>Customer Code</span>
+                                    <span></span>
+                                    <br/>
+                                    <span>Customer Name</span>
+                                    <span></span>
+                                    <br/>
+                                </td>
+                                <td align="left" t-attf-style="font-weight:bold;color:black;border:1px solid black;"
+                                    width="50%">
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <br/>
+                    <table style="border-collapse: collapse;width: 100%;height:200px" class="table table-condensed">
+                        <thead>
+                            <tr>
+                                <th>S.No</th>
+                                <th>Item</th>
+                                <th>Qty Demand</th>
+                                <th>Qty Done</th>
+
+                            </tr>
+                        </thead>
+                        <tbody class="consumed_tbody">
+
+                            <t t-foreach="o.move_ids_without_package" t-as="line">
+                                <tr>
+                                    <td>
+                                        <span t-esc="line_index+1"/>
+                                    </td>
+                                    <td>
+                                        <span t-field="line.product_id"/>
+                                    </td>
+                                    <td>
+                                        <span t-field="line.product_uom_qty"/>
+                                    </td>
+                                    <td>
+                                        <span t-field="line.quantity_done"/>
+                                    </td>
+
+                                </tr>
+
+                            </t>
+
+                        </tbody>
+                    </table>
+
+
+                    <table style="border-collapse: collapse;width: 100%;" class="table">
+                        <tbody>
+                            <tr t-attf-style="-moz-border-radius:10px;-webkit-border-radius:10px;border-radius:10px;page-break-inside:avoid !important;border:1px solid black; font-weight:bold;background-color:white; color:black;};">
+                                <td align="center" t-attf-style="font-weight:bold;color:black;border:1px solid black;"
+                                    width="12%">
+                                    Notes
+                                    <br/>
+                                    <br/>
+                                </td>
+                                <td align="center" colspan="5"
+                                    t-attf-style="font-weight:bold;color:black;border-right:1px solid black;">
+                                </td>
+                            </tr>
+                            <tr t-attf-style="page-break-inside:avoid !important;border:1px solid black;border-bottom:0px solid black; font-weight:bold;background-color:white; color:black;};">
+                                <td align="left" colspan="3"
+                                    t-attf-style="font-weight:bold;color:black;border:1px solid black;border-bottom:0px solid black;">
+                                    Bahraini Dinars Twenty Only
+                                    <br/>
+                                    <br/>
+                                    <br/>
+                                    <br/>
+                                </td>
+                                <td align="center"
+                                    t-attf-style="font-weight:bold;color:black;border-right:0px solid black;border-bottom:0px solid black;"
+                                    width="12%">
+                                </td>
+                                <td align="center"
+                                    t-attf-style="font-weight:bold;color:black;border-right:0px solid black;border-bottom:0px solid black;"
+                                    width="12%">
+                                    Total
+                                </td>
+                                <td align="center"
+                                    t-attf-style="font-weight:bold;color:black;border-right:1px solid black;border-bottom:0px solid black;"
+                                    width="12%">
+                                    <span>10.00</span>
+                                </td>
+                            </tr>
+                            <tr t-attf-style="page-break-inside:avoid !important;border:1px solid black;border-top:0px solid black; font-weight:bold;background-color:white; color:black;};">
+                                <td colspan="3"
+                                    t-attf-style="font-weight:bold;color:black;border-right:1px solid black;">
+                                    <span style="margin-left:50px;">
+                                        Prepared By
+                                    </span>
+                                    <span style="margin-left:90px;">Checked By</span>
+                                    <span style="margin-left:100px;">Authorized By</span>
+                                </td>
+                                <td align="right"
+                                    t-attf-style="font-weight:bold;color:black;border-right:0px solid black;"
+                                    width="12%">
+                                    <span>Print on</span>
+                                </td>
+                                <td align="right" colspan="2"
+                                    t-attf-style="font-weight:bold;color:black;border-right:1px solid black;">
+                                    <span>11/05/2020 8:57:37AM</span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

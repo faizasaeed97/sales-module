@@ -6,6 +6,12 @@
             <field name="model">account.move</field>
             <field name="inherit_id" ref="account.view_move_form"/>
             <field name="arch" type="xml">
+
+                <xpath expr="//header" position="inside">
+                <button name="print_credit_report" class="oe_highlight" string="Print Credit note" type="object" attrs="{'invisible': [('type', '!=', 'out_refund'),('invoice_payment_state', '=', 'Paid')]}"/>
+            </xpath>
+
+
                 <xpath expr="//form/sheet/notebook/page[1]/group" position="after">
                     <div class="ks_container">
                         <field name="ks_enable_discount" invisible="1"/>

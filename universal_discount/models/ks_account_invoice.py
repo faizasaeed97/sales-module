@@ -382,3 +382,7 @@ class KsGlobalDiscountInvoice(models.Model):
                         'debit': total_balance < 0.0 and -total_balance or 0.0,
                         'credit': total_balance > 0.0 and total_balance or 0.0,
                     })
+
+
+    def print_credit_report(self):
+        return self.env.ref('cost_sheet_quotations.action_credit_note_print').report_action(self)

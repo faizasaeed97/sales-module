@@ -1,5 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+
+       <record model="ir.ui.view" id="inherit_department">
+        <field name="name">hr.department.formt</field>
+        <field name="model">hr.department</field>
+        <field name="inherit_id" ref="hr.view_department_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//group[1]" position="after">
+                <group string="Attendance Information">
+                 <field name="st_checkin" placeholder="00:00"/>
+                <field name="st_checkout" placeholder="00:00"/>
+                <field name="grace_time" placeholder="00:00"/>
+                </group>
+             </xpath>
+        </field>
+     </record>
+      <record model="ir.ui.view" id="inherit_employee">
+        <field name="name">hr.employee.formt</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='tz']" position="after">
+                <group string="Attendance Information">
+                 <field name="st_checkin" placeholder="00:00"/>
+                <field name="st_checkout" placeholder="00:00"/>
+                <field name="grace_time" placeholder="00:00"/>
+                </group>
+             </xpath>
+        </field>
+     </record>
+
     <record id="action_attendance" model="ir.actions.act_window">
         <field name="name">Attendance</field>
         <field name="type">ir.actions.act_window</field>
@@ -7,8 +37,6 @@
         <field name="view_mode">tree,kanban,form</field>
 
     </record>
-
-
     <record id="view_attendance_ing_tree" model="ir.ui.view">
         <field name="name">custom.attendance.tree</field>
         <field name="model">attendance.custom</field>
@@ -58,9 +86,11 @@
                     <group col="4" colspan="12">
                         <field name="working" placeholder="00:00"/>
                         <field name="late_in" placeholder="00:00"/>
+                        <field name="apply_latein_deduction" force_save="1"/>
+                        <field name="exception_approved"/>
                         <field name="early_in" placeholder="00:00"/>
                         <field name="early_out" placeholder="00:00"/>
-                        <field name="small_ot" placeholder="00:00"/>
+                        <field name="ot_15" placeholder="00:00"/>
                         <field name="ot_125" placeholder="00:00"/>
                         <field name="no_attend" placeholder="00:00"/>
                         <field name="ignored" placeholder="00:00"/>

@@ -80,7 +80,7 @@ class HrPayslip(models.Model):
         """This gives the installment lines of an employee where the state is not in paid.
             """
         loan_list = []
-        dateFrom = datetime.strptime(self.date_from, '%Y-%m-%d')
+        dateFrom = datetime.strptime(str(self.date_from), '%Y-%m-%d')
         loan_ids = self.env['hr.loan.line'].search([('employee_id', '=', self.employee_id.id), ('paid', '=', False)])
         for loan in loan_ids:
             if loan.loan_id:

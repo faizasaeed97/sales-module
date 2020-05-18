@@ -13,11 +13,11 @@
 <!--            <field name="sequence" eval="190"/>-->
 <!--        </record>-->
 
-        <record id="hr_rule_input_loan" model="hr.rule.input">
-            <field name="code">LO</field>
-            <field name="name">Loan</field>
-            <field name="input_id" ref="hr_rule_loan"/>
-        </record>
+<!--        <record id="hr_rule_input_loan" model="hr.rule.input">-->
+<!--            <field name="code">LO</field>-->
+<!--            <field name="name">Loan</field>-->
+<!--            <field name="input_id" ref="hr_rule_loan"/>-->
+<!--        </record>-->
 
 	</data>
 </odoo>

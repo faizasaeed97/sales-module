@@ -10,11 +10,14 @@ class HrPayslip(models.Model):
     def compute_total_paid(self):
         """This compute the total paid amount of Loan."""
         total = 0.0
-        if self.state == 'draft':
+        if self.state in ['draft','verify']:
             for line in self.loan_ids:
                 if line.paid:
                     total += line.amount
             self.total_paid = total
+        else:
+            self.total_paid=0.0
+
 
     # @api.onchange('employee_id', 'date_from', 'date_to')
     # def onchange_employee(self):

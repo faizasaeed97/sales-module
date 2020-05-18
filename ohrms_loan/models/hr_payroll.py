@@ -84,7 +84,7 @@ class HrPayslip(models.Model):
         loan_ids = self.env['hr.loan.line'].search([('employee_id', '=', self.employee_id.id), ('paid', '=', False)])
         for loan in loan_ids:
             if loan.loan_id:
-                loan_d = datetime.strptime(loan.loan_id.loan_date, '%Y-%m-%d')
+                loan_d = datetime.strptime(str(loan.loan_id.loan_date), '%Y-%m-%d')
                 if loan.loan_id.appear_payslip:
                     if dateFrom.month == loan_d.month:
                         self.loan_earning = loan.loan_id.loan_amount

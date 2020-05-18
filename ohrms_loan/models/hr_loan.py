@@ -83,7 +83,7 @@ class HrLoan(models.Model):
         company based on payment start date and the no of installments.
             """
         for loan in self:
-            date_start = datetime.strptime(loan.payment_date, '%Y-%m-%d')
+            date_start = datetime.strptime(str(loan.payment_date), '%Y-%m-%d')
             amount = loan.loan_amount / loan.installment
             for i in range(1, loan.installment + 1):
                 self.env['hr.loan.line'].create({

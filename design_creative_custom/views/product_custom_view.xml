@@ -18,34 +18,34 @@
             <field name="arch" type="xml">
 
 
-                <xpath expr="//field[@name='name']" position="after">
-                    <group>
-                        <!--                    <field name="raw_mat" />-->
+<!--                <xpath expr="//field[@name='name']" position="after">-->
+<!--                    <group>-->
+<!--                        &lt;!&ndash;                    <field name="raw_mat" />&ndash;&gt;-->
 
-                        <field name="brand" placeholder="Select Brand"
-                               attrs="{'invisible': [('raw_mat','=',False)],'required': [('raw_mat', '=',True)]}"/>
+<!--                        <field name="brand" placeholder="Select Brand"-->
+<!--                               attrs="{'invisible': [('raw_mat','=',False)],'required': [('raw_mat', '=',True)]}"/>-->
 
-                        <field name="p_type" placeholder="Select Type"
-                               attrs="{'invisible': [('raw_mat','=',False)],'required': [('raw_mat', '=',True)]}"/>
+<!--                        <field name="p_type" placeholder="Select Type"-->
+<!--                               attrs="{'invisible': [('raw_mat','=',False)],'required': [('raw_mat', '=',True)]}"/>-->
 
-                        <field name="p_made" placeholder="Select Made"
-                               attrs="{'invisible': [('raw_mat','=',False)],'required': [('raw_mat', '=',True)]}"/>
+<!--                        <field name="p_made" placeholder="Select Made"-->
+<!--                               attrs="{'invisible': [('raw_mat','=',False)],'required': [('raw_mat', '=',True)]}"/>-->
 
-                        <field name="p_color" placeholder="Select Color"
-                               attrs="{'invisible': [('raw_mat','=',False)],'required': [('raw_mat', '=',True)]}"/>
+<!--                        <field name="p_color" placeholder="Select Color"-->
+<!--                               attrs="{'invisible': [('raw_mat','=',False)],'required': [('raw_mat', '=',True)]}"/>-->
 
-                        <field name="p_length" placeholder="Select Length"
-                               attrs="{'invisible': [('raw_mat','=',False)]}"/>
-                        <field name="p_width" placeholder="Select Width"
-                               attrs="{'invisible': [('raw_mat','=',False)]}"/>
-                        <field name="p_height" placeholder="Select Height"
-                               attrs="{'invisible': [('raw_mat','=',False)]}"/>
-                    </group>
-                </xpath>
+<!--                        <field name="p_length" placeholder="Select Length"-->
+<!--                               attrs="{'invisible': [('raw_mat','=',False)]}"/>-->
+<!--                        <field name="p_width" placeholder="Select Width"-->
+<!--                               attrs="{'invisible': [('raw_mat','=',False)]}"/>-->
+<!--                        <field name="p_height" placeholder="Select Height"-->
+<!--                               attrs="{'invisible': [('raw_mat','=',False)]}"/>-->
+<!--                    </group>-->
+<!--                </xpath>-->
 
-                <xpath expr="//field[@name='name']" position="attributes">
-                    <attribute name="attrs">{'readonly': [('raw_mat', '=',True)],'required': [('raw_mat', '=',False)]}</attribute>
-                </xpath>
+<!--                <xpath expr="//field[@name='name']" position="attributes">-->
+<!--                    <attribute name="attrs">{'readonly': [('raw_mat', '=',True)],'required': [('raw_mat', '=',False)]}</attribute>-->
+<!--                </xpath>-->
 
                 <xpath expr="//div[@name='options']" position="inside">
 

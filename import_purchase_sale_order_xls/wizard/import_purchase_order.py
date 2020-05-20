@@ -10,8 +10,6 @@ from datetime import datetime, timedelta, date
 from xlrd import open_workbook
 import openpyxl
 import io
-import datetime
-
 import xlrd, mmap, xlwt
 
 
@@ -43,20 +41,30 @@ class ImportPurchaseOrder(models.TransientModel):
         worksheet = workbook.active
         first_row = []  # The row where we stock the name of the column
         for col in range(worksheet.max_column):
-            first_row.append(worksheet.cell(row=1, column=col + 1).value)
+            first_row.append(worksheet.cell(1, col + 1).value)
         # transform the workbook to a list of dictionaries
         archive_lines = []
         for row in range(1, worksheet.max_row):
             elm = {}
             for col in range(worksheet.max_column):
-                elm[first_row[col]] = worksheet.cell(row=row + 1, column=col + 1).value
+                elm[first_row[col]] = worksheet.cell(row + 1, col + 1).value
 
             archive_lines.append(elm)
 
-        accmove = self.env['account.move']
-        partner = self.env['res.partner']
-        account = self.env['account.account']
-        product = self.env['product.product']
+        productx = self.env['product.template']
+        # contract = self.env['hr.product']
+        categ = self.env['product.category']
+        uom_obj = self.env['uom.uom']
+        p_brand=self.env['brand']
+        p_type=self.env['product.type']
+        p_color=self.env['product.color']
+        p_length=self.env['product.length']
+        p_width=self.env['product.width']
+        p_height=self.env['product.height']
+        p_made = self.env['product.made']
+        p_model= self.env['product.made']
+        stock_quant = self.env['stock.quant']
+        # p_height = self.env['product.height']
 
         # self.valid_columns_keys(archive_lines)
         # self.valid_product_code(archive_lines, product_obj)
@@ -68,48 +76,66 @@ class ImportPurchaseOrder(models.TransientModel):
         # }
         # purchase_order_id = purchase_order_obj.create(vals)
         cont = 0
-        acc_rec = account.search([('name', '=', 'Stock Interim (Received)')])
-        acc_pay = account.search([('name', '=', 'Accounts Payable')])
-
-        # acc_rec = account.search([('name', '=', 'Accounts Receivable')])
-        # acc_pay = account.search([('name', '=', 'Product Sales')])
-
-
-        prd = product.search([('name', '=', 'opening balance vendor')])
-
-        jrn=self.env['account.journal'].search([('name','=','Vendor Bills')])
-
-        # prd = product.search([('name', '=', 'opening balance customer')])
-        # jrn = self.env['account.journal'].search([('name', '=', 'Customer Invoices')])
-
-        notlist = []
         for line in archive_lines:
             cont += 1
-            partnr = str(line.get('Supplier', False))
-            prtnr = partner.search([('name', '=', partnr)])
+            # sub = str(line.get('Sub-Category', ""))
+            cat = str(line.get('Product Category', ""))
+            um = str(line.get('UOM -3', ""))
+            Brand =p_brand.search([('name','=',str(line.get(u'Brand',"")))])
+            if not Brand:
+                Brand=p_brand.create({'name':str(line.get(u'Brand',""))})
 
-            if not prtnr:
-                prtnr = self.env['res.partner'].create({
-                    'name': partnr,
-                    'company_type': 'person',
-                })
-            # quantity = line.get(u'quantity',0)
-            # price_unit = self.get_valid_price(line.get('price',""),cont)
-            # product_uom = product_template_obj.search([('default_code','=',code)])
+            Made = p_made.search([('name','=',str(line.get(u'Made', "")))])
+            if not Made:
+                Made=p_made.create({'name':str(line.get(u'Made', ""))})
+
+            color =p_color.search([('name','=',str(line.get(u'color', "")))])
+            if not color:
+                color=p_color.create({'name':str(line.get(u'color', ""))})
+
+            Length =p_length.search([('name','=',line.get(u'Length', 0))])
+            if not Length:
+                Length=p_length.create({'name':line.get(u'Length', 0)})
+
+            Width =p_width.search([('name','=', line.get(u'Width', 0))])
+            if not Width:
+                Width=p_width.create({'name':line.get(u'Width', 0)})
+
+            Height =p_height.search([('name','=', line.get(u'Height', 0))])
+            if not Height:
+                Height=p_height.create({'name':line.get(u'Height', 0)})
+
+            Type =p_type.search([('name','=',str(line.get(u'Product Type', "")))])
+            if not Type:
+                Type=p_type.create({'name':str(line.get(u'Product Type', ""))})
+            cp = line.get(u'cp', 0.0)
+            sp=line.get(u'sp', 0.0)
+
+            description = str(line.get(u'description', ""))
+            Material = str(line.get(u'Material', ""))
+            Qty= line.get(u'Qty - 3', 0)
+            Model = str(line.get(u'Model', ""))
+
+
+
+
+            uom = uom_obj.search([('name', '=', um)])
+            cat_id = categ.search([('name', '=', cat)], limit=1)
+
+
+
             # taxes = product_id.supplier_taxes_id.filtered(lambda r: not product_id.company_id or r.company_id == product_id.company_id)
             # tax_ids = taxes.ids
-            inv_num = line.get('Invoice', '0101010')
-            inv_date = line.get('Date', datetime.datetime.now().strftime('%m%d%y_%H%M%S'))
-            amount = line.get('Amount', 0.0)
-            if prtnr:
-                # quantity = line.get(u'quantity',0)
+            if line.get('description', False):
 
                 # if not cat_id:
                 #    cat_id = categ.search([('name', '=', sub), ('parent_id.name', '=', cat)])
-                #
-                # if not cat_id:
-                #     cat_id = categ.search([('parent_id.name', '=', cat)],limit=1).id
-                #
+
+                if not cat_id:
+                    cat_id = categ.create({
+                        'name': cat,
+                    })
+
                 # if not cat_id:
                 #     cat_id=1
 
@@ -132,117 +158,86 @@ class ImportPurchaseOrder(models.TransientModel):
                 #     gos = 0.0
                 # else:
                 #     gos = line.get('GOSI Salary Deduction', 0.0) or 0.0
+                name=cat_id.name  +' '
 
-                movid = self.create_invoices(amount=amount, type='in_invoice', product=prd, partner=prtnr.id,jrnl=jrn,
-                                             date=inv_date, acc_r=acc_rec,acc_p=acc_pay, inv=inv_num)
-                #
-                # vald = {
-                #     'account_id': acc_id.id,
-                #     'debit': debit,
-                #     'credit':credit,
-                #     'move_id':movid.id,
-                #
-                # }
-                # valc = {
-                #     'account_id': acc_id.id,
-                #     'debit':  credit,
-                #     'credit': debit,
-                #     'move_id': movid.id,
-                #
-                # }
-                # has = accmove.search([('name', '=', acc_id.name)])
-                # if len(has) > 0:
-                #     has.write(vals)
-                # else:
-                # try:
-                # ct = self.env['account.move.line'].sudo().create([vald,valc])
-                # movid.post()
-                # except:
-                #     print("THIS IS THE SHIT------->",vals)
+                if Length:
+                    if Length.name:
+                        name +=Length.name + ' '
+                    else:
+                        name += ""
+                if Width:
+                    if Width.name:
+                       name += 'X' + Width.name + ' '
+                    else:
+                        name += ""
+                if Height:
+                    if Height.name:
+                       name += 'X' +Height.name + ' '
+                    else:
+                        name += ""
 
-            #     if debit>0.0:
-            #         acc_id.opening_debit=debit
-            #     if credit>0.0:
-            #         acc_id.opening_credit=credit
-            #
-            #
-            # else:
-            #     notlist.append({
-            #       'account':str(line.get('Account Name',False)),
-            #         'debit':debit,
-            #         'credit':credit,
-            #     }
-            #     )
-        else:
-            notlist.append(partnr)
+                if color and color.name !=None or False:
+                    name += color.name + ' '
+                else:
+                    name += ""
 
-        print(notlist)
+                if Type and Type.name != None:
+                    name+=Type.name + ' '
+                else:
+                    name += ""
+                if Made and Made.name != None:
+                    name+=Made.name + ' '
+                else:
+                    name += ""
+                if Brand and Brand.name !=None:
+                    name+=Brand.name
+                else:
+                    name+=""
 
-    def create_invoices(self, amount=0.0, type='in_invoice', product=None, partner=None, date=None, acc_r=None,acc_p=None,jrnl=None,
-                        inv="0000"):
-        """ Returns an open invoice """
-        # date_datetime = datetime.datetime.strptime(date, "%Y-%m-%d %H:%M:%S")
 
-        if partner != None and amount != None:
 
-            invoice = self.env['account.move'].create({
-                'type': type,
-                'partner_id': partner,
-                'invoice_date': date,
-                'date': date,
-                'journal_id':jrnl.id,
-                'inv_num': inv,
-            })
-            # vald = {
-            #     'account_id': acc_id.id,
-            #     'debit': debit,
-            #     'credit':credit,
-            #     'move_id':movid.id,
-            #
-            # }
-            # valc = {
-            #     'account_id': acc_id.id,
-            #     'debit':  credit,
-            #     'credit': debit,
-            #     'move_id': movid.id,
-            #
-            # }
 
-            mov_id_d = {'move_name': 'test invoice',
-                      'move_id': invoice.id,
-                        'debit': 0.0 ,
-                        'credit':  amount,
-                      'date': date,
-                      'partner_id': partner,
-                      'product_id': product.id,
-                      'account_id': acc_r.id,
-                        'name':product.name,
-                        'exclude_from_invoice_tab': True,
+                vals = {
+                    'name': name,
+                    'uom_id': 34,
+                    'uom_po_id': 34,
+                    'categ_id': cat_id.id,
+                    'type': 'product',
+                    'raw_mat': True,
+                    'model':Model,
+                    'Material':Material,
+                    'description':description,
+                    'sequence':cont,
 
-                        'quantity': 1,
-                      'price_unit': float(amount)}
-            mov_id_c = {'move_name': 'test invoice',
-                        'move_id': invoice.id,
-                        'debit':  amount,
-                        'credit': 0.0 ,
-                        'date': date,
-                        'name': product.name,
-                        'partner_id': partner,
-                        'product_id': product.id,
-                        'account_id': acc_p.id,
-                        'quantity': 1,
+                }
 
-                        # 'exclude_from_invoice_tab': True,
-                        'price_unit': float(amount)}
 
-            ct = self.env['account.move.line'].sudo().with_context(
-            check_move_validity=True).create([mov_id_d,mov_id_c])
+                has = productx.search([('name', '=', name)])
+                if len(has) > 0:
+                    has.write(vals)
+                else:
+                    try:
+                      ct = self.env['product.template'].sudo().create(vals)
+                      product=self.env['product.product'].search([('product_tmpl_id','=',ct.id)])
+                      if product:
+                         loc=self.env.ref('stock.stock_location_stock').id
+                         stok= self.env['stock.quant'].sudo().create({
+                              'product_id': product.id,
+                              'location_id': loc,
+                              'quantity': Qty,
+                          })
+                      else:
+                          product=self.env['product.product'].create({'product_tmpl_id':ct.id})
+                          if product:
+                              loc = self.env.ref('stock.stock_location_stock').id
+                              stok = self.env['stock.quant'].sudo().create({
+                                  'product_id': product.id,
+                                  'location_id': loc,
+                                  'quantity': Qty,
+                              })
 
-            # invoice.line_ids = [(0, 0, mov_id)]
-
-            return invoice
-        else:
-            print("hahah")
+                    except:
+                        print("THIS IS THE SHIT------->",vals)
 
         # if self._context.get('open_order', False):
         #     return purchase_order_id.action_view_order(purchase_order_id.id)
@@ -411,3 +406,7 @@ class ImportPurchaseOrder(models.TransientModel):
     def csv_validator(self, xml_name):
         name, extension = os.path.splitext(xml_name)
         return True if extension == '.xls' or extension == '.xlsx' else False
+
+
+
+

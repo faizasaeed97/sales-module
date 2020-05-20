@@ -135,8 +135,10 @@ class Attendance(models.Model):
                 # if 15 min allow, he come even seconds late, what we can do mark him apply late in logic
 
                 FMT = '%H:%M'
+                print(record.first_check_in)
                 tdelta =datetime.datetime.strptime(record.first_check_in, FMT)-datetime.datetime.strptime(record.employee_id.st_checkin, FMT)
                 # check if difference greater than 15 minute
+                # also include grace time
                 if tdelta.days<0:
                     self.apply_latein_deduction=False
                 if not tdelta.days<0:

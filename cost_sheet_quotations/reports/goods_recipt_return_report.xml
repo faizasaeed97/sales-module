@@ -27,6 +27,7 @@
                             <strong>Goods recipt Return</strong>
                         </h3>
                     </div>
+                    <t t-set="qty_done" t-value="0"/>
                     <table cellpadding="0" cellspacing="0" width="1200px">
                         <tbody>
                             <tr t-attf-style="page-break-inside:avoid !important;border:1px solid black; font-weight:bold;background-color:white; color:black;};">
@@ -55,7 +56,7 @@
                         </tbody>
                     </table>
                     <br/>
-                    <table style="border-collapse: collapse;width: 100%;height:200px" class="table table-condensed">
+  <table style="border: 1px solid black;height: 400px;border-collapse: collapse;" class="table table-condensed">
                         <thead>
                             <tr>
                                 <th>S.No</th>
@@ -80,6 +81,7 @@
                                     </td>
                                     <td>
                                         <span t-field="line.quantity_done"/>
+                                         <t t-set="qty_done" t-value="qty_done+line.quantity_done"/>
                                     </td>
 
                                 </tr>
@@ -88,6 +90,7 @@
 
                         </tbody>
                     </table>
+
 
 
                     <table style="border-collapse: collapse;width: 100%;" class="table">
@@ -106,7 +109,7 @@
                             <tr t-attf-style="page-break-inside:avoid !important;border:1px solid black;border-bottom:0px solid black; font-weight:bold;background-color:white; color:black;};">
                                 <td align="left" colspan="3"
                                     t-attf-style="font-weight:bold;color:black;border:1px solid black;border-bottom:0px solid black;">
-                                    Bahraini Dinars Twenty Only
+
                                     <br/>
                                     <br/>
                                     <br/>
@@ -124,7 +127,8 @@
                                 <td align="center"
                                     t-attf-style="font-weight:bold;color:black;border-right:1px solid black;border-bottom:0px solid black;"
                                     width="12%">
-                                    <span>10.00</span>
+
+                                    <span t-esc="qty_done"></span>
                                 </td>
                             </tr>
                             <tr t-attf-style="page-break-inside:avoid !important;border:1px solid black;border-top:0px solid black; font-weight:bold;background-color:white; color:black;};">

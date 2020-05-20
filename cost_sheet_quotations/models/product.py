@@ -3,6 +3,46 @@ from odoo.exceptions import UserError, ValidationError
 
 
 
+class acc_pay_inherit(models.Model):
+    _inherit='account.payment'
+
+    @api.model
+    def get_int_val(self):
+        amount=self.amount
+        int_val= int(amount//1)
+        return int_val
+
+    @api.model
+    def get_dec_val(self):
+        amount=self.amount
+        dec_val= (amount%1)
+        return dec_val
+
+    def get_journal_line(self):
+        active_ids = self.invoice_ids
+        final_list = []
+        if active_ids:
+
+            invoices = self.env['account.move'].browse(active_ids.ids).filtered(
+                lambda move: move.is_invoice(include_receipts=True))
+            counter = 0
+            for rec in invoices:
+                for data in rec.line_ids:
+                    counter+=1
+                    j_dic = {}
+                    j_dic['srn']=counter
+
+                    j_dic['account']=data.account_id.name
+                    j_dic['label']=data.name
+
+                    j_dic['debit']=data.debit
+
+                    j_dic['credit']=data.credit
+                    final_list.append(j_dic)
+
+        return final_list
+
+
 
 
 class account_projwork(models.Model):

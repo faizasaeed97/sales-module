@@ -28,7 +28,7 @@ Cost sheet from CRM, Generate Quotation
         'reports/credit_note.xml',
         'reports/goods_recipt_note_report.xml',
         'reports/goods_recipt_return_report.xml',
-
+        'reports/customer_paymet.xml',
         'reports/material_issue.xml',
         'reports/vendor_payment_pettycash_report.xml'
     ],

@@ -12,6 +12,12 @@
 
                 <button name="process_material" attrs="{'invisible':[('is_allmaterial_availbile','=',True)]}"
                         class="btn-primary" string="Create Material Requisition" type="object"/>
+
+                     <button name="material_req_internal"
+                        class="btn-primary" string="Create Internal Requisition" type="object"/>
+
+
+
             </xpath>
             <xpath expr="//field[@name='name']" position="after">
                 <field name="cost_sheet_id" invisible="1"/>

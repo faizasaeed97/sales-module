@@ -194,6 +194,12 @@ class InternalRequisition(models.Model):
         string='Picking Type',
         copy=False,
     )
+    so_id = fields.Many2one(
+        'sale.order',
+        string='SO#',
+        readonly=True,
+        copy=False,
+    )
 
     @api.model
     def create(self, vals):

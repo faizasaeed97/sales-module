@@ -212,7 +212,7 @@ class Costsheet(models.Model):
     def create_quotation(self):
         if self.state=='Approved':
 
-            if len(self.material_ids) > 0 or len(self.internal_rental_ids) > 0 or len(self.overhead_ids) or len(self.labor_total) > 0 or len(self.outsource_rental_ids)>0:
+            if len(self.material_ids) > 0 or len(self.internal_rental_ids) > 0 or len(self.overhead_ids) or len(self.labor_ids) > 0 or len(self.outsource_rental_ids)>0:
                 markup_amount_line = self.get_each_line_markup_division_amount(
                     self.get_markup_amount(self.grand_total, self.markup_type, self.markup_value))
                 sale_order = self.env['sale.order'].create(
@@ -602,17 +602,17 @@ class costsheetlabors(models.Model):
 
     product_id = fields.Many2one('product.product', string='Particular', required=True, ondelete='cascade')
     # grade = fields.Many2one('hr.grade',string="grade",store=True)
-    job_id = fields.Many2one('hr.job', string='Designations',store=True)
+    job_id = fields.Many2one('hr.job', string='Designations')
     qty = fields.Float(string='Qty.', default=1)
     uom = fields.Many2one('uom.uom', string='UOM')
     # rate = fields.Float(string='Rate')
     subtotal = fields.Float(string='Total')
-    department=fields.Many2one('hr.department',string='Department',store=True)
+    department=fields.Many2one('hr.department',string='Department')
     # days=fields.Char(string='Day(s)')
-    hours=fields.Float(string='hour(s)',compute='get_hourly_rate',store=True)
+    hours=fields.Float(string='hour(s)',readonly=True)
 
 
-    @api.depends('job_id','department')
+    @api.onchange('job_id','department')
     def get_hourly_rate(self):
         for rec in self:
             if rec.job_id and rec.department:
@@ -1024,6 +1024,47 @@ class saleorder(models.Model):
                 lead.write(
                     {'stage_id': lead._stage_find(domain=[('is_won', '=', True)]).id})
         return res
+
+
+    def material_req_internal(self):
+        # against costsheet
+        material_availble_list = []
+        if self.order_line and self.cost_sheet_id:
+            for record in self.order_line:
+                # if record.product_id.id in self.cost_sheet_id.material_ids.product_id.ids:
+                if record.product_id.qty_available>0:
+                    material_availble_dict = {}
+                    material_availble_dict['product_id'] = record.product_id.id
+                    material_availble_dict['qty'] = record.product_id.qty_available
+                    material_availble_dict['uom'] = record.product_uom.id
+                    material_availble_dict['desc'] = record.name
+
+                    material_availble_list.append(material_availble_dict)
+            if material_availble_list:
+                is_allmaterial_availbile = False
+
+                requisition_list = []
+                for rec in material_availble_list:
+                    requisition_list.append(
+                        [0, 0, {'product_id': rec['product_id'], 'qty': rec['qty'],
+                                'uom': rec['uom'], 'description': rec['desc'],
+                                }])
+
+                view_id = self.env.ref('material_internal_requisitions.material_internal_requisition_form_view')
+                return {
+                    'name': _('Internal Requistion'),
+                    'view_id': view_id.id,
+                    'view_type': 'form',
+                    'view_mode': 'form',
+                    'res_model': 'internal.requisition',
+                    'type': 'ir.actions.act_window',
+                    'target': 'current',
+                    'context': {
+                        'default_requisition_line_ids': requisition_list,
+                        'default_so_id':self.id,
+                        # 'default_request_emp':self.env.user.id,
+                    },
+                }
 
 
 

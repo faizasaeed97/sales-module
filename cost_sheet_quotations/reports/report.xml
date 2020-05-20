@@ -71,6 +71,15 @@
                 file="cost_sheet_quotations.report_payment_voucher_petty"/>
 
 
+                <report
+                id="action_customer_payment_print"
+                string="Payment Voucher Customer"
+                 model="account.payment"
+                report_type="qweb-pdf"
+                name="cost_sheet_quotations.report_customer_payment"
+                file="cost_sheet_quotations.report_customer_payment"/>
+
+
 
         <!--        paperformat="paper_format_jobcard"-->
 

@@ -65,7 +65,7 @@
 
                     <button name="validate_cs"
                             class="btn-primary" string="Validate" type="object"
-                            attrs="{'invisible': [('state','in',['Validated'])]}"
+                            attrs="{'invisible': [('state','in',['Validated','Approved'])]}"
                             groups="cost_sheet_quotations.group_costsheet_user_all"
                     />
 

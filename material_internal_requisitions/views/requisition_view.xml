@@ -70,6 +70,8 @@
 									attrs="{'readonly': [['state', 'in', ['reject','cancel','receive']]]}" />
 								<field name="account_id"
 									attrs="{'readonly': [['state', 'in', ['reject','cancel','receive']]]}" />
+
+								<field name="so_id"/>
 							</group>
 						</group>
 						<notebook>

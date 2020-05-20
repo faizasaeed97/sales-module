@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <template id="report_design_footer" inherit_id="web.external_layout_standard">
+        <xpath expr="//div[@class='footer o_standard_footer']" position="replace">
+            <div class="footer o_standard_footer">
+                <div class="text-right" style="border-top: 1px solid black;">
+                    <span>SHANE, 2</span>
+                </div>
+            </div>
+        </xpath>
+    </template>
+    <template id="report_customer_payment">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+                <t t-foreach="docs" t-as="o">
+                    <div style="width:1200px;border:0px solid black;">
+                        <table style="" cellspacing="0" cellpadding="0" width="1200px">
+                            <tbody>
+                                <tr t-attf-style="border-bottom:2px solid black;page-break-inside:avoid !important;font-weight:bold;background-color:white;color:black;};">
+                                    <td align="left" t-attf-style="font-weight:bold;color:black;border:0px solid black;"
+                                        width="50%">
+                                        <span style="font-size:20px;">Receipt No:</span>
+                                        <span style="font-size:20px;">RV-20-00056</span>
+                                    </td>
+                                    <td align="right"
+                                        t-attf-style="font-weight:bold;color:black;border:0px solid black;"
+                                        width="50%">
+                                        <span style="font-size:20px;">Date:</span>
+                                        <span t-esc="context_timestamp(datetime.datetime.now()).strftime('%d/%m/%Y')"/>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <br/>
+                        <br/>
+                        <table style="" cellspacing="0" cellpadding="0" width="1200px">
+                            <tbody>
+                                <tr t-attf-style="border:0px solid black;page-break-inside:avoid !important;background-color:white;color:black;};">
+                                    <td align="left" t-attf-style="color:black;border:0px solid black;" width="20%">
+                                        <span style="font-size:20px;font-weight:bold;">Mr. / Ms.</span>
+                                    </td>
+                                    <td align="left" t-attf-style="color:black;border:0px solid black;" width="80%">
+                                        <div>
+                                            <p t-field="o.partner_id" class="m-0"/>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr t-attf-style="border:0px solid black;page-break-inside:avoid !important;background-color:white;color:black;};">
+                                    <td align="left" t-attf-style="color:black;border:0px solid black;" width="20%">
+                                        <span style="font-size:20px;font-weight:bold;">The Sum of</span>
+                                    </td>
+                                    <td align="left" t-attf-style="color:black;border:0px solid black;" width="80%">
+                                        <p t-field="o.amount" class="m-0"/>
+
+                                        <br/>
+                                        <br/>
+                                    </td>
+                                </tr>
+                                <tr t-attf-style="border:0px solid black;page-break-inside:avoid !important;background-color:white;color:black;};">
+                                    <td align="left" t-attf-style="color:black;border:0px solid black;" width="20%">
+                                        <span style="font-size:20px;font-weight:bold;">Being</span>
+                                    </td>
+
+                                </tr>
+                            </tbody>
+                        </table>
+                        <table style="" cellspacing="0" cellpadding="0" width="1200px">
+                            <tbody>
+                                <tr t-attf-style="border:0px solid black;page-break-inside:avoid !important;background-color:white;color:black;};">
+                                    <td align="left" t-attf-style="color:black;border:0px solid black;" width="70%">
+                                        <span style="font-size:20px;"></span>
+                                    </td>
+                                    <td align="center" t-attf-style="color:black;border:0px solid black;" width="15%">
+                                        <span style="font-size:20px;font-weight:bold;">BD</span>
+                                    </td>
+                                    <td align="center" t-attf-style="color:black;border:0px solid black;" width="15%">
+                                        <span style="font-size:20px;font-weight:bold;">Fils</span>
+                                    </td>
+                                </tr>
+                                <tr t-attf-style="border:0px solid black;page-break-inside:avoid !important;background-color:white;color:black;};">
+                                    <td align="left" t-attf-style="color:black;border:0px solid black;" width="70%">
+                                        <span style="font-size:20px;font-weight:bold;">NOTE: THIS RECEIPT IS VALID
+                                            SUBJECT TO REALISATION OF CHEQUE
+                                        </span>
+                                    </td>
+                                    <td align="center" t-attf-style="color:black;border:1px solid black;" width="15%">
+                                        <p t-esc="o.get_int_val()" class="m-0"/>
+                                        <br/>
+                                        <br/>
+                                    </td>
+                                    <td align="center" t-attf-style="color:black;border:1px solid black;" width="15%">
+                                        <span t-esc="o.get_dec_val()" class="m-0"/>
+                                        <br/>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <br/>
+                        <div style="width=100%;border-bottom:1px solid black;border-style: dashed;"></div>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <span style="font-size:20px;font-weight:bold;">Payment Against</span>
+                        <table style="" cellspacing="0" cellpadding="0" width="1000px">
+                            <tbody>
+                                <tr t-attf-style="border:0px solid black;page-break-inside:avoid !important;background-color:white;color:black;};">
+
+                                    <td align="center" t-attf-style="color:black;border-bottom:1px solid black;"
+                                        width="15%">
+                                        <span style="font-size:20px;">Account.</span>
+                                    </td>
+
+                                    <td align="center" t-attf-style="color:black;border-bottom:1px solid black;"
+                                        width="15%">
+                                        <span style="font-size:20px;">Reference</span>
+                                    </td>
+                                    <td align="center" t-attf-style="color:black;border-bottom:1px solid black;"
+                                        width="15%">
+                                        <span style="font-size:20px;">Debit</span>
+                                    </td>
+                                    <td align="center" t-attf-style="color:black;border-bottom:1px solid black;"
+                                        width="15%">
+                                        <span style="font-size:20px;">Credit</span>
+                                    </td>
+                                </tr>
+                                <t t-foreach="o.get_journal_line()" t-as="l">
+
+                                    <tr t-attf-style="border:0px solid black;page-break-inside:avoid !important;background-color:white;color:black;};">
+
+                                        <td align="center" t-attf-style="color:black;" width="15%">
+                                        <span t-esc="l.get('account','')" class="m-0"/>
+                                        </td>
+
+                                        <td align="center" t-attf-style="color:black;;" width="15%">
+                                        <span t-esc="l.get('label','')" class="m-0"/>
+                                        </td>
+                                        <td align="center" t-attf-style="color:black;" width="15%">
+                                        <span t-esc="l.get('debit','')" class="m-0"/>
+                                        </td>
+                                        <td align="center" t-attf-style="color:black;" width="15%">
+                                        <span t-esc="l.get('credit','')" class="m-0"/>
+                                        </td>
+                                    </tr>
+                                </t>
+<!--                                <tr t-attf-style="border:0px solid black;page-break-inside:avoid !important;background-color:white;color:black;};">-->
+<!--                                    <td align="left" t-attf-style="color:black;">-->
+<!--                                        <span style="font-size:20px;font-weight:bold;">Remarks:</span>-->
+<!--                                    </td>-->
+<!--                                    <td colspan="6" align="left" t-attf-style="color:black;">-->
+<!--                                        <span style="font-size:20px;">CASH RECEIPT-Removal of complete branding for-->
+<!--                                            Security Car Quantity - 1 no.-->
+<!--                                        </span>-->
+<!--                                    </td>-->
+<!--                                </tr>-->
+                            </tbody>
+                        </table>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <table style="" cellspacing="0" cellpadding="0" width="1200px">
+                            <tbody>
+                                <tr t-attf-style="border:0px solid black;page-break-inside:avoid !important;background-color:white;color:black;};">
+                                    <td align="center" t-attf-style="color:black;" width="33%">
+                                        <div style="width:200px;border:1px solid black;"></div>
+                                        <span style="font-size:20px;font-weight:bold;">Receiver</span>
+                                    </td>
+                                    <td align="center" t-attf-style="color:black;" width="33%">
+                                        <div style="width:200px;border:1px solid black;"></div>
+                                        <span style="font-size:20px;font-weight:bold;">Manager</span>
+                                    </td>
+                                    <td align="center" t-attf-style="color:black;" width="34%">
+                                        <div style="width:200px;border:1px solid black;"></div>
+                                        <span style="font-size:20px;font-weight:bold;">Accountant</span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

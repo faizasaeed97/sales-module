@@ -81,6 +81,7 @@ class ImportPurchaseOrder(models.TransientModel):
             # sub = str(line.get('Sub-Category', ""))
             cat = str(line.get('Product Category', ""))
             um = str(line.get('UOM -3', ""))
+
             Brand =p_brand.search([('name','=',str(line.get(u'Brand',"")))],limit=1)
             if not Brand:
                 Brand=p_brand.create({'name':str(line.get(u'Brand',""))})
@@ -176,27 +177,27 @@ class ImportPurchaseOrder(models.TransientModel):
                     else:
                         name += ""
 
-                if color and color.name !=None or False:
+                if color and color.name !='None' or False:
                     name += color.name + ' '
                 else:
                     name += ""
 
-                if Type and Type.name != None:
+                if Type and Type.name != 'None':
                     name+=Type.name + ' '
                 else:
                     name += ""
-                if Made and Made.name != None:
+                if Made and Made.name != 'None':
                     name+=Made.name + ' '
                 else:
                     name += ""
-                if Brand and Brand.name !=None:
+                if Brand and Brand.name !='None':
                     name+=Brand.name
                 else:
                     name+=""
 
 
 
-
+                name.replace('None', '')
                 vals = {
                     'name': name,
                     'uom_id': 34,

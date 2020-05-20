@@ -81,31 +81,31 @@ class ImportPurchaseOrder(models.TransientModel):
             # sub = str(line.get('Sub-Category', ""))
             cat = str(line.get('Product Category', ""))
             um = str(line.get('UOM -3', ""))
-            Brand =p_brand.search([('name','=',str(line.get(u'Brand',"")))])
+            Brand =p_brand.search([('name','=',str(line.get(u'Brand',"")))],limit=1)
             if not Brand:
                 Brand=p_brand.create({'name':str(line.get(u'Brand',""))})
 
-            Made = p_made.search([('name','=',str(line.get(u'Made', "")))])
+            Made = p_made.search([('name','=',str(line.get(u'Made', "")))],limit=1)
             if not Made:
                 Made=p_made.create({'name':str(line.get(u'Made', ""))})
 
-            color =p_color.search([('name','=',str(line.get(u'color', "")))])
+            color =p_color.search([('name','=',str(line.get(u'color', "")))],limit=1)
             if not color:
                 color=p_color.create({'name':str(line.get(u'color', ""))})
 
-            Length =p_length.search([('name','=',line.get(u'Length', 0))])
+            Length =p_length.search([('name','=',line.get(u'Length', 0))],limit=1)
             if not Length:
                 Length=p_length.create({'name':line.get(u'Length', 0)})
 
-            Width =p_width.search([('name','=', line.get(u'Width', 0))])
+            Width =p_width.search([('name','=', line.get(u'Width', 0))],limit=1)
             if not Width:
                 Width=p_width.create({'name':line.get(u'Width', 0)})
 
-            Height =p_height.search([('name','=', line.get(u'Height', 0))])
+            Height =p_height.search([('name','=', line.get(u'Height', 0))],limit=1)
             if not Height:
                 Height=p_height.create({'name':line.get(u'Height', 0)})
 
-            Type =p_type.search([('name','=',str(line.get(u'Product Type', "")))])
+            Type =p_type.search([('name','=',str(line.get(u'Product Type', "")))],limit=1)
             if not Type:
                 Type=p_type.create({'name':str(line.get(u'Product Type', ""))})
             cp = line.get(u'cp', 0.0)

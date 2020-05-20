@@ -44,21 +44,20 @@ class ImportAttendance(models.TransientModel):
                 attendance_dict = {}
                 id_no = int(sheet.cell(row, 0).value)
                 emp=self.env['hr.employee'].search([('identification_id','=',id_no)])
-                if emp:
-                    attendance_date = sheet.cell(row, 1).value
-                    first_in = sheet.cell(row, 7).value
-                    first_out = sheet.cell(row, 8).value
-                    second_in = sheet.cell(row, 12).value
-                    second_out = sheet.cell(row, 13).value
-                    exception_approved= sheet.cell(row, 26).value
-                    attendance_dict['employee_id'] = emp.id
-                    attendance_dict['attendance_date'] = attendance_date
-                    attendance_dict['first_in'] = self.get_time(first_in)
-                    attendance_dict['first_out'] = self.get_time(first_out)
-                    attendance_dict['second_in'] = self.get_time(second_in)
-                    attendance_dict['second_out'] = self.get_time(second_out)
-                    attendance_dict['exception_approved'] = exception_approved
-                    attendance_list.append(attendance_dict)
+                attendance_date = sheet.cell(row, 1).value
+                first_in = sheet.cell(row, 7).value
+                first_out = sheet.cell(row, 8).value
+                second_in = sheet.cell(row, 12).value
+                second_out = sheet.cell(row, 13).value
+                exception_approved= sheet.cell(row, 26).value
+                attendance_dict['employee_id'] = emp.id
+                attendance_dict['attendance_date'] = attendance_date
+                attendance_dict['first_in'] = self.get_time(first_in)
+                attendance_dict['first_out'] = self.get_time(first_out)
+                attendance_dict['second_in'] = self.get_time(second_in)
+                attendance_dict['second_out'] = self.get_time(second_out)
+                attendance_dict['exception_approved'] = exception_approved
+                attendance_list.append(attendance_dict)
 
             if attendance_list:
                 # create attendance records for each one, check if attendance not found on same date, else give error already exist.

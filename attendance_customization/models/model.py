@@ -181,18 +181,19 @@ class Attendance(models.Model):
 
     @api.depends('employee_id')
     def get_jobtitle(self):
-        if self.employee_id:
-            jobtt = self.env['hr.contract'].search([('employee_id', '=', self.employee_id.id)], limit=1)
-            if jobtt:
-                # if jobtt.grade:
-                #     self.job_title = jobtt.grade.designation.name
-                # else:
-                #     self.job_title = None
-                self.job_title = None
+        for rec in self:
+            if rec.employee_id:
+                jobtt = rec.env['hr.contract'].search([('employee_id', '=', rec.employee_id.id)], limit=1)
+                if jobtt:
+                    # if jobtt.grade:
+                    #     rec.job_title = jobtt.grade.designation.name
+                    # else:
+                    #     rec.job_title = None
+                    rec.job_title = None
+                else:
+                    rec.job_title = None
             else:
-                self.job_title = None
-        else:
-            self.job_title = None
+                rec.job_title = None
 
 
     @api.depends('first_check_in', 'first_check_out')

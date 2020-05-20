@@ -213,7 +213,7 @@ class ImportPurchaseOrder(models.TransientModel):
 
 
                 has = productx.search([('name', '=', name)])
-                if True:
+                if False:
                     print()
                     # has.write(vals)
                 else:

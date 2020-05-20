@@ -218,23 +218,23 @@ class ImportPurchaseOrder(models.TransientModel):
                 else:
                     try:
                       ct = self.env['product.template'].sudo().create(vals)
-                      # product=self.env['product.product'].search([('product_tmpl_id','=',ct.id)])
-                      # if product:
-                      #    loc=self.env.ref('stock.stock_location_stock').id
-                      #    stok= self.env['stock.quant'].sudo().create({
-                      #         'product_id': product.id,
-                      #         'location_id': loc,
-                      #         'quantity': Qty,
-                      #     })
-                      # else:
-                      #     product=self.env['product.product'].create({'product_tmpl_id':ct.id})
-                      #     if product:
-                      #         loc = self.env.ref('stock.stock_location_stock').id
-                      #         stok = self.env['stock.quant'].sudo().create({
-                      #             'product_id': product.id,
-                      #             'location_id': loc,
-                      #             'quantity': Qty,
-                      #         })
+                      product=self.env['product.product'].search([('product_tmpl_id','=',ct.id)])
+                      if product:
+                         loc=self.env.ref('stock.stock_location_stock').id
+                         stok= self.env['stock.quant'].sudo().create({
+                              'product_id': product.id,
+                              'location_id': loc,
+                              'quantity': Qty,
+                          })
+                      else:
+                          product=self.env['product.product'].create({'product_tmpl_id':ct.id})
+                          if product:
+                              loc = self.env.ref('stock.stock_location_stock').id
+                              stok = self.env['stock.quant'].sudo().create({
+                                  'product_id': product.id,
+                                  'location_id': loc,
+                                  'quantity': Qty,
+                              })
 
                     except:
                         print("THIS IS THE SHIT------->",vals)

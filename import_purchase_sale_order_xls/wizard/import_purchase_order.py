@@ -213,8 +213,9 @@ class ImportPurchaseOrder(models.TransientModel):
 
 
                 has = productx.search([('name', '=', name)])
-                if len(has) > 0:
-                    has.write(vals)
+                if True:
+                    print()
+                    # has.write(vals)
                 else:
                     try:
                       ct = self.env['product.template'].sudo().create(vals)

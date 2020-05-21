@@ -4,7 +4,7 @@
     'name': 'Cost Sheet',
     'sequence': 1222,
     'version': '1.0',
-    'depends': ['mail', 'base', 'crm', 'mrp', 'project', 'product', 'sale', 'product', 'account',
+    'depends': ['mail', 'base', 'crm', 'mrp', 'project', 'product', 'sale', 'product', 'account','hr',
                 'design_creative_custom'],
     'category': 'sale', 'crm'
                         'summary': 'Handle lunch orders of your employees',

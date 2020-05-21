@@ -188,9 +188,9 @@
                         </page>
                         <page string="Direct Labours">
                             <field name="labor_ids" context="{'scope':scope_work}" force_save="1">
-                                <tree editable="bottom" create="false">
-                                    <field name="product_final" force_save="1" domain="[('final_prod','=',True)]" readonly="1" options="{'no_create': True, 'no_open': True}"/>
-                                    <field name="product_id" force_save="1" readonly="1" options="{'no_create': True, 'no_open': True}"/>
+                                <tree editable="bottom">
+                                    <field name="product_final" force_save="1" domain="[('final_prod','=',True)]"  options="{'no_create': True, 'no_open': True}"/>
+                                    <field name="product_id" force_save="1"  options="{'no_create': True, 'no_open': True}"/>
                                     <field name="department"  force_save="1" options="{'no_create': True, 'no_open': True}"/>
                                     <field name="job_id" force_save="1" options="{'no_create': True, 'no_open': True}" domain="[('department_id','=',department)]"/>
 <!--                                    <field name="grade" force_save="1" options="{'no_create': True, 'no_open': True}" required="True" domain="[('designation','=',job_id)]"/>-->
@@ -293,6 +293,7 @@
                                 </tree>
                             </field>
                         </page>
+
 
                         <page string="Summery" invisible="1">
 

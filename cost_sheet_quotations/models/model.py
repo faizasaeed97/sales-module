@@ -23,10 +23,9 @@ class Costsheet(models.Model):
     client = fields.Many2one('res.partner', string='Client')
     sale_person = fields.Many2one('res.users', string='Sales person',default=lambda self: self.env.user)
     material_ids = fields.One2many('cost.sheet.material', 'cost_sheet',store=True,copy=True, ondelete='cascade')
-    labor_ids = fields.One2many('cost.sheet.labors', 'cost_sheet',store=True,copy=True, ondelete='cascade')
+    labor_ids = fields.One2many('cost.sheet.labors', 'cost_labour',store=True,copy=True, ondelete='cascade')
     overhead_ids = fields.One2many('cost.sheet.overhead', 'cost_sheet',store=True,copy=True, ondelete='cascade')
     internal_rental_ids = fields.One2many('cost.sheet.rental.internal', 'cost_sheet',store=True,copy=True, ondelete='cascade')
-
     outsource_rental_ids = fields.One2many('cost.sheet.rental.outsource', 'cost_sheet',store=True,copy=True, ondelete='cascade')
 
     # initial_budget = fields.Float(string="initial budget", compute="get_costsheet_summery", )
@@ -287,11 +286,11 @@ class Costsheet(models.Model):
             for record in self.material_ids:
                 if record.subtotal:
                     sum += record.subtotal
-                self.labor_ids |= self.labor_ids.new({
-                    'cost_sheet': self.id,
-                    'product_final':record.product_final.id,
-                    'product_id':record.product_id.id ,
-                })
+                # self.labor_ids |= self.labor_ids.new({
+                #     'cost_labour': self.id,
+                #     'product_final':record.product_final.id,
+                #     'product_id':record.product_id.id ,
+                # })
 
         self.material_total = sum
 
@@ -578,6 +577,7 @@ class costsheetmaterial(models.Model):
     def onchange_product(self):
         if self.product_id:
             self.rate = self.product_id.standard_price
+            self.uom = self.product_id.uom_id
 
 
     @api.onchange('qty', 'rate')
@@ -595,7 +595,7 @@ class costsheetlabors(models.Model):
     _name = 'cost.sheet.labors'
 
     name=fields.Char(string="name")
-    cost_sheet = fields.Many2one('cost.sheet.crm')
+    cost_labour = fields.Many2one('cost.sheet.crm')
     scope = fields.Many2one('scope.work')
     product_final = fields.Many2one(related='scope.product_id', string='Final Product',copy=True,
                                     required=False, readonly=False, store=True)
@@ -609,10 +609,16 @@ class costsheetlabors(models.Model):
     subtotal = fields.Float(string='Total')
     department=fields.Many2one('hr.department',string='Department')
     # days=fields.Char(string='Day(s)')
-    hours=fields.Float(string='hour(s)',readonly=True)
+    hours=fields.Float(string='hour(s)',compute='get_hourly_rate',store=True)
+
+    # @api.model
+    # def create(self, vals):
+    #     res = super(costsheetlabors, self).create(vals)
+    #     return res
 
 
-    @api.onchange('job_id','department')
+
+    @api.depends('job_id','department')
     def get_hourly_rate(self):
         for rec in self:
             if rec.job_id and rec.department:
@@ -658,6 +664,8 @@ class costsheetlabors(models.Model):
     def onchange_qtys(self):
         if self.qty and self.hours:
             self.subtotal = self.qty * self.hours
+        if self.product_id:
+            self.uom = self.product_id.uom_id
         # get_exp=self.env['ir.config_parameter'].search([('key','=','ks_purchase_discount_account')])
         #
         # get_exp.value='2626'
@@ -725,6 +733,7 @@ class costsheetmaterial(models.Model):
     def onchange_product(self):
         if self.product_id:
             self.rate = self.product_id.standard_price
+            self.uom = self.product_id.uom_id
 
     @api.onchange('qty', 'rate')
     def onchange_qtys(self):
@@ -775,6 +784,7 @@ class costsheetmaterial(models.Model):
                 self.rate = self.product_id.original_value/366
             else:
                 self.rate=self.product_id.original_value/365
+            self.uom = self.product_id.uom_id
 
 
 
@@ -823,6 +833,7 @@ class costsheetmaterial(models.Model):
     def onchange_product(self):
         if self.product_id:
             self.rate = self.product_id.standard_price
+            self.uom = self.product_id.uom_id
 
     @api.onchange('qty', 'rate')
     def onchange_qtys(self):
@@ -955,7 +966,10 @@ class saleorder(models.Model):
         material_notavailble_list = []
         if self.order_line and self.cost_sheet_id:
             for record in self.order_line:
-                if record.product_id.id in self.cost_sheet_id.material_ids.product_id.ids:
+                # if record.product_id.id in [self.cost_sheet_id.material_ids.product_id.ids,self.cost_sheet_id.labor_ids.product_id.ids,
+                #                             self.cost_sheet_id.overhead_ids.product_id.ids,
+                #                             self.cost_sheet_id.outsource_rental_ids.product_id.ids,
+                #                             ]:
                     if record.product_uom_qty > record.product_id.qty_available:
                         material_notavailble_dict = {}
                         material_notavailble_dict['product_id'] = record.product_id.id
@@ -1038,8 +1052,9 @@ class saleorder(models.Model):
                     material_availble_dict['qty'] = record.product_id.qty_available
                     material_availble_dict['uom'] = record.product_uom.id
                     material_availble_dict['desc'] = record.name
-
                     material_availble_list.append(material_availble_dict)
+                else:
+                    raise ValidationError(_(str(record.product_id.name)+" Qty is not valid . Please update your stock"))
             if material_availble_list:
                 is_allmaterial_availbile = False
 

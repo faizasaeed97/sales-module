@@ -233,7 +233,7 @@
                                             <td style="border-color:black;font-size:13px;" align="center"
                                                 width="30%">
                                                 <span
-                                                        t-field="l.uom"/>
+                                                        t-field="l.uom.name"/>
                                             </td>
 
 
@@ -363,7 +363,7 @@
                                             <td style="border-color:black;font-size:13px;" align="center"
                                                 width="30%">
                                                 <span
-                                                        t-field="l.uom"/>
+                                                        t-field="l.uom.name"/>
                                             </td>
 
 
@@ -496,7 +496,7 @@
                                             <td style="border-color:black;font-size:13px;" align="center"
                                                 width="30%">
                                                 <span
-                                                        t-field="l.uom"/>
+                                                        t-field="l.uom.name"/>
                                             </td>
 
 
@@ -628,7 +628,7 @@
                                             <td style="border-color:black;font-size:13px;" align="center"
                                                 width="30%">
                                                 <span
-                                                        t-field="l.uom"/>
+                                                        t-field="l.uom.name"/>
                                             </td>
 
 
@@ -758,7 +758,7 @@
                                             <td style="border-color:black;font-size:13px;" align="center"
                                                 width="30%">
                                                 <span
-                                                        t-field="l.uom"/>
+                                                        t-field="l.uom.name"/>
                                             </td>
 
 

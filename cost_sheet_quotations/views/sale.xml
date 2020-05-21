@@ -10,12 +10,11 @@
                 <button name="create_bom" string="Create Bom" type="object"
                         class="btn-primary" attrs="{'invisible':[('is_allmaterial_availbile','=',False)]}"/>
 
-                <button name="process_material" attrs="{'invisible':[('is_allmaterial_availbile','=',True)]}"
+                <button name="process_material" attrs="{'invisible':['|',('is_allmaterial_availbile','=',True),('state','!=','sale')]}"
                         class="btn-primary" string="Create Material Requisition" type="object"/>
 
-                     <button name="material_req_internal"
+                     <button name="material_req_internal" attrs="{'invisible':[('state','!=','sale')]}"
                         class="btn-primary" string="Create Internal Requisition" type="object"/>
-
 
 
             </xpath>

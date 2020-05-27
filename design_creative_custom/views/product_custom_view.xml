@@ -22,16 +22,16 @@
                     <group>
 
                         <field name="brand" placeholder="Select Brand"
-                               attrs="{'invisible': [('raw_mat','=',False)],'required': [('raw_mat', '=',True)]}"/>
+                               attrs="{'invisible': [('raw_mat','=',False)]}"/>
 
                         <field name="p_type" placeholder="Select Type"
-                               attrs="{'invisible': [('raw_mat','=',False)],'required': [('raw_mat', '=',True)]}"/>
+                               attrs="{'invisible': [('raw_mat','=',False)]}"/>
 
                         <field name="p_made" placeholder="Select Made"
-                               attrs="{'invisible': [('raw_mat','=',False)],'required': [('raw_mat', '=',True)]}"/>
+                               attrs="{'invisible': [('raw_mat','=',False)]}"/>
 
                         <field name="p_color" placeholder="Select Color"
-                               attrs="{'invisible': [('raw_mat','=',False)],'required': [('raw_mat', '=',True)]}"/>
+                               attrs="{'invisible': [('raw_mat','=',False)]}"/>
 
                         <field name="p_length" placeholder="Select Length"
                                attrs="{'invisible': [('raw_mat','=',False)]}"/>

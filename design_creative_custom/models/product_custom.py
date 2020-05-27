@@ -45,8 +45,18 @@ class inherithremploye(models.Model):
                 names += 'X' + res.p_width.name+' '
             if res.p_height:
                 names += 'X' + res.p_height.name +' '
+                
+                
+            if res.p_color:
+                names += res.p_color.name+' '
+            if res.p_type:
+                names +=  res.p_type.name+' '
+            if res.p_made:
+                names +=  res.p_made.name +' '
+            if res.brand:
+                names += res.brand.name + ' '
 
-            names+= res.p_color.name+' ' + res.p_type.name  + ' ' + res.p_made.name + ' ' + res.brand.name
+            # names+= res.p_color.name+' ' + res.p_type.name  + ' ' + res.p_made.name + ' ' + res.brand.name
             res.name=str(names)
 
         return res
@@ -64,8 +74,17 @@ class inherithremploye(models.Model):
                     names += 'X' + self.p_width.name+' '
                 if self.p_height:
                     names += 'X' +self.p_height.name+' '
+                    
+                if self.p_color:
+                    names += self.p_color.name + ' '
+                if self.p_type:
+                    names += self.p_type.name + ' '
+                if self.p_made:
+                    names += self.p_made.name + ' '
+                if self.brand:
+                    names += self.brand.name + ' '
 
-                names+= self.p_color.name+' '+ self.p_type.name  + ' ' + self.p_made.name + ' ' + self.brand.name
+                # names+= self.p_color.name+' '+ self.p_type.name  + ' ' + self.p_made.name + ' ' + self.brand.name
                 vals['name']=str(names)
         rslt = super(inherithremploye, self).write(vals)
         return rslt

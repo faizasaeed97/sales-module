@@ -46,7 +46,7 @@
                                     <span></span>
                                     <br/>
                                     <span>Customer Name</span>
-                                    <span></span>
+                                            <p t-field="o.partner_id" class="m-0"/>
                                     <br/>
                                 </td>
                                 <td align="left" t-attf-style="font-weight:bold;color:black;border:1px solid black;"
@@ -108,7 +108,7 @@
                             <tr t-attf-style="page-break-inside:avoid !important;border:1px solid black;border-bottom:0px solid black; font-weight:bold;background-color:white; color:black;};">
                                 <td align="left" colspan="3"
                                     t-attf-style="font-weight:bold;color:black;border:1px solid black;border-bottom:0px solid black;">
-                                    Bahraini Dinars Twenty Only
+<!--                                    Bahraini Dinars Twenty Only-->
                                     <br/>
                                     <br/>
                                     <br/>
@@ -145,7 +145,7 @@
                                 </td>
                                 <td align="right" colspan="2"
                                     t-attf-style="font-weight:bold;color:black;border-right:1px solid black;">
-                                    <span>11/05/2020 8:57:37AM</span>
+                                        <span t-esc="context_timestamp(datetime.datetime.now()).strftime('%d/%m/%Y')"/>
                                 </td>
                             </tr>
                         </tbody>

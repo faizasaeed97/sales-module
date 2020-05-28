@@ -3,8 +3,28 @@ from odoo.exceptions import UserError, ValidationError
 
 
 
+class stok_pick_inh(models.Model):
+    _inherit='stock.picking'
+
+    def goods_rec_in(self):
+        return self.env.ref('cost_sheet_quotations.action_goods_recieved_print').report_action(self)
+
+    def goods_del_out(self):
+        return self.env.ref('cost_sheet_quotations.action_goods_return_print').report_action(self)
+
+
+
+
 class acc_pay_inherit(models.Model):
     _inherit='account.payment'
+
+
+    def payment_rec_out(self):
+        return self.env.ref('cost_sheet_quotations.action_payment_voucher_petty_print').report_action(self)
+
+    def payment_rec_in(self):
+        return self.env.ref('cost_sheet_quotations.action_customer_payment_print').report_action(self)
+
 
     @api.model
     def get_int_val(self):

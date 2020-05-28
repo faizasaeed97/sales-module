@@ -14,7 +14,7 @@
         </div>
         </xpath>
     </template>
-    <template id ="report_material_issue">
+    <template id ="report_material_issue_req">
         <t t-call="web.html_container">
             <t t-call="web.external_layout">
                 <t t-foreach="docs" t-as="o">
@@ -32,8 +32,8 @@
                         <tbody>
                             <tr t-attf-style="page-break-inside:avoid !important;border:1px solid black;border-bottom:5px solid black; font-weight:bold;background-color:white; color:black;};">
                                 <td align="left" t-attf-style="font-weight:bold;color:black;border-right:0px solid black;" width="25%">
-                                    <span style="font-size:20px;margin-left:10px">Customer</span>
-                                            <p t-field="o.partner_id" class="m-0"/>
+                                    <span style="font-size:20px;margin-left:10px">Employee</span>
+                                            <p t-field="o.request_emp" class="m-0"/>
                                     <span style="font-size:20px;margin-left:10px">Divisions</span>
                                     <span></span>
                                 </td>
@@ -54,7 +54,7 @@
                     <br />
                     <table BORDERCOLOR="#{'#00000'}" style="-moz-border-radius:10px;-webkit-border-radius:10px;border-radius:10px;" border="1" cellpadding="0" cellspacing="0" width="1200px">
                         <tbody>
-                            <tr t-attf-style="page-break-inside:avoid !important;border:1px solid black; font-weight:bold;background-color:white; color:black;};">
+                                                      <tr t-attf-style="page-break-inside:avoid !important;border:1px solid black; font-weight:bold;background-color:white; color:black;};">
                                 <td align="center" t-attf-style="font-weight:bold;color:black;border:1px solid black;" width="15%">
                                     <span style="font-size:18px;">Sr.No</span>
                                 </td>
@@ -69,7 +69,7 @@
                                 </td>
 
                             </tr>
-                             <t t-foreach="o.move_ids_without_package" t-as="line">
+                             <t t-foreach="o.requisition_line_ids" t-as="line">
                                 <tr>
                                     <td>
                                         <span t-esc="line_index+1"/>
@@ -78,17 +78,16 @@
                                         <span t-field="line.product_id"/>
                                     </td>
                                     <td>
-                                        <span t-field="line.product_uom_qty"/>
+                                        <span t-field="line.qty"/>
                                     </td>
                                     <td>
-                                        <span t-field="line.quantity_done"/>
-                                         <t t-set="qty_done" t-value="qty_done+line.quantity_done"/>
+                                        <span t-field="line.rec_qty"/>
+                                         <t t-set="qty_done" t-value="qty_done+line.rec_qty"/>
                                     </td>
 
                                 </tr>
 
                             </t>
-
                             <tr t-attf-style="-moz-border-radius:10px;-webkit-border-radius:10px;border-radius:10px;page-break-inside:avoid !important;border:1px solid black; font-weight:bold;background-color:white; color:black;};">
                                 <td align="center" t-attf-style="font-weight:bold;color:black;border:1px solid black;" width="12%">
                                     <span style="font-size:18px;">Notes</span>

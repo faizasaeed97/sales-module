@@ -20,7 +20,7 @@
                                     <td align="left" t-attf-style="font-weight:bold;color:black;border:0px solid black;"
                                         width="50%">
                                         <span style="font-size:20px;">Receipt No:</span>
-                                        <span style="font-size:20px;">RV-20-00056</span>
+                                        <span t-field="o.name" style="font-size:20px;"/>
                                     </td>
                                     <td align="right"
                                         t-attf-style="font-weight:bold;color:black;border:0px solid black;"

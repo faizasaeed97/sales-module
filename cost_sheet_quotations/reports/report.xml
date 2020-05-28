@@ -22,6 +22,7 @@
                 string="Print Cost Sheet"
                 model="cost.sheet.crm"
                 report_type="qweb-pdf"
+
                 name="cost_sheet_quotations.repair_order_print_template"
                 file="cost_sheet_quotations.repair_order_print_template"/>
 
@@ -31,6 +32,7 @@
                 string="Print Credit Note"
                 model="account.move"
                 report_type="qweb-pdf"
+                 menu="False"
                 name="cost_sheet_quotations.report_credit_note"
                 file="cost_sheet_quotations.report_credit_note"/>
 
@@ -40,6 +42,7 @@
                 string="Goods Recieved(WH/IN)"
                 model="stock.picking"
                 report_type="qweb-pdf"
+                     menu="False"
                 name="cost_sheet_quotations.report_goods_sold"
                 file="cost_sheet_quotations.report_goods_sold"/>
 
@@ -48,6 +51,7 @@
                 string="Goods Return(WH/Out)"
                 model="stock.picking"
                 report_type="qweb-pdf"
+                     menu="False"
                 name="cost_sheet_quotations.report_goods_return"
                 file="cost_sheet_quotations.report_goods_return"/>
 
@@ -58,8 +62,18 @@
                 string="Material Issue Return(WH/Out)"
                  model="stock.picking"
                 report_type="qweb-pdf"
+                     menu="False"
                 name="cost_sheet_quotations.report_material_issue"
                 file="cost_sheet_quotations.report_material_issue"/>
+
+           <report
+                id="action_material_issues_req_return_print"
+                string="Material Issue"
+                 model="internal.requisition"
+                report_type="qweb-pdf"
+                name="cost_sheet_quotations.report_material_issue_req"
+                file="cost_sheet_quotations.report_material_issue_req"/>
+
 
 
         <report
@@ -67,6 +81,7 @@
                 string="Vendor Payment voucher"
                 model="account.payment"
                 report_type="qweb-pdf"
+                     menu="False"
                 name="cost_sheet_quotations.report_payment_voucher_petty"
                 file="cost_sheet_quotations.report_payment_voucher_petty"/>
 
@@ -76,6 +91,7 @@
                 string="Payment Voucher Customer"
                  model="account.payment"
                 report_type="qweb-pdf"
+                     menu="False"
                 name="cost_sheet_quotations.report_customer_payment"
                 file="cost_sheet_quotations.report_customer_payment"/>
 

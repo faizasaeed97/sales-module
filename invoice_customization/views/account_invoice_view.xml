@@ -15,7 +15,7 @@
         <report
                 id="account_invoicess"
                 model="account.move"
-                string="Tax Invoice(s)"
+                string="Print invoice"
                 report_type="qweb-pdf"
                 name="invoice_customization.report_invoice_with_payments"
                 file="invoice_customization.report_invoice_with_payments"

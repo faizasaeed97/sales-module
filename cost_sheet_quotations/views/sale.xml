@@ -10,10 +10,11 @@
                 <button name="create_bom" string="Create Bom" type="object"
                         class="btn-primary" attrs="{'invisible':[('is_allmaterial_availbile','=',False)]}"/>
 
-                <button name="process_material" attrs="{'invisible':['|',('is_allmaterial_availbile','=',True),('state','!=','sale')]}"
+                <button name="process_material"
+                        attrs="{'invisible':['|',('is_allmaterial_availbile','=',True),('state','!=','sale')]}"
                         class="btn-primary" string="Create Material Requisition" type="object"/>
 
-                     <button name="material_req_internal" attrs="{'invisible':[('state','!=','sale')]}"
+                <button name="material_req_internal" attrs="{'invisible':[('state','!=','sale')]}"
                         class="btn-primary" string="Create Internal Requisition" type="object"/>
 
 
@@ -27,7 +28,7 @@
 
 
             <xpath expr="//notebook/page[@name='other_information']" position="after">
-                <page string="Final Products">
+                <page string="Final Products" name="dc_final_product">
                     <field name="scope_work" force_save="1">
                         <tree editable="false">
                             <field name="product_id"/>
@@ -43,4 +44,47 @@
 
         </field>
     </record>
+
+
+    <record model="ir.ui.view" id="inherit_stokpick_form">
+        <field name="name">stokes.picking.inherit</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_form"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//button[@name='action_toggle_is_locked']" position="after">
+                <button name="goods_rec_in" attrs="{'invisible':[('picking_type_code','!=','incoming')]}"
+                        class="btn-primary" string="Print Goods(In)" type="object"/>
+
+                <button name="goods_del_out" attrs="{'invisible':[('picking_type_code','!=','outgoing')]}"
+                        class="btn-primary" string="Print Goods Return(Out)" type="object"/>
+
+                <button name="goods_del_out" attrs="{'invisible':[('picking_type_code','!=','outgoing')]}"
+                        class="btn-primary" string="Print Material Return(Out)" type="object"/>
+
+            </xpath>
+
+        </field>
+    </record>
+
+
+    <record model="ir.ui.view" id="inherit_accpayment_form">
+        <field name="name">account.paymnt.inherit</field>
+        <field name="model">account.payment</field>
+        <field name="inherit_id" ref="account.view_account_payment_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='cancel']" position="after">
+                <button name="payment_rec_out" attrs="{'invisible':[('partner_type','=','customer')]}"
+                        class="btn-primary" string="Print" type="object"/>
+
+                <button name="payment_rec_in" attrs="{'invisible':[('partner_type','=','supplier')]}"
+                        class="btn-primary" string="Print" type="object"/>
+
+            </xpath>
+
+
+        </field>
+    </record>
+
+
 </odoo>

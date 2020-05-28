@@ -937,7 +937,6 @@ class saleorder(models.Model):
     cost_sheet_id = fields.Many2one('cost.sheet.crm')
     project = fields.Many2one('project.project', string='Project')
     is_allmaterial_availbile = fields.Boolean(default=False)
-
     scope_work = fields.One2many('scope.work.line', 'saleorder', store=True)
 
     def create_bom(self):

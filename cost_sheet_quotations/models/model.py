@@ -42,7 +42,7 @@ class Costsheet(models.Model):
     overhead_total = fields.Float(compute='overhead_total_cal', store=True)
     rental_total = fields.Float(compute='rental_total_cal', store=True)
     rental_total_out = fields.Float(compute='rental_total_cal_out', store=True)
-    grand_total = fields.Float(compute='grand_total_cal')
+    grand_total = fields.Float(compute='grand_total_cal',default=0.0)
     markup_type = fields.Selection([('Percentage', 'Percentage'), ('Amount', 'Amount')], default='Percentage',
                                    string='Markup Type')
     quotation_value = fields.Float(string='Quotation Value', compute='get_quotation_value')
@@ -289,8 +289,10 @@ def create_quotation(self):
 
 @api.depends('material_total', 'labor_total', 'overhead_total', 'rental_total', 'rental_total_out')
 def grand_total_cal(self):
+
     for record in self:
         record.grand_total = record.material_total + record.labor_total + record.overhead_total + record.rental_total + record.rental_total_out
+
 
 
 @api.depends('material_ids')

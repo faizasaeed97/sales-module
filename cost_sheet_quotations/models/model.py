@@ -526,7 +526,7 @@ class costsheetwcope(models.Model):
     product_id = fields.Many2one('product.product', domain=[('type', '=', 'product'), ('final_prod', '=', True)],
                                  string='Final Product',
                                  required=True)
-    desc = fields.Char(string="Description")
+    desc = fields.Text(string="Description")
     tax_id = fields.Many2one(
         'account.tax',
         index=True,

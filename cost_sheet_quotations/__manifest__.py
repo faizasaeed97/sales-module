@@ -30,7 +30,7 @@ Cost sheet from CRM, Generate Quotation
         'reports/goods_recipt_return_report.xml',
         'reports/customer_paymet.xml',
         'reports/material_issue.xml',
-        'reports/material_issue_requisation.xml'
+        'reports/material_issue_requisation.xml',
         'reports/vendor_payment_pettycash_report.xml'
     ],
     'installable': True,

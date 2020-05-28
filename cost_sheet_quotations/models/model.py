@@ -35,14 +35,14 @@ class Costsheet(models.Model):
     #
     # auctual_budget = fields.Float(string="auctual budget", compute="get_costsheet_summery", )
     # quotation_value = fields.Float(string="Quotation value", compute="get_costsheet_summery")
-    final_profit = fields.Float(string="Final profit", compute="get_margin_value",digits=(16, 2))
+    final_profit = fields.Float(string="Final profit", compute="get_margin_value", digits=(16, 2))
 
     material_total = fields.Float(compute='material_total_cal', store=True)
     labor_total = fields.Float(compute='labor_total_cal', store=True)
     overhead_total = fields.Float(compute='overhead_total_cal', store=True)
     rental_total = fields.Float(compute='rental_total_cal', store=True)
     rental_total_out = fields.Float(compute='rental_total_cal_out', store=True)
-    grand_total = fields.Float(compute='grand_total_cal',default=0.0)
+    grand_total = fields.Float(compute='grand_total_cal', default=0.0)
     markup_type = fields.Selection([('Percentage', 'Percentage'), ('Amount', 'Amount')], default='Percentage',
                                    string='Markup Type')
     quotation_value = fields.Float(string='Quotation Value', compute='get_quotation_value')
@@ -120,404 +120,402 @@ class Costsheet(models.Model):
 #             self.final_profit = profit
 
 
-def approve_cs(self):
-    self.state = 'Approved'
+    def approve_cs(self):
+        self.state = 'Approved'
+    
+
+    def validate_cs(self):
+        self.state = 'Validated'
 
 
-def validate_cs(self):
-    self.state = 'Validated'
+    def reset_todraft(self):
+        self.state = 'Draft'
 
 
-def reset_todraft(self):
-    self.state = 'Draft'
+    def get_projectid_byname(self, name):
+        project = self.env['project.project'].search([('name', '=', name)])
+        if project:
+            return project.id
 
 
-def get_projectid_byname(self, name):
-    project = self.env['project.project'].search([('name', '=', name)])
-    if project:
-        return project.id
+    def check_if_saleordercocnfirm(self, project_name):
+        # check is project ke name se saleorde bna hoa tu not allow error
+        sale_order = self.env['sale.order'].search(
+            [('state', 'in', ['sale', 'lock']), ('project.id', '=', self.opportunity_id.id)])
+        if sale_order:
+            return True
+        else:
+            return False
 
 
-def check_if_saleordercocnfirm(self, project_name):
-    # check is project ke name se saleorde bna hoa tu not allow error
-    sale_order = self.env['sale.order'].search(
-        [('state', 'in', ['sale', 'lock']), ('project.id', '=', self.opportunity_id.id)])
-    if sale_order:
-        return True
-    else:
-        return False
+    def create_additional_cost_sheet(self):
+        # if self.check_if_saleordercocnfirm(self.opportunity_id.name):
+        #     raise ValidationError("you can't create addional costsheet, cancel confirm sale order first")
+
+        view_id = self.env.ref('cost_sheet_quotations.costsheet_form')
+        return {
+            'name': _('Costsheet'),
+            'view_id': view_id.id,
+            'view_type': 'form',
+            'view_mode': 'form',
+            'res_model': 'cost.sheet.crm',
+            'type': 'ir.actions.act_window',
+            'target': 'current',
+            'context': {
+                'is_additional': True,
+                'default_parent_cost_sheet_ref': self.id,
+                'default_opportunity_id': self.opportunity_id.id
+            },
+        }
 
 
-def create_additional_cost_sheet(self):
-    # if self.check_if_saleordercocnfirm(self.opportunity_id.name):
-    #     raise ValidationError("you can't create addional costsheet, cancel confirm sale order first")
-
-    view_id = self.env.ref('cost_sheet_quotations.costsheet_form')
-    return {
-        'name': _('Costsheet'),
-        'view_id': view_id.id,
-        'view_type': 'form',
-        'view_mode': 'form',
-        'res_model': 'cost.sheet.crm',
-        'type': 'ir.actions.act_window',
-        'target': 'current',
-        'context': {
-            'is_additional': True,
-            'default_parent_cost_sheet_ref': self.id,
-            'default_opportunity_id': self.opportunity_id.id
-        },
-    }
+    def get_markup_amount(self, grand_total, markup_type, markup_val):
+        if markup_type == 'Amount':
+            return markup_val
+        if markup_type == 'Percentage':
+            return (grand_total / 100) * markup_val
 
 
-def get_markup_amount(self, grand_total, markup_type, markup_val):
-    if markup_type == 'Amount':
-        return markup_val
-    if markup_type == 'Percentage':
-        return (grand_total / 100) * markup_val
+    def get_each_line_markup_division_amount(self, markup_amount):
+        # find number of orderlines and add this amount also
+        count = 0
+        if markup_amount:
+            # now check for
+            if self.labor_ids:
+                count += len(self.labor_ids)
+            if self.material_ids:
+                count += len(self.material_ids)
+            if self.overhead_ids:
+                count += len(self.overhead_ids)
+            if self.internal_rental_ids:
+                count += len(self.internal_rental_ids)
+            if self.outsource_rental_ids:
+                count += len(self.outsource_rental_ids)
+        if markup_amount > 0:
+            return (markup_amount / count)
+        else:
+            return 0
 
 
-def get_each_line_markup_division_amount(self, markup_amount):
-    # find number of orderlines and add this amount also
-    count = 0
-    if markup_amount:
-        # now check for
-        if self.labor_ids:
-            count += len(self.labor_ids)
+    @api.depends('markup_type', 'markup_value', 'grand_total')
+    def get_quotation_value(self):
+        q_uotation_value = 0.0
+        if self.grand_total:
+            if not self.markup_value:
+                q_uotation_value = self.grand_total
+            else:
+                q_uotation_value = self.get_markup_amount(self.grand_total, self.markup_type,
+                                                          self.markup_value) + self.grand_total
+        self.quotation_value = q_uotation_value
+
+
+    @api.onchange('markup_type', 'markup_value', 'grand_total')
+    def onchange_quotation_value(self):
+        q_uotation_value = 0.0
+        if self.grand_total:
+            if not self.markup_value:
+                q_uotation_value = self.grand_total
+            else:
+                q_uotation_value = self.get_markup_amount(self.grand_total, self.markup_type,
+                                                          self.markup_value) + self.grand_total
+        self.quotation_value = q_uotation_value
+
+
+    def create_quotation(self):
+        if self.state == 'Approved':
+
+            if len(self.material_ids) > 0 or len(self.internal_rental_ids) > 0 or len(self.overhead_ids) or len(
+                    self.labor_ids) > 0 or len(self.outsource_rental_ids) > 0:
+                markup_amount_line = self.get_each_line_markup_division_amount(
+                    self.get_markup_amount(self.grand_total, self.markup_type, self.markup_value))
+                sale_order = self.env['sale.order'].create(
+                    {'cost_sheet_id': self.id, 'partner_id': self.client.id, 'project': self.opportunity_id.id,
+                     'date_order': self.cost_sheet_date}
+                )
+                if len(self.scope_work) > 0:
+                    for obj in self.scope_work:
+                        sale_order_line = self.env['scope.work.line'].create(
+                            {'saleorder': sale_order.id, 'product_id': obj.product_id.id,
+                             'name': obj.product_id.name,
+                             'desc': obj.desc,
+                             'total_qty': obj.total_qty, 'total_cost': obj.total_cost})
+                if len(self.material_ids) > 0:
+                    for obj in self.material_ids:
+                        sale_order_line = self.env['sale.order.line'].create(
+                            {'order_id': sale_order.id, 'product_id': obj.product_id.id,
+                             'name': obj.product_id.name,
+                             'product_uom_qty': obj.qty, 'price_unit': obj.rate + markup_amount_line})
+                if len(self.internal_rental_ids) > 0:
+                    aset = self.env['product.product'].search([('name', '=', 'Asset'), ('final_prod', '=', True)])
+                    if not aset:
+                        aset = self.env['product.product'].create({
+                            'name': 'Asset',
+                            'final_prod': True,
+                        })
+
+                    for obj in self.internal_rental_ids:
+                        sale_order_line = self.env['sale.order.line'].create(
+                            {'order_id': sale_order.id, 'product_id': aset.id,
+                             'name': obj.product_id.name,
+                             'product_uom_qty': obj.qty, 'price_unit': obj.rate + markup_amount_line})
+                if len(self.outsource_rental_ids) > 0:
+                    for obj in self.outsource_rental_ids:
+                        sale_order_line = self.env['sale.order.line'].create(
+                            {'order_id': sale_order.id, 'product_id': obj.product_id.id,
+                             'name': obj.product_id.name,
+                             'product_uom_qty': obj.qty, 'price_unit': obj.rate + markup_amount_line})
+
+                if len(self.overhead_ids) > 0:
+                    for obj in self.overhead_ids:
+                        sale_order_line = self.env['sale.order.line'].create(
+                            {'order_id': sale_order.id, 'product_id': obj.product_id.id,
+                             'name': obj.product_id.name,
+                             'product_uom_qty': obj.qty, 'price_unit': obj.rate + markup_amount_line})
+                if self.labor_total > 0:
+                    # get product with name labor cost
+                    product_labcost = self.env['product.product'].search([('name', '=', 'labor cost')])
+                    if product_labcost:
+                        sale_order_line = self.env['sale.order.line'].create(
+                            {'order_id': sale_order.id, 'product_id': product_labcost.id,
+                             'name': product_labcost.name,
+                             'product_uom_qty': 1, 'price_unit': self.labor_total + markup_amount_line})
+
+                self.is_quotation_generated = True
+                self.quotation_count += 1
+        else:
+            raise ValidationError(
+                _("Please Approve the cost sheet by Manager"))
+
+
+    @api.depends('material_total', 'labor_total', 'overhead_total', 'rental_total', 'rental_total_out')
+    def grand_total_cal(self):
+        for record in self:
+            record.grand_total = record.material_total + record.labor_total + record.overhead_total + record.rental_total + record.rental_total_out
+
+
+    @api.depends('material_ids')
+    def material_total_cal(self):
+        self.labor_ids = [(5,)]
+        sum = 0
         if self.material_ids:
-            count += len(self.material_ids)
-        if self.overhead_ids:
-            count += len(self.overhead_ids)
-        if self.internal_rental_ids:
-            count += len(self.internal_rental_ids)
-        if self.outsource_rental_ids:
-            count += len(self.outsource_rental_ids)
-    if markup_amount > 0:
-        return (markup_amount / count)
-    else:
-        return 0
-
-
-@api.depends('markup_type', 'markup_value', 'grand_total')
-def get_quotation_value(self):
-    q_uotation_value = 0.0
-    if self.grand_total:
-        if not self.markup_value:
-            q_uotation_value = self.grand_total
-        else:
-            q_uotation_value = self.get_markup_amount(self.grand_total, self.markup_type,
-                                                      self.markup_value) + self.grand_total
-    self.quotation_value = q_uotation_value
-
-
-@api.onchange('markup_type', 'markup_value', 'grand_total')
-def onchange_quotation_value(self):
-    q_uotation_value = 0.0
-    if self.grand_total:
-        if not self.markup_value:
-            q_uotation_value = self.grand_total
-        else:
-            q_uotation_value = self.get_markup_amount(self.grand_total, self.markup_type,
-                                                      self.markup_value) + self.grand_total
-    self.quotation_value = q_uotation_value
-
-
-def create_quotation(self):
-    if self.state == 'Approved':
-
-        if len(self.material_ids) > 0 or len(self.internal_rental_ids) > 0 or len(self.overhead_ids) or len(
-                self.labor_ids) > 0 or len(self.outsource_rental_ids) > 0:
-            markup_amount_line = self.get_each_line_markup_division_amount(
-                self.get_markup_amount(self.grand_total, self.markup_type, self.markup_value))
-            sale_order = self.env['sale.order'].create(
-                {'cost_sheet_id': self.id, 'partner_id': self.client.id, 'project': self.opportunity_id.id,
-                 'date_order': self.cost_sheet_date}
-            )
-            if len(self.scope_work) > 0:
-                for obj in self.scope_work:
-                    sale_order_line = self.env['scope.work.line'].create(
-                        {'saleorder': sale_order.id, 'product_id': obj.product_id.id,
-                         'name': obj.product_id.name,
-                         'desc': obj.desc,
-                         'total_qty': obj.total_qty, 'total_cost': obj.total_cost})
-            if len(self.material_ids) > 0:
-                for obj in self.material_ids:
-                    sale_order_line = self.env['sale.order.line'].create(
-                        {'order_id': sale_order.id, 'product_id': obj.product_id.id,
-                         'name': obj.product_id.name,
-                         'product_uom_qty': obj.qty, 'price_unit': obj.rate + markup_amount_line})
-            if len(self.internal_rental_ids) > 0:
-                aset = self.env['product.product'].search([('name', '=', 'Asset'), ('final_prod', '=', True)])
-                if not aset:
-                    aset = self.env['product.product'].create({
-                        'name': 'Asset',
-                        'final_prod': True,
-                    })
-
-                for obj in self.internal_rental_ids:
-                    sale_order_line = self.env['sale.order.line'].create(
-                        {'order_id': sale_order.id, 'product_id': aset.id,
-                         'name': obj.product_id.name,
-                         'product_uom_qty': obj.qty, 'price_unit': obj.rate + markup_amount_line})
-            if len(self.outsource_rental_ids) > 0:
-                for obj in self.outsource_rental_ids:
-                    sale_order_line = self.env['sale.order.line'].create(
-                        {'order_id': sale_order.id, 'product_id': obj.product_id.id,
-                         'name': obj.product_id.name,
-                         'product_uom_qty': obj.qty, 'price_unit': obj.rate + markup_amount_line})
-
-            if len(self.overhead_ids) > 0:
-                for obj in self.overhead_ids:
-                    sale_order_line = self.env['sale.order.line'].create(
-                        {'order_id': sale_order.id, 'product_id': obj.product_id.id,
-                         'name': obj.product_id.name,
-                         'product_uom_qty': obj.qty, 'price_unit': obj.rate + markup_amount_line})
-            if self.labor_total > 0:
-                # get product with name labor cost
-                product_labcost = self.env['product.product'].search([('name', '=', 'labor cost')])
-                if product_labcost:
-                    sale_order_line = self.env['sale.order.line'].create(
-                        {'order_id': sale_order.id, 'product_id': product_labcost.id,
-                         'name': product_labcost.name,
-                         'product_uom_qty': 1, 'price_unit': self.labor_total + markup_amount_line})
-
-            self.is_quotation_generated = True
-            self.quotation_count += 1
-    else:
-        raise ValidationError(
-            _("Please Approve the cost sheet by Manager"))
-
-
-@api.depends('material_total', 'labor_total', 'overhead_total', 'rental_total', 'rental_total_out')
-def grand_total_cal(self):
-
-    for record in self:
-        record.grand_total = record.material_total + record.labor_total + record.overhead_total + record.rental_total + record.rental_total_out
-
-
-
-@api.depends('material_ids')
-def material_total_cal(self):
-    self.labor_ids = [(5,)]
-    sum = 0
-    if self.material_ids:
-        for record in self.material_ids:
-            if record.subtotal:
-                sum += record.subtotal
-            # self.labor_ids |= self.labor_ids.new({
-            #     'cost_labour': self.id,
-            #     'product_final':record.product_final.id,
-            #     'product_id':record.product_id.id ,
-            # })
-
-    self.material_total = sum
-
-
-@api.depends('labor_ids')
-def labor_total_cal(self):
-    sum = 0
-    if self.labor_ids:
-        for record in self.labor_ids:
-            if record.subtotal:
-                sum += record.subtotal
-    self.labor_total = sum
-
-
-@api.depends('overhead_ids')
-def overhead_total_cal(self):
-    # self.outsource_rental_ids = [(5,)]
-    sum = 0
-    if self.overhead_ids:
-        for record in self.overhead_ids:
-            if record.subtotal:
-                sum += record.subtotal
-                # self.outsource_rental_ids |= self.outsource_rental_ids.new({
-                #     'cost_sheet':self.id,
-                #     'product_final': record.product_final.id,
-                #     'product_id': record.product_id.id,
+            for record in self.material_ids:
+                if record.subtotal:
+                    sum += record.subtotal
+                # self.labor_ids |= self.labor_ids.new({
+                #     'cost_labour': self.id,
+                #     'product_final':record.product_final.id,
+                #     'product_id':record.product_id.id ,
                 # })
-    self.overhead_total = sum
+
+        self.material_total = sum
 
 
-@api.depends('internal_rental_ids')
-def rental_total_cal(self):
-    sum = 0
-    if self.internal_rental_ids:
-        for record in self.internal_rental_ids:
-            if record.subtotal:
-                sum += record.subtotal
-    self.rental_total = sum
+    @api.depends('labor_ids')
+    def labor_total_cal(self):
+        sum = 0
+        if self.labor_ids:
+            for record in self.labor_ids:
+                if record.subtotal:
+                    sum += record.subtotal
+        self.labor_total = sum
 
 
-@api.depends('outsource_rental_ids')
-def rental_total_cal_out(self):
-    sum = 0
-    if self.outsource_rental_ids:
-        for record in self.outsource_rental_ids:
-            if record.subtotal:
-                sum += record.subtotal
-    self.rental_total_out = sum
+    @api.depends('overhead_ids')
+    def overhead_total_cal(self):
+        # self.outsource_rental_ids = [(5,)]
+        sum = 0
+        if self.overhead_ids:
+            for record in self.overhead_ids:
+                if record.subtotal:
+                    sum += record.subtotal
+                    # self.outsource_rental_ids |= self.outsource_rental_ids.new({
+                    #     'cost_sheet':self.id,
+                    #     'product_final': record.product_final.id,
+                    #     'product_id': record.product_id.id,
+                    # })
+        self.overhead_total = sum
 
 
-def write(self, vals):
-    if 'material_ids' in vals:
-        for rec in self.material_ids:
-            rec.is_last = False
-        # lastproduct=self.material_ids.search([],order='id desc', limit=1)
-        # if lastproduct:
-        #     lastproduct.is_last=True
-
-    res = super(Costsheet, self).write(vals)
-    return res
+    @api.depends('internal_rental_ids')
+    def rental_total_cal(self):
+        sum = 0
+        if self.internal_rental_ids:
+            for record in self.internal_rental_ids:
+                if record.subtotal:
+                    sum += record.subtotal
+        self.rental_total = sum
 
 
-@api.model
-def create(self, vals):
-    is_add = self.env.context.get('is_additional')
-    csr_id = self.env.context.get('default_parent_cost_sheet_ref')
-    opertunity_id = self.env.context.get('default_opportunity_id')
+    @api.depends('outsource_rental_ids')
+    def rental_total_cal_out(self):
+        sum = 0
+        if self.outsource_rental_ids:
+            for record in self.outsource_rental_ids:
+                if record.subtotal:
+                    sum += record.subtotal
+        self.rental_total_out = sum
 
-    csr = self.env['cost.sheet.crm'].browse(csr_id)
 
-    if is_add:
-        csno = self.env['ir.sequence'].next_by_code('cstadd')
-        vals['name'] = '19' + csno + 'A_CS'
-        if csr.dafult_cost_sheet_ref:
-            vals['dafult_cost_sheet_ref'] = csr.dafult_cost_sheet_ref.id
+    def write(self, vals):
+        if 'material_ids' in vals:
+            for rec in self.material_ids:
+                rec.is_last = False
+            # lastproduct=self.material_ids.search([],order='id desc', limit=1)
+            # if lastproduct:
+            #     lastproduct.is_last=True
+
+        res = super(Costsheet, self).write(vals)
+        return res
+
+
+    @api.model
+    def create(self, vals):
+        is_add = self.env.context.get('is_additional')
+        csr_id = self.env.context.get('default_parent_cost_sheet_ref')
+        opertunity_id = self.env.context.get('default_opportunity_id')
+
+        csr = self.env['cost.sheet.crm'].browse(csr_id)
+
+        if is_add:
+            csno = self.env['ir.sequence'].next_by_code('cstadd')
+            vals['name'] = '19' + csno + 'A_CS'
+            if csr.dafult_cost_sheet_ref:
+                vals['dafult_cost_sheet_ref'] = csr.dafult_cost_sheet_ref.id
+            else:
+                vals['dafult_cost_sheet_ref'] = csr.id
+
+            vals['opportunity_id'] = opertunity_id
+            vals['is_additional'] = True
+            vals['crm_lead'] = csr.crm_lead.id
+            vals['client'] = csr.client.id
+
+
         else:
-            vals['dafult_cost_sheet_ref'] = csr.id
+            csno = self.env['ir.sequence'].next_by_code('cst')
+            vals['name'] = 'CS' + '19' + csno
+            vals['is_additional'] = False
 
-        vals['opportunity_id'] = opertunity_id
-        vals['is_additional'] = True
-        vals['crm_lead'] = csr.crm_lead.id
-        vals['client'] = csr.client.id
+        # if csr:
+        #     vals['dafult_cost_sheet_ref']=dcsr
+        # else:
+        #     vals['dafult_cost_sheet_ref']=self.id
 
+        # if 'parent_cost_sheet_ref' in vals and vals['parent_cost_sheet_ref']:
 
-    else:
-        csno = self.env['ir.sequence'].next_by_code('cst')
-        vals['name'] = 'CS' + '19' + csno
-        vals['is_additional'] = False
-
-    # if csr:
-    #     vals['dafult_cost_sheet_ref']=dcsr
-    # else:
-    #     vals['dafult_cost_sheet_ref']=self.id
-
-    # if 'parent_cost_sheet_ref' in vals and vals['parent_cost_sheet_ref']:
-
-    res = super(Costsheet, self).create(vals)
-    return res
+        res = super(Costsheet, self).create(vals)
+        return res
 
 
-# @api.model
-def final_total_cal(self):
-    for sc in self.scope_work:
-        sc.total_cost = 0.0
+    # @api.model
+    def final_total_cal(self):
+        for sc in self.scope_work:
+            sc.total_cost = 0.0
 
-    for rec in self:
-        for dta in rec:
-            sum = 0
-            qty = 0
-            mat_tot = 0.0
-            last_p = -1
-            if dta.material_ids:
-                for rec in dta.material_ids:
-                    rec.is_last = False
-                lastproduct = dta.material_ids.search([('cost_sheet', '=', self.id)], order='id desc', limit=1)
-                if lastproduct:
-                    lastproduct.is_last = True
+        for rec in self:
+            for dta in rec:
+                sum = 0
+                qty = 0
+                mat_tot = 0.0
+                last_p = -1
+                if dta.material_ids:
+                    for rec in dta.material_ids:
+                        rec.is_last = False
+                    lastproduct = dta.material_ids.search([('cost_sheet', '=', self.id)], order='id desc', limit=1)
+                    if lastproduct:
+                        lastproduct.is_last = True
 
-                for sc in dta.scope_work:
-                    last_p = -1
-                    sum = 0
-                    qty = 0
-                    mat_tot = 0.0
-                    for mt in dta.material_ids:
-                        if (sc.product_id.id == mt.product_final.id) or (len(mt.product_final) == 0 and last_p > 0):
-                            last_p = sc.product_id.id
-                            sum += mt.subtotal
-                            mat_tot += mt.rate
-                            qty += mt.qty
-                        else:
-                            # sum = 0
-                            # qty=0
-                            last_p = -1
-                    sc.total_cost += sum
-                    sc.mat_pur_tot = mat_tot
-            sum = 0
-            qty = 0
-            last_p = -1
-            if dta.labor_ids:
-                for sc in dta.scope_work:
-                    last_p = -1
-                    sum = 0
-                    qty = 0
-                    for mt in dta.labor_ids:
-                        if (sc.product_id.id == mt.product_final.id) or (len(mt.product_final) == 0 and last_p > 0):
-                            last_p = sc.product_id.id
-                            sum += mt.subtotal
-                            qty += mt.qty
-                        else:
-                            # sum = 0
-                            # qty = 0
-                            last_p = -1
-                    sc.total_cost += sum
+                    for sc in dta.scope_work:
+                        last_p = -1
+                        sum = 0
+                        qty = 0
+                        mat_tot = 0.0
+                        for mt in dta.material_ids:
+                            if (sc.product_id.id == mt.product_final.id) or (len(mt.product_final) == 0 and last_p > 0):
+                                last_p = sc.product_id.id
+                                sum += mt.subtotal
+                                mat_tot += mt.rate
+                                qty += mt.qty
+                            else:
+                                # sum = 0
+                                # qty=0
+                                last_p = -1
+                        sc.total_cost += sum
+                        sc.mat_pur_tot = mat_tot
+                sum = 0
+                qty = 0
+                last_p = -1
+                if dta.labor_ids:
+                    for sc in dta.scope_work:
+                        last_p = -1
+                        sum = 0
+                        qty = 0
+                        for mt in dta.labor_ids:
+                            if (sc.product_id.id == mt.product_final.id) or (len(mt.product_final) == 0 and last_p > 0):
+                                last_p = sc.product_id.id
+                                sum += mt.subtotal
+                                qty += mt.qty
+                            else:
+                                # sum = 0
+                                # qty = 0
+                                last_p = -1
+                        sc.total_cost += sum
 
-            sum = 0
-            qty = 0
-            last_p = -1
-            if dta.overhead_ids:
-                for sc in dta.scope_work:
-                    last_p = -1
-                    sum = 0
-                    qty = 0
-                    for mt in dta.overhead_ids:
-                        if (sc.product_id.id == mt.product_final.id) or (len(mt.product_final) == 0 and last_p > 0):
-                            last_p = sc.product_id.id
-                            sum += mt.subtotal
-                            qty += mt.qty
-                        else:
-                            # sum = 0
-                            # qty = 0
-                            last_p = -1
-                    sc.total_cost += sum
+                sum = 0
+                qty = 0
+                last_p = -1
+                if dta.overhead_ids:
+                    for sc in dta.scope_work:
+                        last_p = -1
+                        sum = 0
+                        qty = 0
+                        for mt in dta.overhead_ids:
+                            if (sc.product_id.id == mt.product_final.id) or (len(mt.product_final) == 0 and last_p > 0):
+                                last_p = sc.product_id.id
+                                sum += mt.subtotal
+                                qty += mt.qty
+                            else:
+                                # sum = 0
+                                # qty = 0
+                                last_p = -1
+                        sc.total_cost += sum
 
-            sum = 0
-            qty = 0
-            last_p = -1
-            if dta.internal_rental_ids:
-                for sc in dta.scope_work:
-                    last_p = -1
-                    sum = 0
-                    qty = 0
-                    for mt in dta.internal_rental_ids:
-                        if (sc.product_id.id == mt.product_final.id) or (len(mt.product_final) == 0 and last_p > 0):
-                            last_p = sc.product_id.id
-                            sum += mt.subtotal
-                            qty += mt.qty
-                        else:
-                            # sum = 0
-                            # qty = 0
-                            last_p = -1
-                    sc.total_cost += sum
+                sum = 0
+                qty = 0
+                last_p = -1
+                if dta.internal_rental_ids:
+                    for sc in dta.scope_work:
+                        last_p = -1
+                        sum = 0
+                        qty = 0
+                        for mt in dta.internal_rental_ids:
+                            if (sc.product_id.id == mt.product_final.id) or (len(mt.product_final) == 0 and last_p > 0):
+                                last_p = sc.product_id.id
+                                sum += mt.subtotal
+                                qty += mt.qty
+                            else:
+                                # sum = 0
+                                # qty = 0
+                                last_p = -1
+                        sc.total_cost += sum
 
-            sum = 0
-            qty = 0
-            last_p = -1
-            if dta.outsource_rental_ids:
-                for sc in dta.scope_work:
-                    last_p = -1
-                    sum = 0
-                    qty = 0
-                    for mt in dta.outsource_rental_ids:
-                        if (sc.product_id.id == mt.product_final.id) or (len(mt.product_final) == 0 and last_p > 0):
-                            last_p = sc.product_id.id
-                            sum += mt.subtotal
-                            qty += mt.qty
-                        else:
-                            # sum = 0
-                            # qty = 0
-                            last_p = -1
-                    sc.total_cost += sum
+                sum = 0
+                qty = 0
+                last_p = -1
+                if dta.outsource_rental_ids:
+                    for sc in dta.scope_work:
+                        last_p = -1
+                        sum = 0
+                        qty = 0
+                        for mt in dta.outsource_rental_ids:
+                            if (sc.product_id.id == mt.product_final.id) or (len(mt.product_final) == 0 and last_p > 0):
+                                last_p = sc.product_id.id
+                                sum += mt.subtotal
+                                qty += mt.qty
+                            else:
+                                # sum = 0
+                                # qty = 0
+                                last_p = -1
+                        sc.total_cost += sum
 
 
 class costsheetwcope(models.Model):

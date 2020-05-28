@@ -59,7 +59,7 @@
                 <button name="goods_del_out" attrs="{'invisible':[('picking_type_code','!=','outgoing')]}"
                         class="btn-primary" string="Print Goods Return(Out)" type="object"/>
 
-                <button name="goods_del_out" attrs="{'invisible':[('picking_type_code','!=','outgoing')]}"
+                <button name="material_return_out" attrs="{'invisible':[('picking_type_code','!=','outgoing')]}"
                         class="btn-primary" string="Print Material Return(Out)" type="object"/>
 
             </xpath>

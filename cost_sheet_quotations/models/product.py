@@ -11,6 +11,10 @@ class stok_pick_inh(models.Model):
 
     def goods_del_out(self):
         return self.env.ref('cost_sheet_quotations.action_goods_return_print').report_action(self)
+    def material_return_out(self):
+        return self.env.ref('cost_sheet_quotations.action_material_issues_return_print').report_action(self)
+
+
 
 
 

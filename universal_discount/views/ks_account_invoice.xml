@@ -8,7 +8,7 @@
             <field name="arch" type="xml">
 
                 <xpath expr="//header" position="inside">
-                <button name="print_credit_report" class="oe_highlight" string="Print Credit note" type="object" attrs="{'invisible': [('type', '!=', 'out_refund'),('invoice_payment_state', '=', 'Paid')]}"/>
+                <button name="print_credit_report" class="oe_highlight" string="Print Credit note" type="object" attrs="{'invisible': [('type', '!=', 'out_refund')]}"/>
             </xpath>
 
 

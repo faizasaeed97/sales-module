@@ -60,6 +60,7 @@
                             </tr>
                         </tbody>
                     </table>
+
                     <br/>
                     <t t-set="qty_done" t-value="0"/>
 

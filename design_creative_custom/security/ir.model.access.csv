@@ -10,5 +10,16 @@ access_employee_designation,employee_designation,model_employee_designation,,1,1
 access_employee_rate,employee_rate,model_employee_rate,,1,1,1,1
 access_hr_grade,asses_employee_grade,model_hr_grade,,1,1,1,1
 
+access_product_watt,asses_product_watt,model_product_watt,,1,1,1,1
+access_product_model,asses_product_model,model_product_model,,1,1,1,1
+access_product_srno,asses_product_srno,model_product_srno,,1,1,1,1
+access_product_shape,asses_product_shape,model_product_shape,,1,1,1,1
+access_product_ip,asses_product_ip,model_product_ip,,1,1,1,1
+access_product_shade,asses_product_shade,model_product_shade,,1,1,1,1
+
+
+
+
+
 
 

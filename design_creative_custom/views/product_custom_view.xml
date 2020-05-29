@@ -2,74 +2,89 @@
 <odoo>
 
 
-
-<!--        <record id="make_invisible" model="res.groups">-->
-<!--            <field name="name">Hide Menu</field>-->
-<!--        </record>-->
-<!--        <record model="ir.ui.menu" id="crm.crm_menu_root">-->
-<!--            <field name="groups_id" eval="[(5,ref('make_invisible'))]"/>-->
-<!--        </record>-->
-
-
-        <record model="ir.ui.view" id="prodtmpl_view_form">
-            <field name="name">res.partner.order.form</field>
-            <field name="model">product.template</field>
-            <field name="inherit_id" ref="product.product_template_form_view"/>
-            <field name="arch" type="xml">
+    <!--        <record id="make_invisible" model="res.groups">-->
+    <!--            <field name="name">Hide Menu</field>-->
+    <!--        </record>-->
+    <!--        <record model="ir.ui.menu" id="crm.crm_menu_root">-->
+    <!--            <field name="groups_id" eval="[(5,ref('make_invisible'))]"/>-->
+    <!--        </record>-->
 
 
-                <xpath expr="//field[@name='name']" position="after">
-                    <group>
+    <record model="ir.ui.view" id="prodtmpl_view_form">
+        <field name="name">res.partner.order.form</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_form_view"/>
+        <field name="arch" type="xml">
 
-                        <field name="brand" placeholder="Select Brand"
-                               attrs="{'invisible': [('raw_mat','=',False)]}"/>
 
-                        <field name="p_type" placeholder="Select Type"
-                               attrs="{'invisible': [('raw_mat','=',False)]}"/>
+            <xpath expr="//field[@name='name']" position="after">
+                <group>
 
-                        <field name="p_made" placeholder="Select Made"
-                               attrs="{'invisible': [('raw_mat','=',False)]}"/>
+                    <field name="brand" placeholder="Select Brand"
+                           attrs="{'invisible': [('raw_mat','=',False)]}"/>
 
-                        <field name="p_color" placeholder="Select Color"
-                               attrs="{'invisible': [('raw_mat','=',False)]}"/>
+                    <field name="p_type" placeholder="Select Type"
+                           attrs="{'invisible': [('raw_mat','=',False)]}"/>
 
-                        <field name="p_length" placeholder="Select Length"
-                               attrs="{'invisible': [('raw_mat','=',False)]}"/>
-                        <field name="p_width" placeholder="Select Width"
-                               attrs="{'invisible': [('raw_mat','=',False)]}"/>
-                        <field name="p_height" placeholder="Select Height"
-                               attrs="{'invisible': [('raw_mat','=',False)]}"/>
-                    </group>
-                </xpath>
+                    <field name="p_made" placeholder="Select Made"
+                           attrs="{'invisible': [('raw_mat','=',False)]}"/>
 
-                <xpath expr="//field[@name='name']" position="attributes">
-                    <attribute name="attrs">{'readonly': [('raw_mat', '=',True)],'required': [('raw_mat', '=',False)]}</attribute>
-                </xpath>
+                    <field name="p_color" placeholder="Select Color"
+                           attrs="{'invisible': [('raw_mat','=',False)]}"/>
 
-                <xpath expr="//div[@name='options']" position="inside">
+                    <field name="p_length" placeholder="Select Length"
+                           attrs="{'invisible': [('raw_mat','=',False)]}"/>
+                    <field name="p_width" placeholder="Select Width"
+                           attrs="{'invisible': [('raw_mat','=',False)]}"/>
+                    <field name="p_height" placeholder="Select Height"
+                           attrs="{'invisible': [('raw_mat','=',False)]}"/>
+                </group>
+            </xpath>
 
-                    <div>
-                        <field name="final_prod" readonly="1"
-                               attrs="{'invisible': ['|',('raw_mat','=',True),('overhead_mat','=',True)]}"/>
-                        <label for="final_prod"
-                               attrs="{'invisible': ['|',('raw_mat','=',True),('overhead_mat','=',True)]}"/>
-                    </div>
-                    <div>
-                        <field name="overhead_mat" readonly="1"
-                               attrs="{'invisible': ['|',('raw_mat','=',True),('final_prod','=',True)]}"/>
-                        <label for="overhead_mat"
-                               attrs="{'invisible': ['|',('raw_mat','=',True),('final_prod','=',True)]}"/>
-                    </div>
-                    <div>
-                        <field name="raw_mat" readonly="1"
-                               attrs="{'invisible': ['|',('final_prod','=',True),('overhead_mat','=',True)]}"/>
-                        <label for="raw_mat"
-                               attrs="{'invisible': ['|',('final_prod','=',True),('overhead_mat','=',True)]}"/>
-                    </div>
-                </xpath>
 
-            </field>
-        </record>
+            <xpath expr="//field[@name='categ_id']" position="after">
+                <field name="p_watt"/>
+                <field name="p_model"/>
+
+                <field name="p_ip"/>
+
+                <field name="p_shape"/>
+
+                <field name="p_shade"/>
+                <field name="p_srno"/>
+
+
+            </xpath>
+
+            <xpath expr="//field[@name='name']" position="attributes">
+                <attribute name="attrs">{'readonly': [('raw_mat', '=',True)],'required': [('raw_mat', '=',False)]}
+                </attribute>
+            </xpath>
+
+            <xpath expr="//div[@name='options']" position="inside">
+
+                <div>
+                    <field name="final_prod" readonly="1"
+                           attrs="{'invisible': ['|',('raw_mat','=',True),('overhead_mat','=',True)]}"/>
+                    <label for="final_prod"
+                           attrs="{'invisible': ['|',('raw_mat','=',True),('overhead_mat','=',True)]}"/>
+                </div>
+                <div>
+                    <field name="overhead_mat" readonly="1"
+                           attrs="{'invisible': ['|',('raw_mat','=',True),('final_prod','=',True)]}"/>
+                    <label for="overhead_mat"
+                           attrs="{'invisible': ['|',('raw_mat','=',True),('final_prod','=',True)]}"/>
+                </div>
+                <div>
+                    <field name="raw_mat" readonly="1"
+                           attrs="{'invisible': ['|',('final_prod','=',True),('overhead_mat','=',True)]}"/>
+                    <label for="raw_mat"
+                           attrs="{'invisible': ['|',('final_prod','=',True),('overhead_mat','=',True)]}"/>
+                </div>
+            </xpath>
+
+        </field>
+    </record>
 
     <record model="ir.actions.act_window" id="action_product_final_win">
         <field name="name">product Final</field>
@@ -111,8 +126,8 @@
     </record>
 
 
-         -->
-        <menuitem
+    -->
+    <menuitem
             id="crm_menu_productsx"
             name="Products"
             parent="crm.crm_menu_root"

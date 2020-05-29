@@ -29,6 +29,16 @@ class inherithremploye(models.Model):
     overhead_mat = fields.Boolean(string="Overhead Materail", default=False)
 
 
+    p_watt=fields.Many2one('product.watt',string="Watt")
+    p_model=fields.Many2one('product.model',string="Model")
+
+    p_ip=fields.Many2one('product.ip',string="IP")
+
+    p_shape=fields.Many2one('product.shape',string="Shape")
+    p_shade=fields.Many2one('product.shade',string="Shade")
+    p_srno=fields.Many2one('product.srno',string="Sr.No")
+
+
     @api.model
     def create(self, vals):
         res = super(inherithremploye, self).create(vals)
@@ -151,6 +161,56 @@ class product_made(models.Model):
 
     name=fields.Char(string="name")
     desc=fields.Char(string="Description")
+
+
+
+
+
+
+
+class product_watt(models.Model):
+    _name = 'product.watt'
+
+    name=fields.Char(string="name")
+    desc=fields.Char(string="Description")
+
+class product_model(models.Model):
+    _name = 'product.model'
+
+    name=fields.Char(string="name")
+    desc=fields.Char(string="Description")
+
+class product_srno(models.Model):
+    _name = 'product.srno'
+
+    name=fields.Char(string="name")
+    desc=fields.Char(string="Description")
+
+class product_shape(models.Model):
+    _name = 'product.shape'
+
+    name=fields.Char(string="name")
+    desc=fields.Char(string="Description")
+
+class product_ip(models.Model):
+    _name = 'product.ip'
+
+    name=fields.Char(string="name")
+    desc=fields.Char(string="Description")
+
+class product_shade(models.Model):
+    _name = 'product.shade'
+
+    name=fields.Char(string="name")
+    desc=fields.Char(string="Description")
+
+# class product_made(models.Model):
+#     _name = 'product.type'
+#
+#     name=fields.Char(string="name")
+#     desc=fields.Char(string="Description")
+
+
 
 
 class emp_designation(models.Model):

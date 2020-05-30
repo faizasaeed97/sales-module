@@ -39,65 +39,91 @@ class inherithremploye(models.Model):
     p_srno=fields.Many2one('product.srno',string="Sr.No")
 
 
-    @api.model
-    def create(self, vals):
-        res = super(inherithremploye, self).create(vals)
-        if res.raw_mat:
-            res.name=""
-            if res.categ_id.parent_id:
-               names=res.categ_id.parent_id.name + ' ' + res.categ_id.name + ' '
+
+    @api.constrains('raw_mat','p_length','categ_id','p_width','p_height','p_color','p_type','p_made','brand')
+    def check_write(self):
+        if self.raw_mat:
+            if self.categ_id.parent_id:
+                names = self.categ_id.parent_id.name + ' ' + self.categ_id.name + ' '
             else:
-                names = res.categ_id.name + ' '
+                names = self.categ_id.name + ' '
+            if self.p_length:
+                names += self.p_length.name + ' '
+            if self.p_width:
+                names += 'X' + self.p_width.name + ' '
+            if self.p_height:
+                names += 'X' + self.p_height.name + ' '
 
-            if res.p_length:
-                names += res.p_length.name+' '
-            if res.p_width:
-                names += 'X' + res.p_width.name+' '
-            if res.p_height:
-                names += 'X' + res.p_height.name +' '
-                
-                
-            if res.p_color:
-                names += res.p_color.name+' '
-            if res.p_type:
-                names +=  res.p_type.name+' '
-            if res.p_made:
-                names +=  res.p_made.name +' '
-            if res.brand:
-                names += res.brand.name + ' '
+            if self.p_color:
+                names += self.p_color.name + ' '
+            if self.p_type:
+                names += self.p_type.name + ' '
+            if self.p_made:
+                names += self.p_made.name + ' '
+            if self.brand:
+                names += self.brand.name + ' '
 
-            # names+= res.p_color.name+' ' + res.p_type.name  + ' ' + res.p_made.name + ' ' + res.brand.name
-            res.name=str(names)
+            self.name=names
 
-        return res
-
-    def write(self, vals):
-        if 'raw_mat' in vals:
-            if vals['raw_mat'] == True:
-                if self.categ_id.parent_id:
-                    names = self.categ_id.parent_id.name + ' ' + self.categ_id.name + ' '
-                else:
-                    names = self.categ_id.name + ' '
-                if self.p_length:
-                   names +=  self.p_length.name+' '
-                if self.p_width:
-                    names += 'X' + self.p_width.name+' '
-                if self.p_height:
-                    names += 'X' +self.p_height.name+' '
-                    
-                if self.p_color:
-                    names += self.p_color.name + ' '
-                if self.p_type:
-                    names += self.p_type.name + ' '
-                if self.p_made:
-                    names += self.p_made.name + ' '
-                if self.brand:
-                    names += self.brand.name + ' '
-
-                # names+= self.p_color.name+' '+ self.p_type.name  + ' ' + self.p_made.name + ' ' + self.brand.name
-                vals['name']=str(names)
-        rslt = super(inherithremploye, self).write(vals)
-        return rslt
+    # @api.model
+    # def create(self, vals):
+    #     res = super(inherithremploye, self).create(vals)
+    #     if res.raw_mat:
+    #         res.name=""
+    #         if res.categ_id.parent_id:
+    #            names=res.categ_id.parent_id.name + ' ' + res.categ_id.name + ' '
+    #         else:
+    #             names = res.categ_id.name + ' '
+    #
+    #         if res.p_length:
+    #             names += res.p_length.name+' '
+    #         if res.p_width:
+    #             names += 'X' + res.p_width.name+' '
+    #         if res.p_height:
+    #             names += 'X' + res.p_height.name +' '
+    #
+    #
+    #         if res.p_color:
+    #             names += res.p_color.name+' '
+    #         if res.p_type:
+    #             names +=  res.p_type.name+' '
+    #         if res.p_made:
+    #             names +=  res.p_made.name +' '
+    #         if res.brand:
+    #             names += res.brand.name + ' '
+    #
+    #         # names+= res.p_color.name+' ' + res.p_type.name  + ' ' + res.p_made.name + ' ' + res.brand.name
+    #         res.name=str(names)
+    #
+    #     return res
+    #
+    # def write(self, vals):
+    #     if 'raw_mat' in vals:
+    #         if vals['raw_mat'] == True:
+    #             if self.categ_id.parent_id:
+    #                 names = self.categ_id.parent_id.name + ' ' + self.categ_id.name + ' '
+    #             else:
+    #                 names = self.categ_id.name + ' '
+    #             if self.p_length:
+    #                names +=  self.p_length.name+' '
+    #             if self.p_width:
+    #                 names += 'X' + self.p_width.name+' '
+    #             if self.p_height:
+    #                 names += 'X' +self.p_height.name+' '
+    #
+    #             if self.p_color:
+    #                 names += self.p_color.name + ' '
+    #             if self.p_type:
+    #                 names += self.p_type.name + ' '
+    #             if self.p_made:
+    #                 names += self.p_made.name + ' '
+    #             if self.brand:
+    #                 names += self.brand.name + ' '
+    #
+    #             # names+= self.p_color.name+' '+ self.p_type.name  + ' ' + self.p_made.name + ' ' + self.brand.name
+    #             vals['name']=str(names)
+    #     rslt = super(inherithremploye, self).write(vals)
+    #     return rslt
 
 
 

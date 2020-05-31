@@ -4,7 +4,7 @@ import logging
 _logger = logging.getLogger(__name__)
 
 
-class DCQuotationSaleOrderInherit(models.Model):
+class DCQuotationSalesOrderInherit(models.Model):
     _inherit = 'sale.order'
 
     def getSoZones(self):
@@ -93,7 +93,7 @@ of any invoice, sales order, acknowledgement, purchase order or confirmation iss
     quotation_acceptane = fields.Html("Quotation Acceptance", default=get_default_qa)
 
 
-class DCQuotationScopeWorkLine(models.Model):
+class DCQuotationScopesWorkLine(models.Model):
     _inherit = "scope.work.line"
 
     zones = fields.Many2one("sale.order.zones", string="Zone")
@@ -101,7 +101,7 @@ class DCQuotationScopeWorkLine(models.Model):
     work_scope = fields.Text("Scope Of Work")
 
 
-class DCQuotationZonesSelection(models.Model):
+class DCQuotationZonessSelection(models.Model):
     _name = "sale.order.zones"
 
     name = fields.Char("Zona Name")

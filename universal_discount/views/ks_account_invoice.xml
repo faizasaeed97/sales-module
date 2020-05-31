@@ -11,6 +11,7 @@
 
                 <xpath expr="//field[@name='ref']" position="after">
                     <field name="cheque_no" attrs="{'invisible':[('type','!=','in_invoice')]}"/>
+                    <field name="old_date"/>
 
                 </xpath>
 

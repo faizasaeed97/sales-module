@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     ,<data>
-    <template id="dc_detail_quotation_act">
+    <template id="dc_details_quotation_act">
         <t t-call="web.external_layout">
             <t t-set="doc" t-value="doc.with_context(lang=doc.partner_id.lang)" />
             <div class="page">
@@ -160,12 +160,12 @@
             </div>
         </t>
     </template>
-    <template id="dc_detail_quotation">
+    <template id="dc_details_quotation">
         <t t-call="web.html_container">
             <div class="header">
                 <div class="row">
                     <div class="col-4">
-                        <img src="/dc_quotation_print/static/src/img/logo-actual.png" alt="Logo" style="max-height:130px"/>
+                        <img src="/dc_quotation_second/static/src/img/logo-actual.png" alt="Logo" style="max-height:130px"/>
                     </div>
                     <div class="col-4" />
                     <div class="col-4 mb4">
@@ -180,7 +180,7 @@
                 </div>
             </div>
             <t t-foreach="docs" t-as="doc">
-                <t t-call="dc_quotation_print.dc_detail_quotation_act" t-lang="doc.partner_id.lang" />
+                <t t-call="dc_quotation_second.dc_details_quotation_act" t-lang="doc.partner_id.lang" />
             </t>
         </t>
     </template>
@@ -190,8 +190,8 @@
         model="sale.order"
         string="DC Detail Quotation"
         report_type="qweb-pdf"
-        name="dc_quotation_print.dc_detail_quotation"
-        file="dc_quotation_print.dc_detail_quotation"
+        name="dc_quotation_second.dc_details_quotation"
+        file="dc_quotation_second.dc_details_quotation"
         />
     </data>
 </odoo>

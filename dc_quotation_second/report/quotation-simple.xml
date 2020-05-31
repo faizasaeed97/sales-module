@@ -158,7 +158,7 @@
             <div class="header">
                 <div class="row">
                     <div class="col-4">
-                        <img src="/dc_quotation_print/static/src/img/logo-actual.png" alt="Logo" style="max-height:130px"/>
+                        <img src="/dc_quotation_second/static/src/img/logo-actual.png" alt="Logo" style="max-height:130px"/>
                     </div>
                     <div class="col-4" />
                     <div class="col-4 text-right mb4">
@@ -170,7 +170,7 @@
                 </div>
             </div>
             <t t-foreach="docs" t-as="doc">
-                <t t-call="dc_quotation_print.dc_second_quotation_act" t-lang="doc.partner_id.lang" />
+                <t t-call="dc_quotation_second.dc_second_quotation_act" t-lang="doc.partner_id.lang" />
             </t>
         </t>
     </template>

@@ -178,7 +178,7 @@
     <report
         id="dc_quotation_report_reg"
         model="sale.order"
-        string="DC Quotation"
+        string="DC Quotation Full"
         report_type="qweb-pdf"
         name="dc_quotation_print.dc_second_quotation"
         file="dc_quotation_print.dc_second_quotation"

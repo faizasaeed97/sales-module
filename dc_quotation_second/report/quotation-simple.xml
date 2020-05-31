@@ -180,8 +180,8 @@
         model="sale.order"
         string="DC Quotation Full"
         report_type="qweb-pdf"
-        name="dc_quotation_print.dc_second_quotation"
-        file="dc_quotation_print.dc_second_quotation"
+        name="dc_quotation_second.dc_second_quotation"
+        file="dc_quotation_second.dc_second_quotation"
         />
     </data>
 </odoo>

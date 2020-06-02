@@ -295,19 +295,24 @@ class Costsheet(models.Model):
 
     @api.depends('material_ids')
     def material_total_cal(self):
-        self.labor_ids = [(5,)]
-        sum = 0
-        if self.material_ids:
-            for record in self.material_ids:
-                if record.subtotal:
-                    sum += record.subtotal
-                # self.labor_ids |= self.labor_ids.new({
-                #     'cost_labour': self.id,
-                #     'product_final':record.product_final.id,
-                #     'product_id':record.product_id.id ,
-                # })
+        if isinstance(self.id,int):
+            self.labor_ids = [(5,)]
+            sum = 0
+            if self.material_ids:
+                for record in self.material_ids:
+                    if record.subtotal:
+                        sum += record.subtotal
+                    if not self.labor_ids.filtered(lambda r:r.cost_labour.id == self.id  and r.product_final.id == record.product_final.id and r.product_id.id==
+                                                   record.product_id.id):
+                        self.labor_ids |= self.labor_ids.create({
+                            'cost_labour': self.id,
+                            'product_final':record.product_final.id,
+                            'product_id':record.product_id.id ,
+                        })
 
-        self.material_total = sum
+            self.material_total = sum
+        else:
+            self.material_total=0.0
 
 
     @api.depends('labor_ids')

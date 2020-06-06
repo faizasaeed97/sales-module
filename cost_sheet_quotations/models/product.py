@@ -23,6 +23,48 @@ class acc_pay_inherit(models.Model):
     _inherit='account.payment'
 
 
+    payment_type = fields.Selection([('outbound', 'Payment Voucher'), ('inbound', 'Customer Receipts'), ('transfer', 'Internal Transfer')], string='Payment Type', required=True, readonly=True, states={'draft': [('readonly', False)]})
+    cheque_no=fields.Char(string="Cheque No",compute='get_cheque_num')
+
+
+
+    @api.depends('invoice_ids')
+    def get_cheque_num(self):
+        for payment in self:
+            if payment.invoice_ids:
+                self.cheque_no= payment.invoice_ids[0].cheque_no
+            else:
+                self.cheque_no=None
+
+
+    @api.onchange('payment_type')
+    def _onchange_payment_type(self):
+        if not self.invoice_ids and self.payment_type in ('inbound', 'outbound'):
+            # Set default partner type for the payment type
+            if self.payment_type == 'inbound':
+                if self.partner_type == 'supplier':
+                    raise UserError(_("Wrong option selected"))
+                else:
+                    self.partner_type = 'customer'
+            elif self.payment_type == 'outbound':
+                if self.partner_type == 'customer':
+                    raise UserError(_("Wrong option selected"))
+                else:
+                    self.partner_type = 'supplier'
+        elif self.payment_type not in ('inbound', 'outbound'):
+            self.partner_type = False
+        # Set payment method domain
+        res = self._onchange_journal()
+        if not res.get('domain', {}):
+            res['domain'] = {}
+        jrnl_filters = self._compute_journal_domain_and_types()
+        journal_types = jrnl_filters['journal_types']
+        journal_types.update(['bank', 'cash'])
+        res['domain']['journal_id'] = jrnl_filters['domain'] + [('type', 'in', list(journal_types))]
+        return res
+
+
+
     def payment_rec_out(self):
         return self.env.ref('cost_sheet_quotations.action_payment_voucher_petty_print').report_action(self)
 
@@ -47,11 +89,9 @@ class acc_pay_inherit(models.Model):
         final_list = []
         if active_ids:
 
-            invoices = self.env['account.move'].browse(active_ids.ids).filtered(
-                lambda move: move.is_invoice(include_receipts=True))
+            journal_ids = self.move_line_ids
             counter = 0
-            for rec in invoices:
-                for data in rec.line_ids:
+            for data in journal_ids:
                     counter+=1
                     j_dic = {}
                     j_dic['srn']=counter

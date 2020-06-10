@@ -46,23 +46,23 @@ class AccountPayment(models.Model):
 							if rec.journal_id.type == "bank":
 								sequence_code = 'account.payment.customer.invoice.bank'
 							else:
-							     sequence_code = 'account.payment.customer.invoice'
+							     sequence_code = 'account.payment.customer.invoice.csh'
 						if rec.payment_type == 'outbound':
 							if rec.journal_id.type == "bank":
 								sequence_code = 'account.payment.customer.refund.bank'
 							else:
-							    sequence_code = 'account.payment.customer.refund'
+							    sequence_code = 'account.payment.customer.refund.csh'
 					if rec.partner_type == 'supplier':
 						if rec.payment_type == 'inbound':
 							if rec.journal_id.type == "bank":
 								sequence_code = 'account.payment.supplier.refund.bank'
 							else:
-							    sequence_code = 'account.payment.supplier.refund'
+							    sequence_code = 'account.payment.supplier.refund.csh'
 						if rec.payment_type == 'outbound':
 							if rec.journal_id.type == "bank":
 								sequence_code = 'account.payment.supplier.invoice.bank'
 							else:
-							    sequence_code = 'account.payment.supplier.invoice'
+							    sequence_code = 'account.payment.supplier.invoice.csh'
 
 				rec.name = self.env['ir.sequence'].next_by_code(sequence_code, sequence_date=rec.payment_date)
 				if not rec.name and rec.payment_type != 'transfer':

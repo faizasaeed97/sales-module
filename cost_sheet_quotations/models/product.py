@@ -24,17 +24,19 @@ class acc_pay_inherit(models.Model):
 
 
     payment_type = fields.Selection([('outbound', 'Payment Voucher'), ('inbound', 'Customer Receipts'), ('transfer', 'Internal Transfer')], string='Payment Type', required=True, readonly=True, states={'draft': [('readonly', False)]})
-    cheque_no=fields.Char(string="Cheque No",compute='get_cheque_num')
+    cheque_no=fields.Char(string="Cheque No",compute='get_inv_info',store=True)
+    purpose= fields.Char(string="Purpose",compute='get_inv_info',store=True)
 
-
-
-    @api.depends('invoice_ids')
-    def get_cheque_num(self):
+    def get_inv_info(self):
         for payment in self:
             if payment.invoice_ids:
-                self.cheque_no= payment.invoice_ids[0].cheque_no
+                payment.cheque_no= payment.invoice_ids[0].cheque_no
+                payment.purpose= payment.invoice_ids[0].purpose
+
             else:
-                self.cheque_no=None
+                payment.cheque_no=" "
+                payment.purpose=" "
+
 
 
     @api.onchange('payment_type')
@@ -85,7 +87,7 @@ class acc_pay_inherit(models.Model):
         return dec_val
 
     def get_journal_line(self):
-        active_ids = self.invoice_ids
+        active_ids = self.move_line_ids
         final_list = []
         if active_ids:
 

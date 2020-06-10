@@ -83,8 +83,8 @@
             </xpath>
 
             <xpath expr="//field[@name='journal_id']" position="after">
-                <field name="cheque_no"/>
-
+                <field name="cheque_no" readonly="0"/>
+                <field name="purpose" readonly="0"/>
             </xpath>
 
 

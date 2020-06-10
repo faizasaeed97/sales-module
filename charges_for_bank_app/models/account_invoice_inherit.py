@@ -22,7 +22,7 @@ class AccountPayment(models.Model):
 	def visible_bank_charges(self):
 		self.is_bank_charge = False
 		if self.journal_id:
-			if self.journal_id.name == "Bank":
+			if self.journal_id.type == "bank":
 				self.is_bank_charge = True
 			else:
 				self.is_bank_charge = False
@@ -43,14 +43,27 @@ class AccountPayment(models.Model):
 				else:
 					if rec.partner_type == 'customer':
 						if rec.payment_type == 'inbound':
-							sequence_code = 'account.payment.customer.invoice'
+							if rec.journal_id.type == "bank":
+								sequence_code = 'account.payment.customer.invoice.bank'
+							else:
+							     sequence_code = 'account.payment.customer.invoice'
 						if rec.payment_type == 'outbound':
-							sequence_code = 'account.payment.customer.refund'
+							if rec.journal_id.type == "bank":
+								sequence_code = 'account.payment.customer.refund.bank'
+							else:
+							    sequence_code = 'account.payment.customer.refund'
 					if rec.partner_type == 'supplier':
 						if rec.payment_type == 'inbound':
-							sequence_code = 'account.payment.supplier.refund'
+							if rec.journal_id.type == "bank":
+								sequence_code = 'account.payment.supplier.refund.bank'
+							else:
+							    sequence_code = 'account.payment.supplier.refund'
 						if rec.payment_type == 'outbound':
-							sequence_code = 'account.payment.supplier.invoice'
+							if rec.journal_id.type == "bank":
+								sequence_code = 'account.payment.supplier.invoice.bank'
+							else:
+							    sequence_code = 'account.payment.supplier.invoice'
+
 				rec.name = self.env['ir.sequence'].next_by_code(sequence_code, sequence_date=rec.payment_date)
 				if not rec.name and rec.payment_type != 'transfer':
 					raise UserError(_("You have to define a sequence for %s in your company.") % (sequence_code,))

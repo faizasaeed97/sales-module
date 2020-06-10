@@ -29,6 +29,8 @@ class KsGlobalDiscountInvoice(models.Model):
     inv_num=fields.Char("Invoice#",default="010101")
     cheque_no=fields.Char(string="Cheque No")
     old_date=fields.Date(string="Old Date")
+    purpose= fields.Char(string="Purpose")
+
 
     # @api.multi
     @api.depends('name')

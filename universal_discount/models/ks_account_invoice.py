@@ -30,6 +30,66 @@ class KsGlobalDiscountInvoice(models.Model):
     cheque_no=fields.Char(string="Cheque No")
     old_date=fields.Date(string="Old Date")
     purpose= fields.Char(string="Purpose")
+    is_petty=fields.Boolean(string="Is petty")
+
+
+
+
+    @api.model
+    def _get_default_journal(self):
+        ''' Get the default journal.
+        It could either be passed through the context using the 'default_journal_id' key containing its id,
+        either be determined by the default type.
+        '''
+        move_type = self._context.get('default_type', 'entry')
+        journal_type = 'general'
+        is_pty=self._context.get('default_is_petty', 0)
+        if move_type in self.get_sale_types(include_receipts=True):
+            journal_type = 'sale'
+        elif move_type in self.get_purchase_types(include_receipts=True):
+            journal_type = 'purchase'
+
+        if self._context.get('default_journal_id'):
+            journal = self.env['account.journal'].browse(self._context['default_journal_id'])
+
+            if move_type != 'entry' and journal.type != journal_type:
+                raise UserError(_("Cannot create an invoice of type %s with a journal having %s as type.") % (move_type, journal_type))
+        elif  is_pty == 1:
+            company_id = self._context.get('default_company_id', self.env.company.id)
+            domain = [('company_id', '=', company_id), ('type', '=', journal_type),('name','=','petty cash')]
+            journal = self.env['account.journal'].search(domain)
+            if not journal:
+                journal=self.env['account.journal'].create({
+                    'company_id':company_id,
+                    'type':journal_type,
+                    'name':'Patty Cash',
+                    'code':'ptch'
+                })
+
+        else:
+            company_id = self._context.get('default_company_id', self.env.company.id)
+            domain = [('company_id', '=', company_id), ('type', '=', journal_type)]
+
+            journal = None
+            if self._context.get('default_currency_id'):
+                currency_domain = domain + [('currency_id', '=', self._context['default_currency_id'])]
+                journal = self.env['account.journal'].search(currency_domain, limit=1)
+
+            if not journal:
+                journal = self.env['account.journal'].search(domain, limit=1)
+
+            if not journal:
+                error_msg = _('Please define an accounting miscellaneous journal in your company')
+                if journal_type == 'sale':
+                    error_msg = _('Please define an accounting sale journal in your company')
+                elif journal_type == 'purchase':
+                    error_msg = _('Please define an accounting purchase journal in your company')
+                raise UserError(error_msg)
+        return journal
+
+
+
+
 
 
     # @api.multi

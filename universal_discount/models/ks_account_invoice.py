@@ -56,7 +56,7 @@ class KsGlobalDiscountInvoice(models.Model):
                 raise UserError(_("Cannot create an invoice of type %s with a journal having %s as type.") % (move_type, journal_type))
         elif  is_pty == 1:
             company_id = self._context.get('default_company_id', self.env.company.id)
-            domain = [('company_id', '=', company_id), ('type', '=', journal_type),('name','=','petty cash')]
+            domain = [('company_id', '=', company_id), ('type', '=', journal_type),('name','=','Patty Cash')]
             journal = self.env['account.journal'].search(domain)
             if not journal:
                 journal=self.env['account.journal'].create({

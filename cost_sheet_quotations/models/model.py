@@ -302,13 +302,18 @@ class Costsheet(models.Model):
                 for record in self.material_ids:
                     if record.subtotal:
                         sum += record.subtotal
-                    if not self.labor_ids.filtered(lambda r:r.cost_labour.id == self.id  and r.product_final.id == record.product_final.id and r.product_id.id==
-                                                   record.product_id.id):
+                    if record.product_final.id:
                         self.labor_ids |= self.labor_ids.create({
                             'cost_labour': self.id,
                             'product_final':record.product_final.id,
-                            'product_id':record.product_id.id ,
+                            # 'product_id':record.product_id.id ,
                         })
+                    else:
+                        self.labor_ids |= self.labor_ids.create({
+                            'cost_labour': self.id,
+                            # 'product_id':record.product_id.id ,
+                        })
+
 
             self.material_total = sum
         else:
@@ -620,7 +625,7 @@ class costsheetlabors(models.Model):
     product_final = fields.Many2one(related='scope.product_id', string='Final Product', copy=True,
                                     required=False, readonly=False, store=True)
 
-    product_id = fields.Many2one('product.product', string='Particular', required=True, ondelete='cascade')
+    # product_id = fields.Many2one('product.product', string='Particular', required=True, ondelete='cascade')
     # grade = fields.Many2one('hr.grade',string="grade",store=True)
     job_id = fields.Many2one('hr.job', string='Designations')
     qty = fields.Float(string='Qty.', default=1)

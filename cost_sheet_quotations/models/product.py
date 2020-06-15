@@ -25,7 +25,7 @@ class acc_pay_inherit(models.Model):
 
     payment_type = fields.Selection([('outbound', 'Payment Voucher'), ('inbound', 'Customer Receipts'), ('transfer', 'Internal Transfer')], string='Payment Type', required=True, readonly=True, states={'draft': [('readonly', False)]})
     cheque_no=fields.Char(string="Cheque No",compute='get_inv_info',store=True)
-    chq_date=fields.Date(string="Cheque Date",compute='get_inv_info',store=True)
+    chq_date=fields.Date(string="Cheque Date")
     purpose= fields.Char(string="Purpose",compute='get_inv_info',store=True)
 
 

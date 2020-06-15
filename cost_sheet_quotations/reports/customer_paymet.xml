@@ -100,6 +100,9 @@
                         <br/>
                         <br/>
                         <br/>
+
+                        <t t-if="o.has_invoices">
+
                         <span style="font-size:20px;font-weight:bold;">Payment Against</span>
                         <table style="" cellspacing="0" cellpadding="0" width="1000px">
                             <tbody>
@@ -154,6 +157,7 @@
 <!--                                </tr>-->
                             </tbody>
                         </table>
+                        </t>
                         <br/>
                         <br/>
                         <br/>
@@ -172,12 +176,7 @@
                         <br/>
                         <br/>
                         <br/>
-                        <br/>
-                        <br/>
-                        <br/>
-                        <br/>
-                        <br/>
-                        <br/>
+
                         <table style="" cellspacing="0" cellpadding="0" width="1200px">
                             <tbody>
                                 <tr t-attf-style="border:0px solid black;page-break-inside:avoid !important;background-color:white;color:black;};">

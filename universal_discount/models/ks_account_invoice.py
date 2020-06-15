@@ -28,7 +28,7 @@ class KsGlobalDiscountInvoice(models.Model):
     ks_purchase_discount_account = fields.Text(compute='ks_verify_discount')
     inv_num=fields.Char("Invoice#",default="010101")
     cheque_no=fields.Char(string="Cheque No")
-    old_date=fields.Date(string="Old Date")
+    chq_date=fields.Date(string="Cheque Date")
     purpose= fields.Char(string="Purpose")
     is_petty=fields.Boolean(string="Is petty")
 

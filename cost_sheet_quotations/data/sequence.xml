@@ -10,7 +10,7 @@
             <field name="number_increment">1</field>
         </record>
     </data>
-    <data noupdate="0">
+    <data noupdate="1">
 
     <record id="sequence_payment_customer_invoice" model="ir.sequence">
         <field name="name">Payments customer invoices sequence</field>

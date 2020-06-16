@@ -626,7 +626,7 @@ class costsheetlabors(models.Model):
                                     required=False, readonly=False, store=True)
 
     # product_id = fields.Many2one('product.product', string='Particular', required=True, ondelete='cascade')
-    # grade = fields.Many2one('hr.grade',string="grade",store=True)
+    grade = fields.Many2one('hr.grade',string="grade")
     job_id = fields.Many2one('hr.job', string='Designations')
     qty = fields.Float(string='Qty.', default=1)
     uom = fields.Many2one('uom.uom', string='UOM')
@@ -641,12 +641,13 @@ class costsheetlabors(models.Model):
     #     res = super(costsheetlabors, self).create(vals)
     #     return res
 
-    @api.depends('job_id', 'department')
+    @api.depends('job_id', 'department','grade')
     def get_hourly_rate(self):
         for rec in self:
-            if rec.job_id and rec.department:
+            if rec.job_id and rec.department and rec.grade:
                 contract = self.env['hr.contract'].search([('grade.department', '=', rec.department.id)
                                                               , ('grade.designation', '=', rec.job_id.id)
+                                                              , ('grade', '=', rec.grade.id)
                                                            ], order='final_hourly_rate ASC')
                 if contract:
                     high = contract[0].final_hourly_rate

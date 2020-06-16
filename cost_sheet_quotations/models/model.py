@@ -647,7 +647,7 @@ class costsheetlabors(models.Model):
             if rec.job_id and rec.department and rec.grade:
                 contract = self.env['hr.contract'].search([('grade.department', '=', rec.department.id)
                                                               , ('grade.designation', '=', rec.job_id.id)
-                                                              , ('grade', '=', rec.grade.id)
+                                                              , ('grade.name', '=', rec.grade.name)
                                                            ], order='final_hourly_rate ASC')
                 if contract:
                     high = contract[0].final_hourly_rate
@@ -679,8 +679,14 @@ class costsheetlabors(models.Model):
         if self.job_id and self.department:
             gradlst=self.env['hr.grade'].search([('designation','=',self.job_id.id),('department','=',self.department.id)])
             if gradlst:
-                name=gradlst.mapped('name')
-                return {'domain': {'grade': [('grade.name', 'in', name)]}}
+                final=[]
+                dmn=[]
+                for rec in gradlst:
+                    if rec.name not in final:
+                        final.append(rec.name)
+                        dmn.append(rec.id)
+                # name=gradlst.mapped('grade').mapped('name')
+                return {'domain': {'grade': [('id', 'in', dmn)]}}
 
     @api.onchange('qty', 'hours')
     def onchange_qtys(self):

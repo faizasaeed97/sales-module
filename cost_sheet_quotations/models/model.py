@@ -679,8 +679,8 @@ class costsheetlabors(models.Model):
         if self.job_id and self.department:
             gradlst=self.env['hr.grade'].search([('designation','=',self.job_id.id),('department','=',self.department.id)])
             if gradlst:
-                name=gradlst.mapped('grade')
-                return {'domain': {'grade': [('grade', 'in', name)]}}
+                name=gradlst.mapped('name')
+                return {'domain': {'grade': [('grade.name', 'in', name)]}}
 
     @api.onchange('qty', 'hours')
     def onchange_qtys(self):

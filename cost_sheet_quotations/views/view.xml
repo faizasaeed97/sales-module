@@ -193,7 +193,7 @@
 <!--                                    <field name="product_id" force_save="1"  options="{'no_create': True, 'no_open': True}"/>-->
                                     <field name="department"  force_save="1" options="{'no_create': True, 'no_open': True}"/>
                                     <field name="job_id" force_save="1" options="{'no_create': True, 'no_open': True}" domain="[('department_id','=',department)]"/>
-                                    <field name="grade" force_save="1" options="{'no_create': True, 'no_open': True}" required="True" domain="[('designation','=',job_id)]"/>
+                                    <field name="grade" force_save="1" options="{'no_create': True, 'no_open': True}" required="True"/>
 
                                     <field name="qty"/>
                                     <field name="uom"/>

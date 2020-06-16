@@ -66,9 +66,9 @@
 
 <!--        normal sequences-->
 
-                <record id="sequence_payment_customer_invoicecsh" model="ir.sequence">
+                <record id="sequence_payment_customer_invoice" model="ir.sequence">
             <field name="name">Payments customer invoices sequence</field>
-            <field name="code">account.payment.customer.invoice.csh</field>
+            <field name="code">account.payment.customer.invoice</field>
             <field name="prefix">CUST.IN/csh/%(range_year)s/</field>
             <field eval="1" name="number_next"/>
             <field eval="1" name="number_increment"/>
@@ -76,9 +76,9 @@
             <field eval="False" name="company_id"/>
             <field name="padding">4</field>
         </record>
-        <record id="sequence_payment_customer_refundcsh" model="ir.sequence">
+        <record id="sequence_payment_customer_refund" model="ir.sequence">
             <field name="name">Payments customer credit notes sequence</field>
-            <field name="code">account.payment.customer.refund.csh</field>
+            <field name="code">account.payment.customer.refund</field>
             <field name="prefix">CUST.OUT/csh/%(range_year)s/</field>
             <field eval="1" name="number_next"/>
             <field eval="1" name="number_increment"/>
@@ -86,20 +86,20 @@
             <field eval="False" name="company_id"/>
             <field name="padding">4</field>
         </record>
-        <record id="sequence_payment_supplier_invoicecsh" model="ir.sequence">
+        <record id="sequence_payment_supplier_invoice" model="ir.sequence">
             <field name="name">Payments supplier invoices sequence</field>
-            <field name="code">account.payment.supplier.invoice.csh</field>
-            <field name="prefix">SUPP.OUT/csh/%(range_year)s/</field>
+            <field name="code">account.payment.supplier.invoice</field>
+            <field name="prefix">SUPP.OUT//csh%(range_year)s/</field>
             <field eval="1" name="number_next"/>
             <field eval="1" name="number_increment"/>
             <field eval="True" name="use_date_range"/>
             <field eval="False" name="company_id"/>
             <field name="padding">4</field>
         </record>
-        <record id="sequence_payment_supplier_refundcsh" model="ir.sequence">
+        <record id="sequence_payment_supplier_refund" model="ir.sequence">
             <field name="name">Payments supplier credit notes sequence</field>
-            <field name="code">account.payment.supplier.refund.csh</field>
-            <field name="prefix">SUPP.IN/csh/%(range_year)s/</field>
+            <field name="code">account.payment.supplier.refund</field>
+            <field name="prefix">SUPP.IN//csh%(range_year)s/</field>
             <field eval="1" name="number_next"/>
             <field eval="1" name="number_increment"/>
             <field eval="True" name="use_date_range"/>

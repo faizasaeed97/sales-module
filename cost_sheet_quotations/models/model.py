@@ -686,6 +686,9 @@ class costsheetlabors(models.Model):
     def onchange_qtys(self):
         if self.qty and self.hours:
             self.subtotal = self.qty * self.hours
+            uom=self.env['uom.uom'].browse(112)
+            if uom:
+                self.uom=uom.id
         # if self.product_id:
         #     self.uom = self.product_id.uom_id
         # get_exp=self.env['ir.config_parameter'].search([('key','=','ks_purchase_discount_account')])

@@ -812,11 +812,20 @@ class costsheetmaterial(models.Model):
         if self.product_id:
             year = datetime.datetime.strptime(str(fields.Datetime.now().date()), "%Y-%m-%d").strftime('%Y')
 
+            # if self.product_id.cry == 0.0:
+            #     raise UserError(_('Please assign costing rental year in selected asset first.'))
+
             # year = datetime.datetime.strptime(fields.Datetime.now().strftime("%Y"))
             if isleap(int(year)):
-                self.rate = (self.product_id.original_value/self.product_id.cry) / 366
+                if self.product_id.cry!=0:
+                   self.rate = (self.product_id.original_value/self.product_id.cry) / 366
+                else:
+                    self.rate = 0.0
             else:
-                self.rate = (self.product_id.original_value/self.product_id.cry) / 365
+                if self.product_id.cry != 0:
+                   self.rate = (self.product_id.original_value/self.product_id.cry) / 365
+                else:
+                    self.rate=0.0
             uom = self.env['uom.uom'].browse(98)
             if uom:
                 self.uom = uom.id

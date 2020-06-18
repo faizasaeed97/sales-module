@@ -297,6 +297,10 @@ class Costsheet(models.Model):
     def material_total_cal(self):
         if isinstance(self.id,int):
             self.labor_ids = [(5,)]
+            data=self.env['hr.grade'].search([],limit=1)
+            dept=data.department
+            desig=data.designation
+            grad=data.grade
             sum = 0
             if self.material_ids:
                 for record in self.material_ids:
@@ -306,11 +310,17 @@ class Costsheet(models.Model):
                         self.labor_ids |= self.labor_ids.create({
                             'cost_labour': self.id,
                             'product_final':record.product_final.id,
+                            'department': dept.id,
+                            'job_id': desig.id,
+                            'grade': grad.id,
                             # 'product_id':record.product_id.id ,
                         })
                     else:
                         self.labor_ids |= self.labor_ids.create({
                             'cost_labour': self.id,
+                            'department':dept.id,
+                            'job_id':desig.id,
+                            'grade':grad.id,
                             # 'product_id':record.product_id.id ,
                         })
 

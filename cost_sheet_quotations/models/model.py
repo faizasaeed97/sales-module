@@ -812,8 +812,8 @@ class costsheetmaterial(models.Model):
         if self.product_id:
             year = datetime.datetime.strptime(str(fields.Datetime.now().date()), "%Y-%m-%d").strftime('%Y')
 
-            # if self.product_id.cry == 0.0:
-            #     raise UserError(_('Please assign costing rental year in selected asset first.'))
+            if self.product_id.cry == 0.0:
+                raise UserError(_('Please assign costing rental year in selected asset first.'))
 
             # year = datetime.datetime.strptime(fields.Datetime.now().strftime("%Y"))
             if isleap(int(year)):

@@ -59,7 +59,7 @@ class Costsheet(models.Model):
         ('Approved', 'Approved'),
     ], string="State", default='Draft', track_visibility='onchange', copy=False, )
 
-    quotation_count = fields.Integer(string="Quotations", )
+    quotation_count = fields.Integer(string="Quotations",default=0 )
 
     scope_work = fields.One2many('scope.work', 'cost_sheet', store=True, copy=True)
 

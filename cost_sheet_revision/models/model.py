@@ -68,6 +68,8 @@ class Costsheets(models.Model):
         copied_rec.company_currency =self.company_currency
 
         copied_rec.is_a_revision = True
+        copied_rec.is_quotation_generated=False
+        copied_rec.quotation_count=0
         copied_rec.number_of_revision = self.number_of_revision
         copied_rec.is_revision = True
 

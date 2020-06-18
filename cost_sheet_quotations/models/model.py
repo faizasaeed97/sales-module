@@ -1067,18 +1067,18 @@ class saleorder_inh(models.Model):
                 self.write({'is_allmaterial_availbile': True})
 
     def action_confirm(self):
-        for rec in self:
-            rec.action_confirm()
-            if self.cost_sheet_id:
-                # self.check_material_availbility(self.cost_sheet_id)
-                proj = self.env['project.project'].search([('id', '=', self.project.id)], limit=1)
-                self.write({'project': proj.id})
-                # now update opportunity to won
-                lead = self.env['crm.lead'].search([('name', '=', proj.name)], limit=1)
-                if lead:
-                    lead.write(
-                        {'stage_id': lead._stage_find(domain=[('is_won', '=', True)]).id})
-            return rec
+        self.ensure_one()
+        rec = self.action_confirm()
+        if self.cost_sheet_id:
+            # self.check_material_availbility(self.cost_sheet_id)
+            proj = self.env['project.project'].search([('id', '=', self.project.id)], limit=1)
+            self.write({'project': proj.id})
+            # now update opportunity to won
+            lead = self.env['crm.lead'].search([('name', '=', proj.name)], limit=1)
+            if lead:
+                lead.write(
+                    {'stage_id': lead._stage_find(domain=[('is_won', '=', True)]).id})
+        return rec
 
     def material_req_internal(self):
         # against costsheet

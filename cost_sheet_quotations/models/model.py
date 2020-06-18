@@ -295,33 +295,33 @@ class Costsheet(models.Model):
 
     @api.depends('material_ids')
     def material_total_cal(self):
-            self.labor_ids = [(5,)]
-            data=self.env['hr.grade'].search([],limit=1)
-            dept=data.department
-            desig=data.designation
-            grad=data
-            sum = 0
-            if self.material_ids:
-                for record in self.material_ids:
-                    if record.subtotal:
-                        sum += record.subtotal
-                    if record.product_final.id:
-                        self.labor_ids |= self.labor_ids.new({
-                            # 'cost_labour': self.id,
-                            'product_final':record.product_final.id,
-                            'department': dept.id,
-                            'job_id': desig.id,
-                            'grade': grad.id,
-                            # 'product_id':record.product_id.id ,
-                        })
-                    else:
-                        self.labor_ids |= self.labor_ids.new({
-                            # 'cost_labour': self.id,
-                            'department':dept.id,
-                            'job_id':desig.id,
-                            'grade':grad.id,
-                            # 'product_id':record.product_id.id ,
-                        })
+        self.labor_ids = [(5,)]
+        data=self.env['hr.grade'].search([],limit=1)
+        dept=data.department
+        desig=data.designation
+        grad=data
+        sum = 0
+        if self.material_ids:
+            for record in self.material_ids:
+                if record.subtotal:
+                    sum += record.subtotal
+                if record.product_final.id:
+                    self.labor_ids |= self.labor_ids.new({
+                        # 'cost_labour': self.id,
+                        'product_final':record.product_final.id,
+                        'department': dept.id,
+                        'job_id': desig.id,
+                        'grade': grad.id,
+                        # 'product_id':record.product_id.id ,
+                    })
+                else:
+                    self.labor_ids |= self.labor_ids.new({
+                        # 'cost_labour': self.id,
+                        'department':dept.id,
+                        'job_id':desig.id,
+                        'grade':grad.id,
+                        # 'product_id':record.product_id.id ,
+                    })
 
 
             self.material_total = sum

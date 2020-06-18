@@ -697,6 +697,8 @@ class costsheetlabors(models.Model):
             uom=self.env['uom.uom'].browse(112)
             if uom:
                 self.uom=uom.id
+
+
         # if self.product_id:
         #     self.uom = self.product_id.uom_id
         # get_exp=self.env['ir.config_parameter'].search([('key','=','ks_purchase_discount_account')])
@@ -815,7 +817,9 @@ class costsheetmaterial(models.Model):
                 self.rate = self.product_id.original_value / 366
             else:
                 self.rate = self.product_id.original_value / 365
-            # self.uom = self.product_id.uom_id
+            uom = self.env['uom.uom'].browse(98)
+            if uom:
+                self.uom = uom.id
 
     @api.onchange('qty', 'rate')
     def onchange_qty(self):

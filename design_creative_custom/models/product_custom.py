@@ -42,7 +42,7 @@ class inherithremploye(models.Model):
 
     @api.constrains('raw_mat','p_length','categ_id','p_width','p_height','p_color','p_type','p_made','brand')
     def check_write(self):
-        if self.raw_mat:
+        if self.raw_mat or self.overhead_mat:
             if self.categ_id.parent_id:
                 names = self.categ_id.parent_id.name + ' ' + self.categ_id.name + ' '
             else:

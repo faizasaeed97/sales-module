@@ -36,9 +36,20 @@
 
                             <div class="text-right">
 
-                                <strong>
-                                    <p style="font-size:25px;">Journal Voucher</p>
-                                </strong>
+
+                                <t t-if="o.is_petty">
+                                    <strong>
+                                        <p style="font-size:25px;">Petty Cash Voucher</p>
+                                    </strong>
+                                </t>
+
+                                <t t-if="not o.is_petty">
+                                    <strong>
+                                        <p style="font-size:25px;">Journal Voucher</p>
+                                    </strong>
+                                </t>
+
+
                                 <!--                                <p t-field="o.date"/>-->
                             </div>
                         </div>
@@ -137,28 +148,28 @@
                     </table>
 
 
-                        <div class="row" style="margin-top: 450px;width:100%">
+                    <div class="row" style="margin-top: 450px;width:100%">
 
-                                <!--                            <div>-->
-                                <!--                                <strong>Journal :</strong>-->
-                                <!--                                <p t-field="o.journal_id"/>-->
-                                <!--                            </div>-->
-                                <div style="display: inline-block;width: 25%; float:left; margin: 0px;">
-                                    <strong>________________</strong>
-                                    <p style="align:center">Preapred By</p>
-                                </div>
-                                <div style="display: inline-block;width: 25%; float:left; margin: 0px;">
-
-                                    <strong>________________</strong>
-                                    <p style="align:center">Checked By</p>
-                                </div>
-                                <div style="display: inline-block;width: 25%; float:left; margin: 0px;">
-
-                                    <strong>________________</strong>
-                                    <p style="align:center">Authorized By</p>
-                                </div>
-
+                        <!--                            <div>-->
+                        <!--                                <strong>Journal :</strong>-->
+                        <!--                                <p t-field="o.journal_id"/>-->
+                        <!--                            </div>-->
+                        <div style="display: inline-block;width: 25%; float:left; margin: 0px;">
+                            <strong>________________</strong>
+                            <p style="align:center">Preapred By</p>
                         </div>
+                        <div style="display: inline-block;width: 25%; float:left; margin: 0px;">
+
+                            <strong>________________</strong>
+                            <p style="align:center">Checked By</p>
+                        </div>
+                        <div style="display: inline-block;width: 25%; float:left; margin: 0px;">
+
+                            <strong>________________</strong>
+                            <p style="align:center">Authorized By</p>
+                        </div>
+
+                    </div>
 
 
                 </div>

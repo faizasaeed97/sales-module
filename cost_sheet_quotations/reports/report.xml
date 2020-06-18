@@ -2,7 +2,7 @@
 <odoo>
     <data>
         <record id="paper_format_jobcard" model="report.paperformat">
-            <field name="name">A4 JobCard</field>
+            <field name="name">A4</field>
             <!--            <field name="default" eval="False" />-->
             <field name="format">A4</field>
             <field name="page_height">0</field>

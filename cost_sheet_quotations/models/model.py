@@ -814,9 +814,9 @@ class costsheetmaterial(models.Model):
 
             # year = datetime.datetime.strptime(fields.Datetime.now().strftime("%Y"))
             if isleap(int(year)):
-                self.rate = (self.product_id.original_value/self.product_id.method_number) / 366
+                self.rate = (self.product_id.original_value/self.product_id.cry) / 366
             else:
-                self.rate = (self.product_id.original_value/self.product_id.method_number) / 365
+                self.rate = (self.product_id.original_value/self.product_id.cry) / 365
             uom = self.env['uom.uom'].browse(98)
             if uom:
                 self.uom = uom.id
@@ -1111,3 +1111,8 @@ class saleorder(models.Model):
                         # 'default_request_emp':self.env.user.id,
                     },
                 }
+
+class saleorder(models.Model):
+    _inherit = 'account.asset'
+
+    cry=fields.Integer("Costing Rental Year")

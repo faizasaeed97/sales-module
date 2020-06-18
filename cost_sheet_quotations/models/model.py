@@ -604,7 +604,9 @@ class costsheetmaterial(models.Model):
     def onchange_product(self):
         if self.product_id:
             self.rate = self.product_id.standard_price
-            self.uom = self.product_id.uom_id
+            uom = self.env['uom.uom'].browse(112)
+            if uom:
+                self.uom = uom.id
 
     @api.onchange('qty', 'rate')
     def onchange_qtyrates(self):
@@ -761,7 +763,9 @@ class costsheetmaterial(models.Model):
     def onchange_product(self):
         if self.product_id:
             self.rate = self.product_id.standard_price
-            self.uom = self.product_id.uom_id
+            uom = self.env['uom.uom'].browse(112)
+            if uom:
+                self.uom = uom.id
 
     @api.onchange('qty', 'rate')
     def onchange_qtys(self):
@@ -811,7 +815,7 @@ class costsheetmaterial(models.Model):
                 self.rate = self.product_id.original_value / 366
             else:
                 self.rate = self.product_id.original_value / 365
-            self.uom = self.product_id.uom_id
+            # self.uom = self.product_id.uom_id
 
     @api.onchange('qty', 'rate')
     def onchange_qty(self):
@@ -855,7 +859,9 @@ class costsheetmaterial(models.Model):
     def onchange_product(self):
         if self.product_id:
             self.rate = self.product_id.standard_price
-            self.uom = self.product_id.uom_id
+            uom = self.env['uom.uom'].browse(112)
+            if uom:
+                self.uom = uom.id
 
     @api.onchange('qty', 'rate')
     def onchange_qtys(self):

@@ -1067,7 +1067,6 @@ class saleorder_inh(models.Model):
                 self.write({'is_allmaterial_availbile': True})
 
     def action_confirm(self):
-        self.ensure_one()
         rec = self.action_confirm()
         if self.cost_sheet_id:
             # self.check_material_availbility(self.cost_sheet_id)

@@ -243,7 +243,7 @@ class Costsheet(models.Model):
                     for obj in self.material_ids:
                         sale_order_line = self.env['sale.order.line'].create(
                             {'order_id': sale_order.id, 'product_id': obj.product_id.id,
-                             'name': obj.product_id.name,'product_uom': obj.uom,
+                             'name': obj.product_id.name,'product_uom': obj.uom.id,
                              'product_uom_qty': obj.qty, 'price_unit': obj.rate })
                 if len(self.internal_rental_ids) > 0:
                     aset = self.env['product.product'].search([('name', '=', 'Asset'), ('final_prod', '=', True)])
@@ -256,20 +256,20 @@ class Costsheet(models.Model):
                     for obj in self.internal_rental_ids:
                         sale_order_line = self.env['sale.order.line'].create(
                             {'order_id': sale_order.id, 'product_id': aset.id,
-                             'name': obj.product_id.name,'product_uom': obj.uom,
+                             'name': obj.product_id.name,'product_uom': obj.uom.id,
                              'product_uom_qty': obj.qty, 'price_unit': obj.rate })
                 if len(self.outsource_rental_ids) > 0:
                     for obj in self.outsource_rental_ids:
                         sale_order_line = self.env['sale.order.line'].create(
                             {'order_id': sale_order.id, 'product_id': obj.product_id.id,
-                             'name': obj.product_id.name,'product_uom': obj.uom,
+                             'name': obj.product_id.name,'product_uom': obj.uom.id,
                              'product_uom_qty': obj.qty, 'price_unit': obj.rate })
 
                 if len(self.overhead_ids) > 0:
                     for obj in self.overhead_ids:
                         sale_order_line = self.env['sale.order.line'].create(
                             {'order_id': sale_order.id, 'product_id': obj.product_id.id,
-                             'name': obj.product_id.name,'product_uom': obj.uom,
+                             'name': obj.product_id.name,'product_uom': obj.uom.id,
                              'product_uom_qty': obj.qty, 'price_unit': obj.rate })
                 if self.labor_total > 0:
                     # get product with name labor cost
@@ -277,7 +277,7 @@ class Costsheet(models.Model):
                     if product_labcost:
                         sale_order_line = self.env['sale.order.line'].create(
                             {'order_id': sale_order.id, 'product_id': product_labcost.id,
-                             'name': product_labcost.name,'product_uom': obj.uom,
+                             'name': product_labcost.name,'product_uom': obj.uom.id,
                              'product_uom_qty': 1, 'price_unit': self.labor_total })
 
                 self.is_quotation_generated = True

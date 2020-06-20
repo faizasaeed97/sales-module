@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record model="ir.ui.view" id="dc_quotation_inherit_saleorder">
+            <field name="name">sale.form.inherit</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="cost_sheet_quotations.inherit_saleorder"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='scope_work']/tree/field[@name='tax_id']" position="before">
+                    <field name="work_scope" />
+                    <field name="zones" />
+                </xpath>
+                <xpath expr="//page[@name='dc_final_product']" position="after">
+                    <page string="Quotation Fields">
+                        <group>
+                            <field name="if_cont_amount" />
+                            <field name="if_supervision_required" />
+                        </group>
+                        <group>
+                            <field name="quotation_subject" />
+                        </group>
+                        <group>
+                            <group>
+                                <field name="validity_days" />
+                                <field name="delivery" />
+                            </group>
+                        </group>
+                        <group>
+                            <field name="kindly_note" />
+                        </group>
+                        <group>
+                            <field name="quotation_acceptane" />
+                        </group>
+                    </page>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

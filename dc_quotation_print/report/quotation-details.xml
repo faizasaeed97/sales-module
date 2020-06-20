@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+    <template id="dc_detail_quotation_act">
+        <t t-call="web.external_layout">
+            <t t-set="doc" t-value="doc.with_context(lang=doc.partner_id.lang)" />
+            <div class="page">
+                <style>
+                    table tr td, table tr, table tr th { border: 1px solid black !important; }
+                    table.no-border tr td, table.no-border tr, table.no-border tr th { border: 0px !important; }
+                </style>
+                <div class="row">
+                    <div class="col-12">
+                        <p t-esc="doc.partner_id.parent_id.name" />
+                        <p><u>Kind Attention: <t t-esc="doc.partner_id.name" /></u></p><br />
+                        <p>Dear Sir or Madam,</p>
+                        <p>Thank you for giving us the opportunity to quote towards your requirement. Please find mentioned below the costs of the following.</p>
+                        <br />
+                        <p style="font-size:18px;border-bottom:1px solid black"><b>PROPOSAL FOR RENOVATION OF</b></p>
+                        <p>This proposal consists of Renovation works to be carried out in</p>
+                        <t t-set="so_zones" t-value="doc.getSoZones()" />
+
+                        <ol style="list-style-type: upper-roman;padding-left:30px">
+                            <t t-foreach="so_zones" t-as="zone">
+                                <t t-if="zone['name'] != -1">
+                            <li style="font-weight:bold;font-size:18px">
+                                <t t-esc="zone['name']" />
+                            </li>
+                                </t>
+                            </t>
+                        </ol>
+
+                        <ol style="list-style-type: upper-roman;padding-left:25px">
+                            <t t-foreach="so_zones" t-as="zonel">
+                                <t t-if="zonel['name'] != -1">
+                            <li>
+                                <p><u><t t-esc="zonel['name']" /></u></p>
+                                <t t-set="zone_work_lines" t-value="0" />
+                                <t t-set="zone_work_lines" t-value="doc.getZoneLines(zonel['id'])" />
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th class="text-center" style="width:20px">S.NO.</th>
+                                            <th class="text-center" style="width:250px">DESCRIPTION</th>
+                                            <th class="text-center" style="width:250px">SCOPE OF WORK</th>
+                                            <th class="text-center" style="width:110px">TOTAL COST (IN BHD)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <t t-set="total_cost" t-value="0" />
+                                        <tr t-foreach="zone_work_lines" t-as="line">
+                                            <td class="text-center"><span t-esc="line['sno']" /></td>
+                                            <td class="text-center"><span t-esc="line['p_desc']" /></td>
+                                            <td class="text-center"><span t-esc="line['sow']" /></td>
+                                            <td class="text-center"><span t-esc="line['total_cost']" t-options='{"widget": "float", "precision": 3}' /></td>
+                                            <t t-set="total_cost" t-value="total_cost+line['total_cost']" />
+                                        </tr>
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <td colspan="3" class="text-right"><span>Total Cost In BHD</span></td>
+                                            <td class="text-center"><span t-esc="total_cost" t-options='{"widget": "float", "precision": 3}' /></td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </li>
+                                </t>
+                            </t>
+                        </ol>
+                        <br />
+                        <t t-set="zone_work_lines" t-value="0" />
+                        <t t-set="zone_work_lines" t-value="doc.getZoneLines(-1)" />
+                        <t t-if="zone_work_lines">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th style="width:20px" class="text-center">S.NO.</th>
+                                    <th style="width:250px" class="text-center">DESCRIPTION</th>
+                                    <th style="width:250px" class="text-center">SCOPE OF WORK</th>
+                                    <th style="width:110px" class="text-center">TOTAL COST (IN BHD)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-set="total_cost" t-value="0" />
+                                <tr t-foreach="zone_work_lines" t-as="line">
+                                    <td class="text-center"><span t-esc="line['sno']" /></td>
+                                    <td class="text-center"><span t-esc="line['p_desc']" /></td>
+                                    <td class="text-center"><span t-esc="line['sow']" /></td>
+                                    <td class="text-center"><span t-esc="line['total_cost']" t-options='{"widget": "float", "precision": 3}' /></td>
+                                    <t t-set="total_cost" t-value="total_cost+line['total_cost']" />
+                                </tr>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="3" class="text-right"><span>Total Cost In BHD</span></td>
+                                    <td class="text-center"><span t-esc="total_cost" t-options='{"widget": "float", "precision": 3}' /></td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                        </t>
+                        <p style="font-size:18px"><u>COMMERCIAL SUMMARY</u></p>
+                        <t t-set="countt" t-value="1" />
+                        <t t-set="t_cost" t-value="0" />
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th class="text-center">S. No.</th>
+                                    <th class="text-center">DESCRIPTION</th>
+                                    <th class="text-center">AMOUNT (IN BHD)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr t-foreach="so_zones" t-as="lz">
+                                    <t t-if="lz['name']!=-1">
+                                    <td class="text-center"><t t-esc="countt" /></td>
+                                    <td class="text-center"><span style="text-transform:uppercase">TOTAL AMOUNT FOR <t t-esc="lz['name']" /></span></td>
+                                    <td class="text-center"><t t-esc="lz['total_cost']" t-options='{"widget": "float", "precision": 3}' /></td>
+                                    <t t-set="countt" t-value="countt+1" />
+                                    <t t-set="t_cost" t-value="t_cost+lz['total_cost']" />
+                                    </t>
+                                </tr>
+                                <t t-set="noZoneTotal" t-value="doc.getNoZoneTotal()" />
+                                <t t-set="t_cost" t-value="t_cost+noZoneTotal" />
+                                <t t-set="contigency" t-value="(t_cost*(10/100))" />
+                                <t t-if="doc.if_cont_amount">
+                                <tr>
+                                    <td class="text-center"><t t-esc="countt" /></td>
+                                    <td class="text-center">CONTINGENCY AMOUNT (10%)</td>
+                                    <td class="text-center">
+                                        <t t-esc="contigency" t-options='{"widget": "float", "precision": 3}' />
+                                    </td>
+                                    <t t-set="countt" t-value="countt+1" />
+                                </tr>
+                                </t>
+                                <t t-set="superv" t-value="(t_cost+contigency)*(7/100)" />
+                                <t t-if="doc.if_supervision_required">
+                                <tr>
+                                    <td class="text-center"><t t-esc="countt" /></td>
+                                    <td class="text-center">SUPERVISION AND PROJECT MANAGEMENT COST (7%)</td>
+                                    <td class="text-center">
+                                        <t t-esc="superv" t-options='{"widget": "float", "precision": 3}' />
+                                    </td>
+                                    <t t-set="countt" t-value="countt+1" />
+                                </tr>
+                                </t>
+                                <tr>
+                                    <td class="text-center"><t t-esc="countt" /></td>
+                                    <td class="text-center">TOTAL AMOUNT</td>
+                                    <td class="text-center"><t t-esc="t_cost+contigency+superv" t-options='{"widget": "float", "precision": 3}' /></td>
+                                    <t t-set="countt" t-value="countt+1" />
+                                </tr>
+                                <tr>
+                                    <td class="text-center"><t t-esc="countt" /></td>
+                                    <td class="text-center">VAT 5%</td>
+                                    <td class="text-center">
+                                        <t t-set="total_tax" t-value="(t_cost+contigency+superv)*(5/100)" />
+                                        <t t-esc="total_tax" t-options='{"widget": "float", "precision": 3}' />
+                                    </td>
+                                    <t t-set="countt" t-value="countt+1" />
+                                </tr>
+                                <tr>
+                                    <td colspan="2" class="text-right"><p style="font-size:18px">GRAND TOTAL</p></td>
+                                    <td class="text-center">
+                                        <t t-set="grand_total" t-value="total_tax+t_cost+contigency+superv" />
+                                        <p style="font-size:18px" t-esc="grand_total" t-options='{"widget": "float", "precision": 3}' />
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <br />
+                        <p style="font-size: 18px">Supply, Fabrication, Logistics, Installation &amp; Dismantle from site - By DC team</p>
+                        <t t-if="doc.kindly_note">
+                            <strong style="font-size: 18px">KINDLY NOTE:</strong>
+                            <div style="padding-left:30px"><t t-raw="doc.kindly_note" /></div><br />
+                        </t>
+                        <t t-if="doc.payment_term_id">
+                            <strong style="font-size: 18px">Payment terms:</strong>
+                            <t t-esc="doc.payment_term_id.name" /><br />
+                        </t>
+                        <t t-if="doc.note">
+                            <strong style="font-size: 18px">TERMS &amp; CONDITIONS:</strong>
+                            <div style="padding-left:30px"><t t-raw="doc.note" /></div><br />
+                        </t>
+                        <t t-if="doc.quotation_acceptane">
+                            <strong style="font-size: 18px"><u>Quotation Acceptance</u></strong>
+                            <div style="padding-left:30px"><t t-raw="doc.quotation_acceptane" /></div><br />
+                        </t>
+                        <br />
+                        <br />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-6" style="padding-top:65px">
+                        <table class="no-border">
+                            <tr>
+                                <td style="width:80px">Name: </td>
+                                <td><span style="height:0px;display:block;width:200px;border-bottom:1px solid black" /></td>
+                            </tr>
+                            <tr>
+                                <td style="width:80px">Position: </td>
+                                <td><span style="height:0px;display:block;width:200px;border-bottom:1px solid black" /></td>
+                            </tr>
+                            <tr>
+                                <td style="width:80px">Signature: </td>
+                                <td><span style="height:0px;display:block;width:200px;border-bottom:1px solid black" /></td>
+                            </tr>
+                            <tr>
+                                <td style="width:80px">Date: </td>
+                                <td><span style="height:0px;display:block;width:200px;border-bottom:1px solid black" /></td>
+                            </tr>
+                        </table>
+                        <br /><br />
+                        <p>Company Stamp</p>
+                    </div>
+                    <div class="col-6">
+                        <p style="font-size:18px">Design Creative W.L.L</p>
+                        <br />
+                        <table class="no-border">
+                            <tr>
+                                <td style="width:80px">Name: </td>
+                                <td><span style="height:0px;display:block;width:200px;border-bottom:1px solid black" /></td>
+                            </tr>
+                            <tr>
+                                <td style="width:80px">Position: </td>
+                                <td><span style="height:0px;display:block;width:200px;border-bottom:1px solid black" /></td>
+                            </tr>
+                            <tr>
+                                <td style="width:80px">Signature: </td>
+                                <td><span style="height:0px;display:block;width:200px;border-bottom:1px solid black" /></td>
+                            </tr>
+                            <tr>
+                                <td style="width:80px">Date: </td>
+                                <td><span style="height:0px;display:block;width:200px;border-bottom:1px solid black" /></td>
+                            </tr>
+                        </table>
+                        <br /><br />
+                        <p>Company Stamp</p>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+    <template id="dc_detail_quotation">
+        <t t-call="web.html_container">
+            <div class="header">
+                <div class="row">
+                    <div class="col-4">
+                        <img src="/dc_quotation_print/static/src/img/logo-actual.png" alt="Logo" style="max-height:130px"/>
+                    </div>
+                    <div class="col-4" />
+                    <div class="col-4 mb4">
+                        <br />
+                        <span style="display:block" t-esc="docs.date_order.strftime('%d %b %Y')" />
+                        Sales - <t t-esc="docs.partner_id.name" />
+                        <t t-if="docs.partner_id.mobile">
+                        (m) <span style="display:block" t-field="docs.partner_id.mobile" /><br />
+                        </t>
+                        <span>Qtn - DC</span>
+                    </div>
+                </div>
+            </div>
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="dc_quotation_print.dc_detail_quotation_act" t-lang="doc.partner_id.lang" />
+            </t>
+        </t>
+    </template>
+
+    <report
+        id="dc_detail_quotation_report_reg"
+        model="sale.order"
+        string="DC Detail Quotation"
+        report_type="qweb-pdf"
+        name="dc_quotation_print.dc_detail_quotation"
+        file="dc_quotation_print.dc_detail_quotation"
+        />
+    </data>
+</odoo>

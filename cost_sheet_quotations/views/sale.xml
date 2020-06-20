@@ -82,10 +82,15 @@
 
             </xpath>
 
+
+            <xpath expr="//field[@name='partner_id']" position="after">
+                <field name="payee_name"/>
+            </xpath>
             <xpath expr="//field[@name='journal_id']" position="after">
                 <field name="cheque_no" readonly="0"/>
                 <field name="purpose" readonly="0"/>
                 <field name="chq_date" readonly="0"/>
+
             </xpath>
 
 

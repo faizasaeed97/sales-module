@@ -46,7 +46,7 @@
         <field name="inherit_id" ref="account_asset.view_account_asset_form"/>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='original_value']" position="after">
-                    <field name="cry"/>
+                <field name="cry"/>
             </xpath>
 
 
@@ -133,6 +133,15 @@
                         <field name="closing_estimation_target"></field>
 
                     </group>
+
+                    <group col="2" colspan="6">
+                        <field name="grand_total" widget="monetary" options="{'currency_field': 'company_currency'}"/>
+                        <field name="markup_type"/>
+                        <field name="markup_value"/>
+                        <field name="quotation_value" widget="monetary"
+                               options="{'currency_field': 'company_currency'}"/>
+                    </group>
+
                     <group col="4" colspan="12">
 
                         <field name="material_total" widget="monetary"
@@ -146,13 +155,7 @@
                                options="{'currency_field': 'company_currency'}"/>
 
                     </group>
-                    <group col="2" colspan="6">
-                        <field name="grand_total" widget="monetary" options="{'currency_field': 'company_currency'}"/>
-                        <field name="markup_type"/>
-                        <field name="markup_value"/>
-                        <field name="quotation_value" widget="monetary"
-                               options="{'currency_field': 'company_currency'}"/>
-                    </group>
+
                     <notebook>
 
                         <page string="Scope of Work">
@@ -160,10 +163,11 @@
                                 <tree editable="bottom">
                                     <field name="product_id" domain="[('final_prod','=',True)]"
                                            options="{'no_create': True, 'no_open': True}"/>
-                                    <field name="desc"/>
+<!--                                    <field name="desc"/>-->
                                     <!--                                    <field name="uom"/>-->
                                     <!--                                    <field name="rate"/>-->
-                                    <!--                                    <field name="subtotal"/>-->
+                                    <field name="total_qty" readonly="1"/>
+                                    <field name="total_cost" readonly="1"/>
                                 </tree>
                             </field>
                         </page>
@@ -191,18 +195,6 @@
                             </field>
 
 
-                            <field name="scope_work" force_save="1">
-                                <tree editable="false">
-                                    <field name="product_id" domain="[('final_prod','=',True)]"
-                                           options="{'no_create': True, 'no_open': True}"/>
-                                    <!--                                    <field name="product_id"/>-->
-                                    <!--                                    <field name="qty"/>-->
-                                    <!--                                    <field name="uom"/>-->
-                                    <field name="total_qty"/>
-                                    <field name="total_cost"/>
-                                </tree>
-                            </field>
-
                         </page>
                         <page string="Direct Labours">
                             <field name="labor_ids" context="{'scope':scope_work}" force_save="1">
@@ -227,17 +219,7 @@
                                 </tree>
                             </field>
 
-                            <field name="scope_work" force_save="1">
-                                <tree editable="false">
-                                    <field name="product_id" domain="[('final_prod','=',True)]"
-                                           options="{'no_create': True, 'no_open': True}"/>
-                                    <!--                                    <field name="product_id"/>-->
-                                    <!--                                    <field name="qty"/>-->
-                                    <!--                                    <field name="uom"/>-->
-                                    <field name="total_qty"/>
-                                    <field name="total_cost"/>
-                                </tree>
-                            </field>
+
                         </page>
                         <page string="Overheads">
                             <field name="overhead_ids" context="{'scope':scope_work}" force_save="1">
@@ -254,16 +236,6 @@
                                 </tree>
                             </field>
 
-                            <field name="scope_work" force_save="1">
-                                <tree editable="false">
-                                    <field name="product_id" options="{'no_create': True, 'no_open': True}"/>
-                                    <!--                                    <field name="product_id"/>-->
-                                    <!--                                    <field name="qty"/>-->
-                                    <!--                                    <field name="uom"/>-->
-                                    <field name="total_qty"/>
-                                    <field name="total_cost"/>
-                                </tree>
-                            </field>
 
                         </page>
                         <page string="Rental Internal">
@@ -281,16 +253,6 @@
                                 </tree>
                             </field>
 
-                            <field name="scope_work" force_save="1">
-                                <tree editable="false">
-                                    <field name="product_id" options="{'no_create': True, 'no_open': True}"/>
-                                    <!--                                    <field name="product_id"/>-->
-                                    <!--                                    <field name="qty"/>-->
-                                    <!--                                    <field name="uom"/>-->
-                                    <field name="total_qty"/>
-                                    <field name="total_cost"/>
-                                </tree>
-                            </field>
 
                         </page>
 
@@ -310,16 +272,6 @@
                                 </tree>
                             </field>
 
-                            <field name="scope_work" force_save="1">
-                                <tree editable="false">
-                                    <field name="product_id" options="{'no_create': True, 'no_open': True}"/>
-                                    <!--                                    <field name="product_id"/>-->
-                                    <!--                                    <field name="qty"/>-->
-                                    <!--                                    <field name="uom"/>-->
-                                    <field name="total_qty"/>
-                                    <field name="total_cost"/>
-                                </tree>
-                            </field>
                         </page>
 
 

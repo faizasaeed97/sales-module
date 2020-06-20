@@ -300,6 +300,7 @@ class Costsheet(models.Model):
             # data=self.env['hr.grade'].search([],limit=1)
             sum = 0
             if self.material_ids:
+
                 for record in self.material_ids:
                     if record.subtotal:
                         sum += record.subtotal

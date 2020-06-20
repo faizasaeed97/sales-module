@@ -34,12 +34,12 @@
                                     <td align="center"
                                         t-attf-style="font-weight:bold;color:black;border:0px solid black;"
                                         width="20%">
-                                        <span style="font-size:20px;"></span>
+                                        <span style="font-size:20px;">Payee name</span>
                                     </td>
                                     <td align="center"
                                         t-attf-style="font-weight:bold;color:black;border:0px solid black;"
                                         width="20%">
-                                        <span style="font-size:20px;margin-left:10px"></span>
+                                        <span t-field="o.payee_name" style="font-size:20px;margin-left:10px"></span>
                                     </td>
                                 </tr>
                                 <tr t-attf-style="border:0px solid black;page-break-inside:avoid !important;font-weight:bold;background-color:white;color:black;};">
@@ -67,11 +67,11 @@
                                 <tr t-attf-style="border:0px solid black;page-break-inside:avoid !important;font-weight:bold;background-color:white;color:black;};">
                                     <td align="center"
                                         t-attf-style="font-weight:bold;color:black;border:0px solid black;" width="20%">
-                                        <span style="font-size:20px;"></span>
+                                        <span style="font-size:20px;">Cheque#</span>
                                     </td>
-                                    <td align="left" t-attf-style="font-weight:bold;color:black;border:0px solid black;"
+                                    <td align="center" t-attf-style="font-weight:bold;color:black;border:0px solid black;"
                                         width="40%">
-                                        <span style="font-size:20px;"></span>
+                                        <span t-field="o.cheque_no" style="font-size:20px;"></span>
                                     </td>
                                     <td align="center"
                                         t-attf-style="font-weight:bold;color:black;border:0px solid black;"
@@ -81,28 +81,28 @@
                                     <td align="center"
                                         t-attf-style="font-weight:bold;color:black;border:0px solid black;"
                                         width="20%">
-                                        <span t-esc="context_timestamp(datetime.datetime.now()).strftime('%d/%m/%Y')"/>
+                                        <span t-esc="o.payment_date"/>
                                     </td>
                                 </tr>
                                 <tr t-attf-style="border:0px solid black;page-break-inside:avoid !important;font-weight:bold;background-color:white;color:black;};">
                                     <td align="center"
                                         t-attf-style="font-weight:bold;color:black;border:0px solid black;" width="20%">
-                                        <span style="font-size:20px;"></span>
+                                        <span style="font-size:20px;">Cheque Date</span>
                                     </td>
-                                    <td align="left" t-attf-style="font-weight:bold;color:black;border:0px solid black;"
+                                    <td align="center" t-attf-style="font-weight:bold;color:black;border:0px solid black;"
                                         width="40%">
-                                        <span style="font-size:20px;"></span>
+                                        <span t-field="o.chq_date" style="font-size:20px;"></span>
                                     </td>
-                                    <td align="center"
-                                        t-attf-style="font-weight:bold;color:black;border:0px solid black;"
-                                        width="20%">
-                                        <span style="font-size:20px;">Page</span>
-                                    </td>
-                                    <td align="center"
-                                        t-attf-style="font-weight:bold;color:black;border:0px solid black;"
-                                        width="20%">
-                                        <span style="font-size:20px;">1 of 1</span>
-                                    </td>
+<!--                                    <td align="center"-->
+<!--                                        t-attf-style="font-weight:bold;color:black;border:0px solid black;"-->
+<!--                                        width="20%">-->
+<!--                                        <span style="font-size:20px;">Page</span>-->
+<!--                                    </td>-->
+<!--                                    <td align="center"-->
+<!--                                        t-attf-style="font-weight:bold;color:black;border:0px solid black;"-->
+<!--                                        width="20%">-->
+<!--                                        <span style="font-size:20px;">1 of 1</span>-->
+<!--                                    </td>-->
                                 </tr>
                             </tbody>
                         </table>
@@ -172,8 +172,7 @@
                                     <td align="left" colspan="6"
                                         t-attf-style="font-weight:bold;color:black;border:0px solid black;">
                                         <span style="margin-left:20px">Purpose:</span>
-                                        <span style="margin-left:20px">JOB 19-00075-PROJECT CASH-BANI
-                                            JUMRA-QUOT-19-00075
+                                        <span t-esc="o.purpose" style="margin-left:20px">
                                         </span>
                                     </td>
                                 </tr>

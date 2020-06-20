@@ -28,6 +28,27 @@ class acc_pay_inherit(models.Model):
     chq_date=fields.Date(string="Cheque Date")
     purpose= fields.Char(string="Purpose",compute='get_inv_info',store=True)
 
+    payee_name = fields.Char("Payee Name")
+
+    @api.onchange('partner_id')
+    def _onchange_partner_id(self):
+        if self.invoice_ids and self.invoice_ids[0].invoice_partner_bank_id:
+            self.partner_bank_account_id = self.invoice_ids[0].invoice_partner_bank_id
+        elif self.partner_id != self.partner_bank_account_id.partner_id:
+            # This condition ensures we use the default value provided into
+            # context for partner_bank_account_id properly when provided with a
+            # default partner_id. Without it, the onchange recomputes the bank account
+            # uselessly and might assign a different value to it.
+            if self.partner_id and len(self.partner_id.bank_ids) > 0:
+                self.partner_bank_account_id = self.partner_id.bank_ids[0]
+            elif self.partner_id and len(self.partner_id.commercial_partner_id.bank_ids) > 0:
+                self.partner_bank_account_id = self.partner_id.commercial_partner_id.bank_ids[0]
+            else:
+                self.partner_bank_account_id = False
+        self.payee_name = self.partner_id.name
+        return {'domain': {'partner_bank_account_id': [
+            ('partner_id', 'in', [self.partner_id.id, self.partner_id.commercial_partner_id.id])]}}
+
 
     def get_inv_info(self):
         for payment in self:
@@ -48,15 +69,19 @@ class acc_pay_inherit(models.Model):
         if not self.invoice_ids and self.payment_type in ('inbound', 'outbound'):
             # Set default partner type for the payment type
             if self.payment_type == 'inbound':
-                if self.partner_type == 'supplier':
+                if self.partner_type in ['supplier']:
                     raise UserError(_("Wrong option selected"))
                 else:
                     self.partner_type = 'customer'
             elif self.payment_type == 'outbound':
-                if self.partner_type == 'customer':
+                if self.partner_type in ['customer']:
                     raise UserError(_("Wrong option selected"))
                 else:
                     self.partner_type = 'supplier'
+            elif self.payment_type == 'transfer':
+                raise UserError(_("Transfer not allowed"))
+
+
         elif self.payment_type not in ('inbound', 'outbound'):
             self.partner_type = False
         # Set payment method domain

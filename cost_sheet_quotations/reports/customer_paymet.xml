@@ -14,7 +14,7 @@
             <t t-call="web.external_layout">
                 <t t-foreach="docs" t-as="o">
                     <div style="width:100%;border:0px solid black;">
-                        <table style="" cellspacing="0" cellpadding="0" width="1200px">
+                        <table style="" cellspacing="0" cellpadding="0" width="100%">
                             <tbody>
                                 <tr t-attf-style="border-bottom:2px solid black;page-break-inside:avoid !important;font-weight:bold;background-color:white;color:black;};">
                                     <td align="left" t-attf-style="font-weight:bold;color:black;border:0px solid black;"
@@ -33,7 +33,7 @@
                         </table>
                         <br/>
                         <br/>
-                        <table style="" cellspacing="0" cellpadding="0" width="1200px">
+                        <table style="" cellspacing="0" cellpadding="0" width="100%">
                             <tbody>
                                 <tr t-attf-style="border:0px solid black;page-break-inside:avoid !important;background-color:white;color:black;};">
                                     <td align="left" t-attf-style="color:black;border:0px solid black;" width="20%">
@@ -44,7 +44,7 @@
                                             <p t-field="o.partner_id" class="m-0"/>
                                         </div>
                                     </td>
-                                            <td align="center" t-attf-style="color:black;border:0px solid black;" width="20%">
+                                            <td align="left" t-attf-style="color:black;border:0px solid black;" width="20%">
                                         <span style="font-size:20px;font-weight:bold;">Payee Name</span>
                                     </td>
                                     <td align="left" t-attf-style="color:black;border:0px solid black;" width="30%">

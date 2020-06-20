@@ -44,7 +44,7 @@
                                             <p t-field="o.partner_id" class="m-0"/>
                                         </div>
                                     </td>
-                                            <td align="left" t-attf-style="color:black;border:0px solid black;" width="20%">
+                                            <td align="center" t-attf-style="color:black;border:0px solid black;" width="20%">
                                         <span style="font-size:20px;font-weight:bold;">Payee Name</span>
                                     </td>
                                     <td align="left" t-attf-style="color:black;border:0px solid black;" width="30%">
@@ -88,7 +88,7 @@
                                         <br/>
                                     </td>
 
-                                               <td align="left" t-attf-style="width:100%;color:black;border:0px solid black;" width="20%">
+                                               <td align="center" t-attf-style="width:100%;color:black;border:0px solid black;" width="20%">
                                         <span style="font-size:20px;font-weight:bold;">Cheque Date</span>
                                     </td>
                                     <td align="left" t-attf-style="color:black;border:0px solid black;" width="30%">

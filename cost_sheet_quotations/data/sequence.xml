@@ -10,9 +10,9 @@
             <field name="number_increment">1</field>
         </record>
     </data>
-    <data noupdate="0">
+    <data>
 
-    <record id="sequence_payment_customer_invoice" model="ir.sequence">
+    <record id="sequence_payment_customer_invoice1" model="ir.sequence">
         <field name="name">Payments customer invoices sequence</field>
         <field name="code">account.payment.customer.invoice.bank</field>
         <field name="prefix">CUST.IN/bnk/%(range_year)s/</field>
@@ -22,7 +22,7 @@
         <field eval="False" name="company_id"/>
         <field name="padding">4</field>
     </record>
-    <record id="sequence_payment_customer_refund" model="ir.sequence">
+    <record id="sequence_payment_customer_refund1" model="ir.sequence">
         <field name="name">Payments customer credit notes sequence</field>
         <field name="code">account.payment.customer.refund.bank</field>
         <field name="prefix">CUST.OUT/bnk/%(range_year)s/</field>
@@ -32,7 +32,7 @@
         <field eval="False" name="company_id"/>
         <field name="padding">4</field>
     </record>
-    <record id="sequence_payment_supplier_invoice" model="ir.sequence">
+    <record id="sequence_payment_supplier_invoice1" model="ir.sequence">
         <field name="name">Payments supplier invoices sequence</field>
         <field name="code">account.payment.supplier.invoice.bank</field>
         <field name="prefix">SUPP.OUT/bnk/%(range_year)s/</field>
@@ -42,7 +42,7 @@
         <field eval="False" name="company_id"/>
         <field name="padding">4</field>
     </record>
-    <record id="sequence_payment_supplier_refund" model="ir.sequence">
+    <record id="sequence_payment_supplier_refund1" model="ir.sequence">
         <field name="name">Payments supplier credit notes sequence</field>
         <field name="code">account.payment.supplier.refund.bank</field>
         <field name="prefix">SUPP.IN/bnk/%(range_year)s/</field>
@@ -52,7 +52,7 @@
         <field eval="False" name="company_id"/>
         <field name="padding">4</field>
     </record>
-    <record id="sequence_payment_transfer" model="ir.sequence">
+    <record id="sequence_payment_transfer1" model="ir.sequence">
         <field name="name">Payments transfer sequence</field>
         <field name="code">account.payment.transfer</field>
         <field name="prefix">TRANS/%(range_year)s/</field>

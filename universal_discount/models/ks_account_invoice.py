@@ -52,8 +52,8 @@ class KsGlobalDiscountInvoice(models.Model):
             WHERE move.id IN %s AND move2.state = 'posted'
         ''', [tuple(moves.ids)])
         res = self._cr.fetchone()
-        # if res:
-        #     raise ValidationError(_('Posted journal entry must have an unique sequence number per company.'))
+        if res:
+            raise ValidationError(_('Posted journal entry must have an unique sequence number per company.'))
 
     @api.model
     def _get_default_journal(self):

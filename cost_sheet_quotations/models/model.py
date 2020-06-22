@@ -606,7 +606,7 @@ class costsheetmaterial(models.Model):
     def onchange_product(self):
         if self.product_id:
             self.rate = self.product_id.standard_price
-            uom = self.env['uom.uom'].browse(112)
+            uom = self.product_id.uom_id
             if uom:
                 self.uom = uom.id
 
@@ -767,7 +767,7 @@ class costsheetmaterial(models.Model):
     def onchange_product(self):
         if self.product_id:
             self.rate = self.product_id.standard_price
-            uom = self.env['uom.uom'].browse(112)
+            uom = self.product_id.uom_id
             if uom:
                 self.uom = uom.id
 
@@ -874,7 +874,7 @@ class costsheetmaterial(models.Model):
     def onchange_product(self):
         if self.product_id:
             self.rate = self.product_id.standard_price
-            uom = self.env['uom.uom'].browse(112)
+            uom = self.product_id.uom_id
             if uom:
                 self.uom = uom.id
 

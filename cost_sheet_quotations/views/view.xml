@@ -166,7 +166,7 @@
 <!--                                    <field name="desc"/>-->
                                     <!--                                    <field name="uom"/>-->
                                     <!--                                    <field name="rate"/>-->
-                                    <field name="total_qty" readonly="1"/>
+                                    <field name="total_qty"/>
                                     <field name="total_cost" readonly="1"/>
                                 </tree>
                             </field>

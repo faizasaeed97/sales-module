@@ -32,8 +32,28 @@ class KsGlobalDiscountInvoice(models.Model):
     purpose= fields.Char(string="Purpose")
     is_petty=fields.Boolean(string="Is petty")
 
+    @api.constrains('name', 'journal_id', 'state')
+    def _check_unique_sequence_number(self):
+        moves = self.filtered(lambda move: move.state == 'posted')
+        if not moves:
+            return
 
+        self.flush()
 
+        # /!\ Computed stored fields are not yet inside the database.
+        self._cr.execute('''
+            SELECT move2.id
+            FROM account_move move
+            INNER JOIN account_move move2 ON
+                move2.name = move.name
+                AND move2.journal_id = move.journal_id
+                AND move2.type = move.type
+                AND move2.id != move.id
+            WHERE move.id IN %s AND move2.state = 'posted'
+        ''', [tuple(moves.ids)])
+        res = self._cr.fetchone()
+        # if res:
+        #     raise ValidationError(_('Posted journal entry must have an unique sequence number per company.'))
 
     @api.model
     def _get_default_journal(self):
@@ -86,11 +106,6 @@ class KsGlobalDiscountInvoice(models.Model):
                     error_msg = _('Please define an accounting purchase journal in your company')
                 raise UserError(error_msg)
         return journal
-
-
-
-
-
 
     # @api.multi
     @api.depends('name')
@@ -450,3 +465,5 @@ class KsGlobalDiscountInvoice(models.Model):
 
     def print_credit_report(self):
         return self.env.ref('cost_sheet_quotations.action_credit_note_print').report_action(self)
+
+

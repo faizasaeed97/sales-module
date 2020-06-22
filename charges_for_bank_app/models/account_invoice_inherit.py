@@ -75,16 +75,7 @@ class AccountPayment(models.Model):
     open_invoices = fields.Many2many('account.move', string="Open Invoices",
                                      )
 
-    @api.onchange('open_invoices', 'open_invoices.Amount_pay')
-    def fill_invoices_rec(self):
-        if self.partner_id and self.open_invoices:
-            amnt = 0.0
-            for rec in self.open_invoices:
-                if rec.partner_id.id != self.partner_id.id:
-                    raise UserError(_("Partner is difffent!"))
-                else:
-                    amnt += rec.Amount_pay
-            self.amount = amnt
+
 
     # else:
     # 	raise UserError(_("Please select partner first!"))
@@ -224,96 +215,8 @@ class AccountPayment(models.Model):
                                 })
 
                 move_line_data = rec._prepare_payment_moves()
-            # move_line_data[0]['line_ids'].append(debit)
-            # move_line_data[0]['line_ids'].append(credit)
-
-            if len(rec.open_invoices) > 0:
-                company_currency = rec.company_id.currency_id
-                write_off_amount = payment.payment_difference_handling == 'reconcile' and -payment.payment_difference or 0.0
-                # Compute amounts.
-                write_off_amount = payment.payment_difference_handling == 'reconcile' and -payment.payment_difference or 0.0
-                if payment.payment_type in ('outbound', 'transfer'):
-                    counterpart_amount = payment.amount
-                    liquidity_line_account = payment.journal_id.default_debit_account_id
-                else:
-                    counterpart_amount = -payment.amount
-                    liquidity_line_account = payment.journal_id.default_credit_account_id
-
-                # Manage currency.
-                if payment.currency_id == company_currency:
-                    # Single-currency.
-                    balance = counterpart_amount
-                    write_off_balance = write_off_amount
-                    counterpart_amount = write_off_amount = 0.0
-                    currency_id = False
-                else:
-                    # Multi-currencies.
-                    balance = payment.currency_id._convert(counterpart_amount, company_currency, payment.company_id,
-                                                           payment.payment_date)
-                    write_off_balance = payment.currency_id._convert(write_off_amount, company_currency,
-                                                                     payment.company_id, payment.payment_date)
-                    currency_id = payment.currency_id.id
-
-                # Manage custom currency on journal for liquidity line.
-                if payment.journal_id.currency_id and payment.currency_id != payment.journal_id.currency_id:
-                    # Custom currency on journal.
-                    liquidity_line_currency_id = payment.journal_id.currency_id.id
-                    liquidity_amount = company_currency._convert(
-                        balance, payment.journal_id.currency_id, payment.company_id, payment.payment_date)
-                else:
-                    # Use the payment currency.
-                    liquidity_line_currency_id = currency_id
-                    liquidity_amount = counterpart_amount
-
-                # if not rec.journal_id.default_bank_account_id:
-                # 	raise UserError('Please first configure  [Bank Charge Account] from Invoicing Configuration -> Journals -> Bank(Extra Bank Charge Account)..!')
-                move_line_data = rec._prepare_payment_moves()
-
-                for recor in rec.open_invoices:
-
-                    debit = (0, 0, {'name': "multi invoice par-pay :" + str(rec.communication),
-                                    'amount_currency': recor.Amount_pay,
-                                    'currency_id': currency_id,
-                                    'debit': recor.Amount_pay,
-                                    'credit': 0.0,
-                                    'date_maturity': rec.payment_date,
-                                    'partner_id': rec.partner_id.id,
-                                    'account_id': payment.destination_account_id.id,
-                                    'payment_id': rec.id,
-                                    'journal_id': rec.journal_id.id,
-                                    })
-
-                    amount_currency = 0.0
-                    if rec.payment_type == 'outbound':
-                        amount_currency = -recor.Amount_pay
-                    if rec.payment_type == 'inbound':
-                        amount_currency = recor.Amount_pay
-
-                    credit = (0, 0, {'name': rec.name,
-                                     'amount_currency': amount_currency,
-                                     'currency_id': liquidity_line_currency_id,
-                                     'debit': 0.0,
-                                     'credit': recor.Amount_pay,
-                                     'date_maturity': rec.payment_date,
-                                     'partner_id': rec.partner_id.id,
-                                     'account_id': rec.journal_id.default_credit_account_id.id,
-                                     'payment_id': rec.id,
-                                     'journal_id': rec.journal_id.id})
-
-                    # debit = (0, 0, {'name': "Bank Charge :"+str(rec.communication),
-                    #   'amount_currency': liquidity_amount,
-                    #   'currency_id': currency_id,
-                    #   'debit': rec.account_payment,
-                    #   'credit': 0.0,
-                    #   'date_maturity': rec.payment_date,
-                    #   'partner_id': rec.partner_id.id,
-                    #   'account_id': rec.journal_id.default_bank_account_id.id,
-                    #   'payment_id': rec.id,
-                    #   'journal_id':rec.journal_id.id,
-                    #   })
-
-                    move_line_data[0]['line_ids'].append(debit)
-                    move_line_data[0]['line_ids'].append(credit)
+                move_line_data[0]['line_ids'].append(debit)
+                move_line_data[0]['line_ids'].append(credit)
 
 
             else:
@@ -860,6 +763,19 @@ class bankstmantinherit(models.Model):
 
     payee_name = fields.Char("Payee Name")
 
+    account_payment = fields.Monetary('Extra Bank Charges')
+    is_bank_charge = fields.Boolean("Is Bank Charge")
+
+
+    @api.onchange('journal_id')
+    def visible_bank_charges(self):
+        self.is_bank_charge = False
+        if self.journal_id:
+            if self.journal_id.type == "bank":
+                self.is_bank_charge = True
+            else:
+                self.is_bank_charge = False
+
 
     def action_bank_reconcile_bank_statements(self):
         self.ensure_one()
@@ -974,7 +890,8 @@ class AccountBankStatementLine(models.Model):
             'payment_date': self.date,
             'state': 'reconciled',
             'cheque_no': self.statement_id.cheque_no,
-
+            'account_payment':self.statement_id.account_payment,
+            'is_bank_charge': self.statement_id.is_bank_charge,
             'chq_date': self.statement_id.chq_date,
             'purpose': self.statement_id.purpose,
             'payee_name': self.statement_id.payee_name,

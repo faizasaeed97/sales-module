@@ -62,10 +62,21 @@
             <field name="model">account.payment</field>
             <field name="inherit_id" ref="account.view_account_payment_form"/>
             <field name="arch" type="xml">
+
                 <xpath expr="//field[@name='journal_id']" position="after">
-                    <field name="is_bank_charge" invisible="1"/>
+                     <field name="is_bank_charge" invisible="1"/>
+
+
+
                     <field name="account_payment" attrs="{'invisible':[('is_bank_charge', '!=',True)]}"/>
                 </xpath>
+
+                                <xpath expr="//field[@name='company_id']" position="after">
+                <field name="is_emp" attrs="{'invisible': [('payment_type', '!=', 'outbound')]}"/>
+                <field name="emp_accnt" string="Employee Account" attrs="{'invisible':[('is_emp', '!=',True)],'required': [('is_emp', '=', True)]}"/>
+
+
+                                </xpath>
 
 
                 <!--                <xpath expr="//sheet" position="inside">-->

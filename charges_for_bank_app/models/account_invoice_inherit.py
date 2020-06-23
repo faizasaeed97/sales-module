@@ -70,7 +70,7 @@ class AccountPayment(models.Model):
     _inherit = "account.payment"
 
     account_payment = fields.Monetary('Extra Bank Charges')
-    name = fields.Char(readonly=False, copy=False)  # The name is attributed upon post()
+    # name = fields.Char(readonly=False, copy=False)  # The name is attributed upon post()
 
     is_bank_charge = fields.Boolean("Is Bank Charge")
     is_emp = fields.Boolean("Is Employee?")

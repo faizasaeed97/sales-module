@@ -66,8 +66,7 @@ class acc_pay_inherit(models.Model):
 
     @api.onchange('payment_type')
     def _onchange_payment_type(self):
-        if self.payment_type == 'transfer':
-           raise UserError(_("Transfer not allowed"))
+
         if not self.invoice_ids and self.payment_type in ('inbound', 'outbound'):
             # Set default partner type for the payment type
             if self.payment_type == 'inbound':
@@ -80,8 +79,7 @@ class acc_pay_inherit(models.Model):
                     raise UserError(_("Wrong option selected"))
                 else:
                     self.partner_type = 'supplier'
-            elif self.payment_type == 'transfer':
-                raise UserError(_("Transfer not allowed"))
+
 
 
         elif self.payment_type not in ('inbound', 'outbound'):

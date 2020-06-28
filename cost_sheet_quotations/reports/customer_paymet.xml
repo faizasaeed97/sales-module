@@ -44,14 +44,14 @@
                                             <p t-field="o.partner_id" class="m-0"/>
                                         </div>
                                     </td>
-                                            <td align="left" t-attf-style="color:black;border:0px solid black;" width="20%">
-                                        <span style="font-size:20px;font-weight:bold;">Payee Name</span>
-                                    </td>
-                                    <td align="left" t-attf-style="color:black;border:0px solid black;" width="30%">
-                                        <div>
-                                            <p t-field="o.payee_name" class="m-0"/>
-                                        </div>
-                                    </td>
+<!--                                            <td align="left" t-attf-style="color:black;border:0px solid black;" width="20%">-->
+<!--                                        <span style="font-size:20px;font-weight:bold;">Payee Name</span>-->
+<!--                                    </td>-->
+<!--                                    <td align="left" t-attf-style="color:black;border:0px solid black;" width="30%">-->
+<!--                                        <div>-->
+<!--                                            <p t-field="o.payee_name" class="m-0"/>-->
+<!--                                        </div>-->
+<!--                                    </td>-->
 
 
 

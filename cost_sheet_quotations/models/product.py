@@ -127,7 +127,7 @@ class acc_pay_inherit(models.Model):
                     j_dic = {}
                     j_dic['srn']=counter
 
-                    j_dic['account']=data.account_id.name
+                    j_dic['account']=data.ref
                     j_dic['label']=data.name
 
                     j_dic['debit']=data.debit

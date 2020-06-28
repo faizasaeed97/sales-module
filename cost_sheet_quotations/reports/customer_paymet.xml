@@ -4,7 +4,7 @@
         <xpath expr="//div[@class='footer o_standard_footer']" position="replace">
             <div class="footer o_standard_footer">
                 <div class="text-right" style="border-top: 1px solid black;">
-                    <span>SHANE, 2</span>
+<!--                    <span>SHANE, 2</span>-->
                 </div>
             </div>
         </xpath>
@@ -146,7 +146,7 @@
 
                                         <td align="center" t-attf-style="color:black;border-bottom:1px solid black;"
                                             width="15%">
-                                            <span style="font-size:20px;">Account.</span>
+                                            <span style="font-size:20px;">Invoice.</span>
                                         </td>
 
                                         <td align="center" t-attf-style="color:black;border-bottom:1px solid black;"

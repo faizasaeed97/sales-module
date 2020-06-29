@@ -497,13 +497,42 @@ class AccountReconcileModelinh(models.TransientModel):
                                    string="Invoices", copy=False, readonly=False)
     Amount_pay = fields.Float(string="Amount Pay")
 
-    @api.onchange('invoice_ids', 'invoice_ids.Amount_pay')
-    def fill_invoices_rec(self):
-        if self.invoice_ids:
-            amnt = 0.0
-            for rec in self.invoice_ids:
-                amnt += rec.Amount_pay
-            self.Amount_pay = amnt
+
+    def create_payments(self):
+        '''Create payments according to the invoices.
+        Having invoices with different commercial_partner_id or different type
+        (Vendor bills with customer invoices) leads to multiple payments.
+        In case of all the invoices are related to the same
+        commercial_partner_id and have the same type, only one payment will be
+        created.
+
+        :return: The ir.actions.act_window to show created payments.
+        '''
+        Payment = self.env['account.payment']
+        payments = Payment.create(self.get_payments_vals())
+        payments.post()
+
+        action_vals = {
+            'name': _('Payments'),
+            'domain': [('id', 'in', payments.ids), ('state', '=', 'posted')],
+            'res_model': 'account.payment',
+            'view_id': False,
+            'type': 'ir.actions.act_window',
+        }
+        if len(payments) == 1:
+            action_vals.update({'res_id': payments[0].id, 'view_mode': 'form'})
+        else:
+            action_vals['view_mode'] = 'tree,form'
+        return action_vals
+
+
+    # @api.onchange('invoice_ids', 'invoice_ids.Amount_pay')
+    # def fill_invoices_rec(self):
+    #     if self.invoice_ids:
+    #         amnt = 0.0
+    #         for rec in self.invoice_ids:
+    #             amnt += rec.Amount_pay
+    #         self.Amount_pay = amnt
 
     # def _prepare_payment_vals(self, invoices):
     #     '''Create the payment values.
@@ -1052,9 +1081,40 @@ class bankstmantinherit(models.Model):
                                           total > 0) and st_line.journal_id.inbound_payment_method_ids or st_line.journal_id.outbound_payment_method_ids
                 currency = st_line.journal_id.currency_id or st_line.company_id.currency_id
                 partner_type = 'customer' if st_line.account_id.user_type_id == account_type_receivable else 'supplier'
+
+                #compute name\\
+                payment_type=total > 0 and 'inbound' or 'outbound'
+
+                if partner_type == 'customer':
+                    if payment_type == 'inbound':
+                        if st_line.statement_id.journal_id.id == "bank":
+                            sequence_code = 'account.payment.customer.invoice.bank'
+                        else:
+                            sequence_code = 'account.payment.customer.invoice'
+                    if payment_type == 'outbound':
+                        if st_line.statement_id.journal_id.id == "bank":
+                            sequence_code = 'account.payment.customer.refund.bank'
+                        else:
+                            sequence_code = 'account.payment.customer.refund'
+                if partner_type == 'supplier':
+                    if payment_type == 'inbound':
+                        if st_line.statement_id.journal_id.id == "bank":
+                            sequence_code = 'account.payment.supplier.refund.bank'
+                        else:
+                            sequence_code = 'account.payment.supplier.refund'
+                    if payment_type == 'outbound':
+                        if st_line.statement_id.journal_id.id == "bank":
+                            sequence_code = 'account.payment.supplier.invoice.bank'
+                        else:
+                            sequence_code = 'account.payment.supplier.invoice'
+
+                name = self.env['ir.sequence'].next_by_code(sequence_code, sequence_date=st_line.date)
+                if not name and payment_type != 'transfer':
+                    raise UserError(_("You have to define a sequence for %s in your company.") % (sequence_code,))
+
                 payment_list.append({
                     'payment_method_id': payment_methods and payment_methods[0].id or False,
-                    'payment_type': total > 0 and 'inbound' or 'outbound',
+                    'payment_type': payment_type,
                     'partner_id': st_line.partner_id.id,
                     'partner_type': partner_type,
                     'journal_id': st_line.statement_id.journal_id.id,
@@ -1063,7 +1123,7 @@ class bankstmantinherit(models.Model):
                     'currency_id': currency.id,
                     'amount': abs(total),
                     'communication': st_line._get_communication(payment_methods[0] if payment_methods else False),
-                    'name': st_line.statement_id.name or _("Bank Statement %s") % st_line.date,
+                    'name': name,
                 })
 
                 # Create move and move line vals
@@ -1096,14 +1156,6 @@ class bankstmantinherit(models.Model):
             payment.write({'payment_reference': move.name})
 
 
-#
-#     @api.model
-#     def get_bank_statement_data(self, bank_statement_line_ids, srch_domain=[]):
-#         """ Add batch payments data to the dict returned """
-#         res = super(AccountReconciliation, self).get_bank_statement_data(bank_statement_line_ids, srch_domain)
-#         res.update({'batch_payments': self.get_batch_payments_data(bank_statement_line_ids)})
-#         return res
-
 class AccountBankStatementLine(models.Model):
     _inherit = "account.bank.statement.line"
 
@@ -1124,8 +1176,38 @@ class AccountBankStatementLine(models.Model):
         if not partner_type and self.env.context.get('default_partner_type'):
             partner_type = self.env.context['default_partner_type']
         currency = self.journal_id.currency_id or self.company_id.currency_id
-        payment_methods = (
-                                  total > 0) and self.journal_id.inbound_payment_method_ids or self.journal_id.outbound_payment_method_ids
+        payment_methods = ( total > 0) and self.journal_id.inbound_payment_method_ids or self.journal_id.outbound_payment_method_ids
+
+        # compute name\\
+        payment_type = total > 0 and 'inbound' or 'outbound'
+
+        if partner_type == 'customer':
+            if payment_type == 'inbound':
+                if self.statement_id.journal_id.type == "bank":
+                    sequence_code = 'account.payment.customer.invoice.bank'
+                else:
+                    sequence_code = 'account.payment.customer.invoice'
+            if payment_type == 'outbound':
+                if self.statement_id.journal_id.type == "bank":
+                    sequence_code = 'account.payment.customer.refund.bank'
+                else:
+                    sequence_code = 'account.payment.customer.refund'
+        if partner_type == 'supplier':
+            if payment_type == 'inbound':
+                if self.statement_id.journal_id.type == "bank":
+                    sequence_code = 'account.payment.supplier.refund.bank'
+                else:
+                    sequence_code = 'account.payment.supplier.refund'
+            if payment_type == 'outbound':
+                if self.statement_id.journal_id.type == "bank":
+                    sequence_code = 'account.payment.supplier.invoice.bank'
+                else:
+                    sequence_code = 'account.payment.supplier.invoice'
+
+        name = self.env['ir.sequence'].next_by_code(sequence_code, sequence_date=self.date)
+        if not name and payment_type != 'transfer':
+            raise UserError(_("You have to define a sequence for %s in your company.") % (sequence_code,))
+
         return {
             'payment_method_id': payment_methods and payment_methods[0].id or False,
             'payment_type': total > 0 and 'inbound' or 'outbound',
@@ -1143,5 +1225,5 @@ class AccountBankStatementLine(models.Model):
             'currency_id': currency.id,
             'amount': abs(total),
             'communication': self._get_communication(payment_methods[0] if payment_methods else False),
-            'name': self.statement_id.name or _("Bank Statement %s") % self.date,
+            'name': name,
         }

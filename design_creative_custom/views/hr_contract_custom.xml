@@ -120,8 +120,8 @@
                         <field name="do_incrmnt" attrs="{'invisible': [('do_decre','=',True)]}"/>
                         <field name="do_decre" attrs="{'invisible': [('do_incrmnt','=',True)]}"/>
 
-                        <field name="select_incrmnt" attrs="{'invisible': [('do_decre','=',True)]}"/>
-                        <field name="select_decrement" attrs="{'invisible': [('do_incrmnt','=',True)]}"/>
+                        <field name="select_incrmnt" attrs="{'invisible': [('do_incrmnt','!=',True)]}"/>
+                        <field name="select_decrement" attrs="{'invisible': [('do_decre','!=',True)]}"/>
 
                         <field name="increment_Amount"/>
 

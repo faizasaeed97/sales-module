@@ -48,13 +48,17 @@
 
                 </xpath>
 
+                <xpath expr="//page[@name='information']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+
 
                 <xpath expr="//notebook/page[@name='other']" position="before">
                     <page name="Project_salery" string="Project salery">
                         <group col="4" colspan="12">
                             <field name="p_salery" required="1" force_save="1"/>
                             <!--                            <field name="p_leave_salery" required="1" force_save="1"/>-->
-<!--                            <field name="p_ideminity" required="1" force_save="1"/>-->
+                            <!--                            <field name="p_ideminity" required="1" force_save="1"/>-->
                             <field name="p_airfair" required="1" force_save="1"/>
                             <field name="p_lmra" required="1" force_save="1"/>
                             <field name="p_visa" required="1" force_save="1"/>
@@ -113,23 +117,39 @@
 
                 <xpath expr="//notebook/page[@name='other']//group/group[1]" position="after">
                     <group string="Info">
-                        <field name="housing_allowance"></field>
-                        <field name="travel_allowance"></field>
-                        <field name="increment_Date"></field>
-                        <field name="increment_Amount"></field>
-                        <field name="gosi_Salary_Deduction"></field>
-                        <field name="leave_Status"></field>
+                        <field name="do_incrmnt" attrs="{'invisible': [('do_decre','=',True)]}"/>
+                        <field name="do_decre" attrs="{'invisible': [('do_incrmnt','=',True)]}"/>
+
+                        <field name="select_incrmnt" attrs="{'invisible': [('do_decre','=',True)]}"/>
+                        <field name="select_decrement" attrs="{'invisible': [('do_incrmnt','=',True)]}"/>
+
+                        <field name="increment_Amount"/>
+
+
+                        <field name="housing_allowance"/>
+                        <field name="travel_allowance"/>
+                        <field name="increment_Date"/>
+                        <field name="gosi_salery"/>
+                        <field name="gosi_Salary_Deduction" readonly="1"/>
+                        <field name="leave_Status"/>
+                        <label for="wage"/>
+                        <div class="o_row" name="wage">
+                            <field name="wage" nolabel="1"/>
+                            <span>/ month</span>
+                        </div>
                     </group>
 
                     <group string="Other Info">
-                        <field name="leave_due"></field>
-                        <field name="leave_amount"></field>
-                        <field name="total_work_experience"></field>
-                        <field name="indemnity"></field>
-                        <field name="tenure"></field>
+                        <field name="leave_due"/>
+                        <field name="leave_amount"/>
+                        <field name="total_work_experience"/>
+                        <field name="indemnity"/>
+                        <field name="tenure"/>
 
-                        <field name="sponsorship"></field>
-                        <field name="work_location"></field>
+                        <field name="sponsorship"/>
+                        <field name="work_location"/>
+
+
                     </group>
 
 

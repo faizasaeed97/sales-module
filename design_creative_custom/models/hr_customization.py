@@ -2,8 +2,8 @@ import time
 
 from odoo import models, fields, api
 from calendar import isleap
-import datetime
 from odoo.exceptions import UserError, ValidationError
+from datetime import date , datetime
 
 
 
@@ -12,7 +12,7 @@ class inherithremploye(models.Model):
 
     bahrain_expact=fields.Selection([('Bahraini', 'Bahraini'),('Expats', 'Expats')], string='Bahranis/Expacts',)
     muslim = fields.Selection([('Yes', 'Yes'), ('No', 'No')], string='Muslim', )
-    age=fields.Char(string="Age")
+    age=fields.Char(string="Age",compute='set_age_computed')
     dependent = fields.Selection([('Yes', 'Yes'), ('No', 'No')], string='Dependent', )
     cpr_no = fields.Char(string="CPR NO")
     cpr_exp_date = fields.Date(string="CPR Expiry")
@@ -20,6 +20,27 @@ class inherithremploye(models.Model):
     rp_exp_date = fields.Date(string="RP Expiry")
     veh_alloted = fields.Selection([('Yes', 'Yes'), ('No', 'No')], string='Vehicle Alloted', )
     accomodation = fields.Selection([('YES', 'YES'), ('NO', 'NO')], string='Acomodation', )
+
+    def calculateAge(self,dob):
+        today = date.today()
+        try:
+            birthday = dob.replace(year=today.year)
+
+            # raised when birth date is February 29
+        # and the current year is not a leap year
+        except ValueError:
+            birthday = dob.replace(year=today.year,
+                                    month=dob.month + 1, day=1)
+
+        if birthday > today:
+            return today.year - dob.year - 1
+        else:
+            return today.year - dob.year
+
+    def set_age_computed(self):
+        if self.birthday:
+           self.age = str(self.calculateAge(self.birthday))
+
     # designation=fields.Many2one('employee.designation',)
 
 
@@ -31,7 +52,7 @@ class inheritcontracts(models.Model):
     housing_allowance=fields.Float("Housing Allowance",default=0.00)
     travel_allowance=fields.Float("Travel Allowance",default=0.00)
     increment_Date = fields.Date(string="Increment Date")
-    increment_Amount=fields.Float("Increment Amount",default=0.00)
+    increment_Amount=fields.Float("Amount",default=0.00)
     leave_Status = fields.Selection([('Active', 'Active'), ('Terminated', 'Terminated'), ('Resigned', 'Resigned'),('Vacation', 'Vacation')], string='Leave Status', )
     leave_due=fields.Float("Leave Due",default=0.00)
     leave_amount=fields.Float("Leave Amount",default=0.00)
@@ -48,7 +69,7 @@ class inheritcontracts(models.Model):
     OT2 = fields.Float("OT 2", default=0.00)
     OTw = fields.Float("OT(W)", default=0.00)
 
-    p_salery = fields.Monetary(string="Salary" , required=True)
+    p_salery = fields.Monetary(string="Salary")
     p_salery_pd=fields.Monetary(string='Salary / Day',digits=(16, 3),default=0.0, compute='salery_comp',store=True)
     p_salery_ph=fields.Monetary(string='Salary / Hour',digits=(16, 3),default=0.0,compute='salery_comp',store=True)
 
@@ -81,6 +102,56 @@ class inheritcontracts(models.Model):
     grade = fields.Many2one('hr.grade',string="grade")
     final_hourly_rate=fields.Monetary('Final  / hourly rate',compute='get_hourly_final')
     final_day_rate=fields.Monetary('Final / Day rate',compute='get_hourly_final')
+
+    gosi_salery=fields.Monetary(string='Gosi Salery',digits=(16, 3),default=0.0)
+    gross_salery=fields.Monetary(string='Gross Salery',digits=(16, 3),compute='get_gross_salery')
+    select_incrmnt= fields.Selection([('Basic', 'Basic'), ('Housing', 'Housing'),('Travel', 'Travel'),('None', 'None')], string='Increment Type',default='None')
+    select_decrement= fields.Selection([('Basic', 'Basic'), ('Housing', 'Housing'),('Travel', 'Travel')], string='Decrement Type')
+    do_incrmnt=fields.Boolean('Will Increment?',default=False)
+    do_decre =fields.Boolean('Will Decrement?',default=False)
+
+
+
+    @api.onchange('increment_Amount')
+    def onchange_select_incrmnt(self):
+        if self.do_incrmnt:
+            if self.select_incrmnt == 'None':
+                pass
+            elif self.select_incrmnt == 'Housing':
+                self.housing_allowance += self.increment_Amount
+                self.increment_Amount= 0.0
+            elif self.select_incrmnt == 'Travel':
+                self.travel_allowance += self.increment_Amount
+                self.increment_Amount= 0.0
+        elif self.do_decre:
+            if self.select_decrement == 'Basic':
+                pass
+            elif self.select_decrement == 'Housing':
+                self.housing_allowance -= self.increment_Amount
+                self.increment_Amount = 0.0
+            elif self.select_decrement == 'Travel':
+                self.travel_allowance -= self.increment_Amount
+                self.increment_Amount = 0.0
+
+
+
+
+
+    @api.onchange('gosi_salery')
+    def onchange_gosisalery(self):
+        if self.gosi_salery:
+            if self.employee_id.bahrain_expact == 'Bahraini':
+                self.gosi_Salary_Deduction = (self.gosi_salery * 7)/100
+            else:
+                self.gosi_Salary_Deduction = (self.gosi_salery * 1)/100
+
+
+
+    @api.depends('wage','housing_allowance','travel_allowance','increment_Amount','gosi_Salary_Deduction')
+    def get_gross_salery(self):
+        for rec in self:
+            rec.gross_salery= (rec.wage + rec.housing_allowance + rec.travel_allowance + rec.increment_Amount) - rec.gosi_Salary_Deduction
+
 
 
     @api.depends('p_salery','p_airfair','p_lmra','p_visa')

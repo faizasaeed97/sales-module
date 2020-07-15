@@ -1,34 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-       <record model="ir.ui.view" id="inherit_department">
+    <record model="ir.ui.view" id="inherit_department">
         <field name="name">hr.department.formt</field>
         <field name="model">hr.department</field>
         <field name="inherit_id" ref="hr.view_department_form"/>
         <field name="arch" type="xml">
             <xpath expr="//group[1]" position="after">
                 <group string="Attendance Information">
-                 <field name="st_checkin" placeholder="00:00"/>
-                <field name="st_checkout" placeholder="00:00"/>
-                <field name="grace_time" placeholder="00:00"/>
+                    <field name="st_checkin" placeholder="00:00"/>
+                    <field name="st_checkout" placeholder="00:00"/>
+                    <field name="grace_time" placeholder="00:00"/>
                 </group>
-             </xpath>
+            </xpath>
         </field>
-     </record>
-      <record model="ir.ui.view" id="inherit_employee">
+    </record>
+    <record model="ir.ui.view" id="inherit_employee">
         <field name="name">hr.employee.formt</field>
         <field name="model">hr.employee</field>
         <field name="inherit_id" ref="hr.view_employee_form"/>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='tz']" position="after">
                 <group string="Attendance Information">
-                 <field name="st_checkin" placeholder="00:00"/>
-                <field name="st_checkout" placeholder="00:00"/>
-                <field name="grace_time" placeholder="00:00"/>
+                    <field name="st_checkin" placeholder="00:00"/>
+                    <field name="st_checkout" placeholder="00:00"/>
+                    <field name="grace_time" placeholder="00:00"/>
                 </group>
-             </xpath>
+            </xpath>
         </field>
-     </record>
+    </record>
 
     <record id="action_attendance" model="ir.actions.act_window">
         <field name="name">Attendance</field>
@@ -42,11 +42,21 @@
         <field name="model">attendance.custom</field>
         <field name="arch" type="xml">
             <tree string="Attendance list">
+                <field name="roll_number"/>
                 <field name="employee_id"/>
 
                 <field name="job_title"/>
                 <field name="attendance_date"/>
-                <field name="roll_number"/>
+                <field name="first_check_in"/>
+                <field name="first_check_out"/>
+
+                <field name="second_check_in"/>
+                <field name="second_check_out"/>
+
+                <field name="ot_15"/>
+                <field name="ot_125"/>
+                <field name="working"/>
+
 
             </tree>
         </field>
@@ -109,7 +119,6 @@
     <menuitem name="Attendance" id="ums_attendence_root"
               parent="menu_attendence"
               sequence="2" action="action_attendance"/>
-
 
 
 </odoo>

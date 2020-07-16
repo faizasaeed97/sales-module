@@ -29,13 +29,13 @@
                         </style>
                         <!--                    <h2 t-field="o.name"/>-->
                         <div style="background-color: blue;">
-                        <h2 style="color:white;">
-                            <strong>PaySlip for the Period
-                                <span t-field="o.date_from"/>
-                                To
-                                <span t-field="o.date_to"/>
-                            </strong>
-                        </h2>
+                            <h2 style="color:white;">
+                                <strong>PaySlip for the Period
+                                    <span t-field="o.date_from"/>
+                                    To
+                                    <span t-field="o.date_to"/>
+                                </strong>
+                            </h2>
                         </div>
 
                         <!--                    <table class="table table-sm table-bordered">-->
@@ -137,7 +137,11 @@
                         <table class="table">
                             <tr>
                                 <td width="50%">
-                                  <strong> <b><h2>Allowances</h2></b> </strong>
+                                    <strong>
+                                        <b>
+                                            <h2>Allowances</h2>
+                                        </b>
+                                    </strong>
                                     <table class="table table-sm">
                                         <tr>
                                             <td>
@@ -187,15 +191,52 @@
 
                                 </td>
                                 <td width="50%">
-                                    <strong><b><h2>Deductions</h2></b></strong>
+                                    <strong>
+                                        <b>
+                                            <h2>Deductions</h2>
+                                        </b>
+                                    </strong>
 
                                     <table class="table table-sm">
                                         <tr>
                                             <td>
-                                                <strong>GOSI Salary</strong>
+                                                <strong>GOSI</strong>
                                             </td>
                                             <td>
-                                                <span t-esc="o.line_ids.filtered(lambda line: line.code == 'BASIC').total"
+                                                <span t-esc="o.line_ids.filtered(lambda line: line.code == 'GDEDUC').total"
+                                                      t-options='{"widget": "monetary", "display_currency": o.company_id.currency_id}'/>
+                                            </td>
+
+                                        </tr>
+
+                                        <tr>
+                                            <td>
+                                                <strong>Absent</strong>
+                                            </td>
+                                            <td>
+<!--                                                <span t-esc="o.line_ids.filtered(lambda line: line.code == 'BASIC').total"-->
+<!--                                                      t-options='{"widget": "monetary", "display_currency": o.company_id.currency_id}'/>-->
+                                            </td>
+
+                                        </tr>
+
+                                        <tr>
+                                            <td>
+                                                <strong>Hourly</strong>
+                                            </td>
+                                            <td>
+                                                <span t-esc="o.line_ids.filtered(lambda line: line.code == 'LATEINDEDUCT').total"
+                                                      t-options='{"widget": "monetary", "display_currency": o.company_id.currency_id}'/>
+                                            </td>
+
+                                        </tr>
+
+                                        <tr>
+                                            <td>
+                                                <strong>Loan</strong>
+                                            </td>
+                                            <td>
+                                                <span t-esc="o.line_ids.filtered(lambda line: line.code == 'LODEDUCT').total"
                                                       t-options='{"widget": "monetary", "display_currency": o.company_id.currency_id}'/>
                                             </td>
 
@@ -281,14 +322,14 @@
                         <!--                        </table>-->
                         <hr style="border: 1px solid Black;"/>
 
-                                <p class="text-left" style="float:left">
-                                    <strong>Prepared By</strong>
-                                </p>
+                        <p class="text-left" style="float:left">
+                            <strong>Prepared By</strong>
+                        </p>
 
 
-                                <p class="text-right" style="float:right">
-                                    <strong>Recieved By</strong>
-                                </p>
+                        <p class="text-right" style="float:right">
+                            <strong>Recieved By</strong>
+                        </p>
 
                     </div>
                 </t>

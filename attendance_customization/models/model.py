@@ -140,7 +140,7 @@ class Attendance(models.Model):
                 # check if difference greater than 15 minute
                 # also include grace time
                 if tdelta.days<0:
-                    self.apply_latein_deduction=False
+                    record.apply_latein_deduction=False
                 if not tdelta.days<0:
                    #convert H:M to seconds and compare it with grace if its greater it means deduction apply
                    seconds_difference_checkin=tdelta.seconds
@@ -162,22 +162,22 @@ class Attendance(models.Model):
         for record in self:
             if record.working and record.attendance_date:
                 # here we get Overall OT hours
-                self.ot_15 = '00:00'
-                self.ot_125 = '00:00'
-                ot_minute = (int(self.working.split(':')[0])*60 + int(self.working.split(':')[1])) - 480
+                record.ot_15 = '00:00'
+                record.ot_125 = '00:00'
+                ot_minute = (int(record.working.split(':')[0])*60 + int(record.working.split(':')[1])) - 480
                 day =record.attendance_date.strftime('%A')
                 if ot_minute>0:
                     if day=='Friday':
-                        record.ot_15 = self.get_minute_hmformat(ot_minute*60)
+                        record.ot_15 = record.get_minute_hmformat(ot_minute*60)
                     else:
                         if ot_minute <= 120:
                             # get the difference minute after 120 and update ot1.5
-                            record.ot_125 = self.get_minute_hmformat(ot_minute*60)
+                            record.ot_125 = record.get_minute_hmformat(ot_minute*60)
 
                         if ot_minute > 120:
                             # get the difference minute after 120 and update ot1.5
-                            record.ot_15 = self.get_minute_hmformat((ot_minute - 120)*60)
-                            record.ot_125=self.get_minute_hmformat(120*60)
+                            record.ot_15 = record.get_minute_hmformat((ot_minute - 120)*60)
+                            record.ot_125=record.get_minute_hmformat(120*60)
 
     @api.depends('employee_id')
     def get_jobtitle(self):
@@ -198,64 +198,69 @@ class Attendance(models.Model):
 
     @api.depends('first_check_in', 'first_check_out')
     def onchangefirst_checkin_checkout(self):
-        if self.first_check_in:
-            try:
-                time_obj_first_check_in = datetime.datetime.strptime(self.first_check_in, '%H:%M')
-            except:
-                raise ValidationError(_("Follow Correct Format 00:00"))
-        if self.first_check_out:
-            try:
-                time_obj_first_check_out = datetime.datetime.strptime(self.first_check_out, '%H:%M')
-            except:
-                raise ValidationError(_("Follow Correct Format 00:00"))
+        for rec in self:
 
-        if self.first_check_in and self.first_check_out:
-            self.first_shift_total_hours = str(time_obj_first_check_out - time_obj_first_check_in).split(":")[0] + ':' \
-                                           + str(time_obj_first_check_out - time_obj_first_check_in).split(":")[1]
-        else:
-            self.first_shift_total_hours = '00:00'
+            if rec.first_check_in:
+                try:
+                    time_obj_first_check_in = datetime.datetime.strptime(rec.first_check_in, '%H:%M')
+                except:
+                    raise ValidationError(_("Follow Correct Format 00:00"))
+            if rec.first_check_out:
+                try:
+                    time_obj_first_check_out = datetime.datetime.strptime(rec.first_check_out, '%H:%M')
+                except:
+                    raise ValidationError(_("Follow Correct Format 00:00"))
+
+            if rec.first_check_in and rec.first_check_out:
+                rec.first_shift_total_hours = str(time_obj_first_check_out - time_obj_first_check_in).split(":")[0] + ':' \
+                                               + str(time_obj_first_check_out - time_obj_first_check_in).split(":")[1]
+            else:
+                rec.first_shift_total_hours = '00:00'
 
 
     @api.depends('second_check_in', 'second_check_out')
     def onchangesecond_checkin_checkout(self):
-        if self.second_check_in:
-            try:
-                time_obj_second_check_in = datetime.datetime.strptime(self.second_check_in, '%H:%M')
-            except:
-                raise ValidationError(_("Follow Correct Format 00:00"))
-        if self.second_check_out:
-            try:
-                time_obj_second_check_out = datetime.datetime.strptime(self.second_check_out, '%H:%M')
-            except:
-                raise ValidationError(_("Follow Correct Format 00:00"))
+        for rec in self:
 
-        if self.second_check_in and self.second_check_out:
-            self.second_shift_total_hours = str(time_obj_second_check_out - time_obj_second_check_in).split(":")[
-                                                0] + ':' \
-                                            + str(time_obj_second_check_out - time_obj_second_check_in).split(":")[1]
-        else:
-            self.second_shift_total_hours = '00:00'
+            if rec.second_check_in:
+                try:
+                    time_obj_second_check_in = datetime.datetime.strptime(rec.second_check_in, '%H:%M')
+                except:
+                    raise ValidationError(_("Follow Correct Format 00:00"))
+            if rec.second_check_out:
+                try:
+                    time_obj_second_check_out = datetime.datetime.strptime(rec.second_check_out, '%H:%M')
+                except:
+                    raise ValidationError(_("Follow Correct Format 00:00"))
+
+            if rec.second_check_in and rec.second_check_out:
+                rec.second_shift_total_hours = str(time_obj_second_check_out - time_obj_second_check_in).split(":")[
+                                                    0] + ':' \
+                                                + str(time_obj_second_check_out - time_obj_second_check_in).split(":")[1]
+            else:
+                rec.second_shift_total_hours = '00:00'
 
     @api.depends('first_shift_total_hours', 'second_shift_total_hours')
     def get_workingtime(self):
-        sum = 0
-        if self.first_shift_total_hours:
-            try:
-                time_obj_1st_shifttotal = datetime.datetime.strptime(self.first_shift_total_hours, '%H:%M')
-                a = dt.timedelta(hours=int(self.first_shift_total_hours.split(":")[0]),
-                                 minutes=int(self.first_shift_total_hours.split(":")[1]))
+        for rec in self:
+            sum = 0
+            if rec.first_shift_total_hours:
+                try:
+                    time_obj_1st_shifttotal = datetime.datetime.strptime(rec.first_shift_total_hours, '%H:%M')
+                    a = dt.timedelta(hours=int(rec.first_shift_total_hours.split(":")[0]),
+                                     minutes=int(rec.first_shift_total_hours.split(":")[1]))
 
-            except:
-                raise ValidationError(_("Follow Correct Format 00:00"))
+                except:
+                    raise ValidationError(_("Follow Correct Format 00:00"))
 
-        if self.second_shift_total_hours:
-            try:
-                time_obj_2nd_shifttotal = datetime.datetime.strptime(self.second_shift_total_hours, '%H:%M')
-                b = dt.timedelta(hours=int(self.second_shift_total_hours.split(":")[0]),
-                                 minutes=int(self.second_shift_total_hours.split(":")[1]))
+            if rec.second_shift_total_hours:
+                try:
+                    time_obj_2nd_shifttotal = datetime.datetime.strptime(rec.second_shift_total_hours, '%H:%M')
+                    b = dt.timedelta(hours=int(rec.second_shift_total_hours.split(":")[0]),
+                                     minutes=int(rec.second_shift_total_hours.split(":")[1]))
 
-            except:
-                raise ValidationError(_("Follow Correct Format 00:00"))
+                except:
+                    raise ValidationError(_("Follow Correct Format 00:00"))
 
-        if self.first_shift_total_hours and self.second_shift_total_hours:
-            self.working = str(a + b).split(':')[0] + ':' + str(a + b).split(':')[1]
+            if rec.first_shift_total_hours and rec.second_shift_total_hours:
+                rec.working = str(a + b).split(':')[0] + ':' + str(a + b).split(':')[1]

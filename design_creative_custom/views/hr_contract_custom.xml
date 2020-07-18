@@ -130,13 +130,14 @@
                         <field name="travel_allowance"/>
                         <field name="increment_Date"/>
                         <field name="gosi_salery"/>
-                        <field name="gosi_Salary_Deduction" readonly="1"/>
+                        <field name="gosi_Salary_Deduction" readonly="1" force_save="1"/>
                         <field name="leave_Status"/>
                         <label for="wage"/>
                         <div class="o_row" name="wage">
                             <field name="wage" nolabel="1"/>
                             <span>/ month</span>
                         </div>
+                        <field name="gross_salery" readonly="1"/>
                     </group>
 
                     <group string="Other Info">

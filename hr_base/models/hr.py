@@ -59,6 +59,8 @@ class HrPayslip_inherits(models.Model):
                     rec.consider_days=0
             else:
                 rec.consider_days = 30
+                rec.total_work_day=30
+                rec.absents=0
 
 
 

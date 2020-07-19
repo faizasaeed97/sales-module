@@ -71,27 +71,27 @@ class Employee(models.Model):
         else:
             return 0
 
-    @api.model
-    def comp_gross_salery(self,basic_salary,alw,payslip):
-        if payslip.employee_id:
-            df = payslip.date_from
-            dt = payslip.date_to
-            absnt = 0
-
-            delta = datetime.timedelta(days=1)
-            while df <= dt:
-                print(df)
-                check_attendence = self.env['attendance.custom'].search(
-                    [('attendance_date', '=', df), ('employee_id', '=', payslip.employee_id)])
-                if not check_attendence:
-                    absnt += 1
-                df += delta
-
-            if absnt == 0:
-                return basic_salary+alw
-            else:
-                return  ((basic_salary + alw)/30)*absnt
-        else:
-            return 0
+    # @api.model
+    # def comp_gross_salery(self,basic_salary,alw,payslip):
+    #     if payslip.employee_id:
+    #         df = payslip.date_from
+    #         dt = payslip.date_to
+    #         absnt = 0
+    #
+    #         delta = datetime.timedelta(days=1)
+    #         while df <= dt:
+    #             print(df)
+    #             check_attendence = self.env['attendance.custom'].search(
+    #                 [('absent', '=',True),('attendance_date', '=', df), ('employee_id', '=', payslip.employee_id)])
+    #             if check_attendence:
+    #                 absnt += 1
+    #             df += delta
+    #
+    #         if absnt == 0:
+    #             return basic_salary+alw
+    #         else:
+    #             return  ((basic_salary + alw)/30)*absnt
+    #     else:
+    #         return 0
 
 

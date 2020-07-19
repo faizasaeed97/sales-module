@@ -22,17 +22,18 @@ class HrPayslip_inherits(models.Model):
     absents = fields.Integer(string="Absents", compute="_get_days_calculation")
     consider_days = fields.Integer(string="Consider Days", compute="_get_days_calculation")
 
-    @api.depends('date_from', 'date_to')
+    @api.depends('date_from', 'date_to','employee_id')
     def _get_days_calculation(self):
         for rec in self:
-            if rec.date_from and rec.date_to:
+            if rec.date_from and rec.date_to and rec.employee_id:
                 total = self.env['attendance.custom'].search_count(
                     [('attendance_date', '>=', rec.date_from), ('attendance_date', '<=', rec.date_to),
                      ('employee_id', '=',
                       rec.employee_id.id)
                      ])
                 if rec.date_to.day == 31:
-                    total-=1
+                    if total>30:
+                       total-=1
 
                 df = rec.date_from
                 dt = rec.date_to
@@ -42,19 +43,23 @@ class HrPayslip_inherits(models.Model):
                 while df <= dt:
                     print(df)
                     check_attendence = self.env['attendance.custom'].search(
-                        [('attendance_date', '=', df), ('employee_id', '=', rec.employee_id.id)])
-                    if not check_attendence:
+                        [('absent','=',True),
+                            ('attendance_date', '=', df), ('employee_id', '=', rec.employee_id.id)])
+                    if check_attendence:
                         absnt+=1
                     df += delta
 
 
 
-                rec.total_work_day= total >= 0 or 0
+                rec.total_work_day= total
                 rec.absents = absnt
                 if not total <= 0:
                     rec.consider_days=total - absnt
                 else:
                     rec.consider_days=0
+            else:
+                rec.consider_days = 30
+
 
 
 
@@ -67,9 +72,9 @@ class HrPayslip_inherits(models.Model):
                 print(df)
                 check_attendence = self.env['attendance.custom'].search(
                     [('attendance_date', '=', df), ('employee_id', '=', payslip.employee_id.id)])
-                # if not check_attendence:
-                #     raise UserError(
-                #         _("Attendance of %s not found in system . Please mark attendance first") % (str(df)))
+                if not check_attendence:
+                    raise UserError(
+                        _("Attendance of %s not found in system . Please mark attendance first") % (str(df)))
                 df += delta
 
             number = payslip.number or self.env['ir.sequence'].next_by_code('salary.slip')
@@ -78,3 +83,12 @@ class HrPayslip_inherits(models.Model):
             lines = [(0, 0, line) for line in payslip._get_payslip_lines()]
             payslip.write({'line_ids': lines, 'number': number, 'state': 'verify', 'compute_date': fields.Date.today()})
         return True
+
+class leaveallocation_inherit(models.Model):
+    _inherit = "hr.leave.allocation"
+
+
+    def update_paid_days(self):
+        for rec in self.search([]):
+            if rec.holiday_status_id.name == 'Paid Time Off':
+                rec.number_of_days +=2.5

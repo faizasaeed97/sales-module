@@ -56,6 +56,7 @@
                 <field name="ot_15"/>
                 <field name="ot_125"/>
                 <field name="working"/>
+                <field name="absent"/>
 
 
             </tree>
@@ -106,6 +107,17 @@
                         <field name="ignored" placeholder="00:00"/>
                     </group>
 
+                    <group col="2" colspan="8">
+                        <field name="absent"/>
+
+                        <field name="sick_leave"/>
+
+                        <field name="sick_from"
+                               attrs="{'required':[('sick_leave','=',True)],'invisible':[('sick_leave','!=',True)]}"/>
+                        <field name="sick_to"
+                               attrs="{'required':[('sick_leave','=',True)],'invisible':[('sick_leave','!=',True)]}"/>
+
+                    </group>
 
                 </sheet>
             </form>

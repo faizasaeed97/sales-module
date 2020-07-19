@@ -115,6 +115,25 @@ class Attendance(models.Model):
     ignored = fields.Char(string='Ingored')
     exception_approved=fields.Boolean(string='Exception Approved')
     apply_latein_deduction = fields.Boolean(compute='apply_latein',store=True,string='Apply Latein deduction')
+    sick_leave=fields.Boolean(string="Sick leave",default=False)
+    absent=fields.Boolean(string="Absent",default=False)
+    sick_from=fields.Date(string="Leave From")
+    sick_to=fields.Date(string="Leave To")
+
+    @api.model
+    def create(self, vals):
+        attend = super(Attendance, self).create(vals)
+        check = self.search([('employee_id','=',attend.employee_id.id),('sick_leave','=',True)])
+        for rec in check:
+            if rec.attendance_date.month == attend.attendance_date.month:
+                print("-===============>|GOT IT")
+                if attend.attendance_date.day >= rec.sick_from.day and  attend.attendance_date.day <= rec.sick_to.day:
+                    print("-===============>|WAHHHH IT")
+                    attend.sick_leave=True
+                    attend.sick_from=rec.sick_from
+                    attend.sick_to = rec.sick_to
+
+        return attend
 
     def get_minute_hmformat(self,seconds):
         seconds = seconds % (24 * 3600)
@@ -264,3 +283,6 @@ class Attendance(models.Model):
 
             if rec.first_shift_total_hours and rec.second_shift_total_hours:
                 rec.working = str(a + b).split(':')[0] + ':' + str(a + b).split(':')[1]
+
+
+

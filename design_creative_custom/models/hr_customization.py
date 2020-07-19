@@ -115,7 +115,10 @@ class inheritcontracts(models.Model):
     @api.onchange('increment_Amount')
     def onchange_select_incrmnt(self):
         if self.do_incrmnt:
-            if self.select_incrmnt == 'None':
+            if self.select_incrmnt == 'Basic':
+                self.wage += self.increment_Amount
+                self.increment_Amount = 0.0
+            elif self.select_incrmnt == 'None':
                 pass
             elif self.select_incrmnt == 'Housing':
                 self.housing_allowance += self.increment_Amount
@@ -125,7 +128,8 @@ class inheritcontracts(models.Model):
                 self.increment_Amount= 0.0
         elif self.do_decre:
             if self.select_decrement == 'Basic':
-                pass
+                self.wage -= self.increment_Amount
+                self.increment_Amount = 0.0
             elif self.select_decrement == 'Housing':
                 self.housing_allowance -= self.increment_Amount
                 self.increment_Amount = 0.0
@@ -150,7 +154,7 @@ class inheritcontracts(models.Model):
     @api.depends('wage','housing_allowance','travel_allowance','increment_Amount','gosi_Salary_Deduction')
     def get_gross_salery(self):
         for rec in self:
-            rec.gross_salery= (rec.wage + rec.housing_allowance + rec.travel_allowance + rec.increment_Amount) - rec.gosi_Salary_Deduction
+            rec.gross_salery= (rec.wage + rec.housing_allowance + rec.travel_allowance ) - rec.gosi_Salary_Deduction
 
 
 

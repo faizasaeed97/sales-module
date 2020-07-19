@@ -66,7 +66,7 @@ class ImportAttendance(models.TransientModel):
                             self.is_attendance_exist_sameday(obj['employee_id'], obj['attendance_date']):
                         print('yes..',obj['employee_id'],obj['attendance_date'])
                         self.env['attendance.custom'].create({'employee_id': obj['employee_id'],
-                                                              'attendance_date':datetime. datetime.strptime(str(obj['attendance_date']), '%m/%d/%Y'),
+                                                              'attendance_date':datetime.datetime.strptime(str(obj['attendance_date']), '%d/%m/%Y'),
                                                               'first_check_in': obj['first_in'],
                                                               'first_check_out': obj['first_out'],
                                                               'second_check_in': obj['second_in'],

@@ -154,7 +154,7 @@ class inheritcontracts(models.Model):
     @api.depends('wage','housing_allowance','travel_allowance','increment_Amount','gosi_Salary_Deduction')
     def get_gross_salery(self):
         for rec in self:
-            rec.gross_salery= (rec.wage + rec.housing_allowance + rec.travel_allowance ) - rec.gosi_Salary_Deduction
+            rec.gross_salery= (rec.wage + rec.housing_allowance + rec.travel_allowance + rec.increment_Amount) - rec.gosi_Salary_Deduction
 
 
 

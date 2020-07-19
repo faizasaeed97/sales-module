@@ -31,9 +31,9 @@ class HrPayslip_inherits(models.Model):
                      ('employee_id', '=',
                       rec.employee_id.id)
                      ])
-                if rec.date_to.day == 31:
-                    if total>30:
-                       total-=1
+                # if rec.date_to.day == 31:
+                #     if total>30:
+                #        total-=1
 
                 df = rec.date_from
                 dt = rec.date_to

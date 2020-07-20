@@ -5,15 +5,35 @@
         <field name="model">hr.employee</field>
         <field name="inherit_id" ref="hr.view_employee_form"/>
         <field name="arch" type="xml">
-            <xpath expr="//field[@name='user_id']" position="after">
-                <field name="date_of_join" required="1"/>
-                <field name="date_of_leave"/>
+            <xpath expr="//div[@id='o_work_employee_main']" position="inside">
+                <group string="Details">
+                    <field name="date_of_join" required="1"/>
 
-                <field name="bank_name"/>
-                <field name="Ac_number"/>
+                    <field name="resign" attrs="{'invisible': ['|',('terminate','=',True),('runaway','=',True)]}"/>
+                     <field name="terminate" attrs="{'invisible': ['|',('resign','=',True),('runaway','=',True)]}" />
+                     <field name="runaway" attrs="{'invisible': ['|',('terminate','=',True),('resign','=',True)]}"/>
+
+                    <field name="date_of_leave" attrs="{'required': ['|','|',('resign','=',True),('terminate','=',True),('runaway','=',True)]}"/>
+
+                    <field name="bank_name"/>
+                    <field name="Ac_number"/>
+                </group>
             </xpath>
         </field>
     </record>
+
+    <record id="view_employee_tree_inhrtx" model="ir.ui.view">
+        <field name="name">hr.employee.tree.absent</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="/tree/field[@name='parent_id']" position="after">
+                <field name="consider_days"/>
+                <field name="absents"/>
+            </xpath>
+        </field>
+    </record>
+
 
     <record id="hr_payslip_form_inherit_days" model="ir.ui.view">
         <field name="name">hr.payslip.inherit.form2x</field>

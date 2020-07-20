@@ -10,9 +10,48 @@ class HrEmployee(models.Model):
     _inherit = "hr.employee"
 
     date_of_join = fields.Date('Joining Date')
-    date_of_leave = fields.Date('Leaving Date')
+    resign=fields.Boolean(default=False,string="Resign?")
+    terminate=fields.Boolean(default=False,string="Terminate?")
+    runaway=fields.Boolean(default=False,string="Runaway?")
+
+    date_of_leave = fields.Date('Leave/Terminate Date')
     bank_name = fields.Char(string="Bank Name")
     Ac_number = fields.Char(string="A/C Number")
+
+    consider_days = fields.Integer(string="Total Work Day(s)", compute="_get_days_calculation")
+    absents = fields.Integer(string="Absents", compute="_get_days_calculation")
+
+    def _get_days_calculation(self):
+        t_date_month=datetime.datetime.now().date().month
+        for dta in self:
+            recor = self.env['attendance.custom'].search(
+                [
+                 ('employee_id', '=',
+                  dta.id)
+                 ])
+            total=0
+            absnt=0
+
+            for rec in recor:
+                if rec.attendance_date.month == t_date_month:
+                    total+=1
+                    if rec.absent:
+                        absnt+=1
+            dta.absents = absnt
+            if not total <= 0:
+                dta.consider_days=total - absnt
+            else:
+                dta.consider_days=0
+
+
+
+
+    @api.onchange('resign')
+    def resign_lv(self):
+        if self.resign:
+            self.active=False
+        else:
+            self.active=True
 
 
 class HrPayslip_inherits(models.Model):
@@ -94,3 +133,24 @@ class leaveallocation_inherit(models.Model):
         for rec in self.search([]):
             if rec.holiday_status_id.name == 'Paid Time Off':
                 rec.number_of_days +=2.5
+
+class HrPayslipEmployees_inheritx(models.TransientModel):
+    _inherit = 'hr.payslip.employees'
+
+    def _get_available_contracts_domain(self):
+        return [('contract_ids.state', 'in', ('open', 'close')), ('company_id', '=', self.env.company.id)]
+
+    def _get_employees(self):
+        # YTI check dates too
+        t_date_month=datetime.datetime.now().date().month
+
+        emp=self.env['hr.employee']
+        lst=self.env['hr.employee'].search(self._get_available_contracts_domain())
+        for rec in lst:
+            line=rec.slip_ids.filtered(lambda r:r.date_from.month == t_date_month)
+            if not line:
+                emp+=rec
+
+        return emp
+
+

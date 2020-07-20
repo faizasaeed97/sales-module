@@ -116,7 +116,7 @@
 
 
                 <xpath expr="//notebook/page[@name='other']//group/group[1]" position="after">
-                    <group string="Info">
+                    <group string="Operations">
                         <field name="do_incrmnt" attrs="{'invisible': [('do_decre','=',True)]}"/>
                         <field name="do_decre" attrs="{'invisible': [('do_incrmnt','=',True)]}"/>
 
@@ -124,20 +124,26 @@
                         <field name="select_decrement" attrs="{'invisible': [('do_decre','!=',True)]}"/>
 
                         <field name="increment_Amount"/>
+                    </group>
+                    <group string="Information">
 
-
-                        <field name="housing_allowance"/>
-                        <field name="travel_allowance"/>
-                        <field name="increment_Date"/>
-                        <field name="gosi_salery"/>
-                        <field name="gosi_Salary_Deduction" readonly="1" force_save="1"/>
-                        <field name="leave_Status"/>
                         <label for="wage"/>
                         <div class="o_row" name="wage">
                             <field name="wage" nolabel="1"/>
                             <span>/ month</span>
                         </div>
+
+
+                        <field name="housing_allowance"/>
+                        <field name="travel_allowance"/>
                         <field name="gross_salery" readonly="1"/>
+
+
+                        <field name="increment_Date"/>
+                        <field name="gosi_salery"/>
+                        <field name="gosi_Salary_Deduction" readonly="1" force_save="1"/>
+                        <field name="leave_Status"/>
+
                     </group>
 
                     <group string="Other Info">

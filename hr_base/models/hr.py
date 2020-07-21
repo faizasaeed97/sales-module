@@ -117,7 +117,7 @@ class HrPayslip_inherits(models.Model):
                 check_attendence = self.env['attendance.custom'].search(
                     [('attendance_date', '=', df), ('employee_id', '=', payslip.employee_id.id)])
                 if not check_attendence:
-                    
+
                     raise UserError(
                         _("Attendance of %s not found in system . Please mark attendance first") % (str(df)))
                 df += delta
@@ -146,7 +146,7 @@ class HrPayslipEmployees_inheritx(models.TransientModel):
 
     def _get_employees(self):
         # YTI check dates too
-        t_date_month=datetime.datetime.now().date().month
+        t_date_month=datetime.now().date().month
 
         emp=self.env['hr.employee']
         lst=self.env['hr.employee'].search(self._get_available_contracts_domain())

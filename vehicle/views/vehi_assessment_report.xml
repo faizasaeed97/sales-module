@@ -1,0 +1,662 @@
+<odoo>
+    <data>
+        <report
+                id="report_vehicle_assesment"
+                model="vehicle.assessment"
+                string="Print Vehicle Assessment"
+                report_type="qweb-html"
+                name="vehicle.report_vehicle_assessment_doc"
+                file="vehicle.report_vehicle_assessment_doc"
+
+        />
+
+        <template id="report_vehicle_assessment_doc">
+            <style>
+
+
+            </style>
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="doc">
+
+                     <t t-call="web.external_layout">
+                    <div class="page">
+
+                        <style>
+                            body {font-size:12px;}
+                             table {margin:0px; padding:0px; width:100%;}
+                            table tr td {margin:0px; padding-bottom:2px; padding-left:0px; padding-right:0px; padding-top:2px; line-height: 30px; }
+                            table tr td span { width:100%; border-top:0px; border-right:0px; border-left:0px;}
+                            span.width50border {border:1px solid #000; display:inline-block; width:20px; height:25px;
+                            text-align: center; padding:0px; }
+                        </style>
+
+                        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                            <tbody>
+                                <tr>
+                                    <P style="padding-left:250px;font-weight:bold;font-size:36px;color:#black">DELIVERY
+                                        LETTER
+                                    </P>
+                                </tr>
+                                <tr>
+                                    <td colspan="12">
+                                        <table width="92px" border="0" cellspacing="0" cellpadding="0">
+                                            <tbody>
+                                                <td>
+                                                    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                                        <tbody>
+                                                            <tr>
+                                                                <td width="20px"
+                                                                    style="padding-left:0px; font-family:Verdana, Arial,sans-serif;font-size:14px">
+                                                                    SR: #
+                                                                </td>
+                                                                <td width="80px">
+                                                                    <span t-esc="doc.id" style="font-weight:bold;"></span>
+                                                                </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </td>
+                                                <td width="225px">&amp;nbsp;</td>
+                                                <td>
+                                                    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                                        <tbody>
+                                                            <tr>
+                                                                <td width="80px"
+                                                                    style="font-family:Verdana, Arial,sans-serif;font-size:14px">
+                                                                    Date Time:
+                                                                </td>
+                                                                <td>
+                                                                    <span t-esc="doc.date_order.strftime('%d-%m-%Y %H:%M %S')"
+                                                                          style="font-weight:bold;"></span>
+                                                                </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </td>
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td colspan="12">
+                                        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                            <tr>
+
+                                                <td>
+                                                    <table width="200px" border="0" cellspacing="0" cellpadding="0">
+                                                        <tbody>
+                                                            <tr>
+                                                                <td width="180px"
+                                                                    style="padding-left:0px; font-family:Verdana, Arial,sans-serif;font-size:14px">
+                                                                    Membership #
+                                                                </td>
+                                                                <td>
+                                                                    <span style="font-weight:bold;display: block;"></span>
+                                                                </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </td>
+                                                <td width="50%">
+
+                                                    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                                        <tbody>
+                                                            <tr>
+
+                                                           <td style="font-family:Verdana, Arial,sans-serif;font-size:12px; width:80px;">Is Register:</td>
+                                                            <td><span t-esc="doc.vehicle_product.vehicle_reg"   style="font-weight:bold;display: block;">
+                                                            </span></td>
+                                                           </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </td>
+
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td width="50%">
+                                        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                            <tbody>
+                                                <tr>
+                                                    <td width="150px"
+                                                        style="font-family:Verdana, Arial,sans-serif;font-size:14px">
+                                                        Registration Number:
+                                                    </td>
+
+                                                    <td>
+
+                                                        <t t-if=" doc.vehicle_product.vehicle_registration">
+                                                        <t t-if="doc.vehicle_product.license_plate">
+                                                            <span t-esc="doc.vehicle_product.license_plate"
+                                                                  style="font-weight:bold;display: block;">
+                                                            </span>
+                                                        </t>
+                                                        </t>
+
+                                                        <t t-if="not doc.vehicle_product.license_plate">
+                                                            <span style="font-weight:bold;display: block;">
+                                                            </span>
+                                                        </t>
+                                                    </td>
+
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                    <td width="50%">
+                                        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                            <tbody>
+                                                <tr>
+                                                    <td width="150px"
+                                                        style="font-family:Verdana, Arial,sans-serif;font-size:14px">
+                                                        Date of Registration:
+                                                    </td>
+                                                    <td>
+                                                         <t t-if=" doc.vehicle_product.vehicle_registration">
+                                                        <t t-if="doc.vehicle_product.date_of_reg">
+                                                            <span t-esc="doc.vehicle_product.date_of_reg"
+                                                                  style="font-weight:bold;width: 100%; display:block;"></span>
+
+                                                        </t>
+                                                        <t t-if="not doc.vehicle_product.date_of_reg">
+                                                            <span style="font-weight:bold;width: 100%; display:block;"></span>
+                                                        </t>
+                                                         </t>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                            <tbody>
+                                                <tr>
+                                                    <td
+                                                        style="font-family:Verdana, Arial,sans-serif;font-size:14px; width:135px;">
+                                                        Chassis Number:
+                                                    </td>
+
+                                                    <td>
+                                                        <t t-if="doc.vehicle_product.vin_sn">
+                                                            <span t-esc="doc.vehicle_product.vin_sn"
+                                                                  style="font-weight:bold;display: block;"></span>
+                                                        </t>
+                                                        <t t-if="not doc.vehicle_product.vin_sn">
+                                                            <span style="font-weight:bold;display: block;"></span>
+
+                                                        </t>
+
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                            <tbody>
+                                                <tr>
+                                                    <td width="120px"
+                                                        style="font-family:Verdana, Arial,sans-serif;font-size:14px">
+                                                        Engine Number:
+                                                    </td>
+                                                    <td>
+                                                        <t t-if="doc.vehicle_product.engine_no">
+                                                            <span t-esc="doc.vehicle_product.engine_no"
+                                                                  style="font-weight:bold;display: block;"></span>
+                                                        </t>
+                                                        <t t-if="not doc.vehicle_product.engine_no">
+                                                            <span style="font-weight:bold;display: block;"></span>
+                                                        </t>
+
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="12">
+                                        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                            <tbody>
+                                                <tr>
+                                                    <td width="30px"
+                                                        style="font-family:Verdana, Arial,sans-serif;font-size:14px">
+                                                        Make:
+                                                    </td>
+                                                    <td width="150px" style="font-family:Verdana, Arial,sans-serif;font-size:12px">
+
+                                                        <t t-if="doc.vehicle_product.model_id.brand_id.name">
+                                                            <span t-esc="doc.vehicle_product.model_id.brand_id.name"
+                                                                  style="font-family:Verdana, Arial,sans-serif;font-size:14px;font-weight:bold;display: block;">
+                                                            </span>
+                                                        </t>
+                                                        <t t-if="not doc.vehicle_product.model_id.brand_id.name">
+                                                            <span style="font-family:Verdana, Arial,sans-serif;font-size:14px;font-weight:bold;display: block;">
+                                                            </span>
+                                                        </t>
+                                                    </td>
+                                                    <td style="font-family:Verdana, Arial,sans-serif;font-size:14px"
+                                                        width="40px">Color:
+                                                    </td>
+                                                    <td width="275px">
+                                                        <t t-if="doc.vehicle_product.color.name">
+                                                            <span t-esc="doc.vehicle_product.color.name"
+                                                                  style="font-family:Verdana, Arial,sans-serif;font-family:Verdana, Arial,sans-serif;font-size:14px;font-weight:bold;display: block;"></span>
+                                                        </t>
+                                                        <t t-if="not doc.vehicle_product.color.name">
+                                                            <span style="font-family:Verdana, Arial,sans-serif;font-family:Verdana, Arial,sans-serif;font-size:14px;font-weight:bold;display: block;"></span>
+                                                        </t>
+                                                    </td>
+                                                    <td style="font-family:Verdana, Arial,sans-serif;font-size:14px"
+                                                        width="50px">Model:
+                                                    </td>
+                                                    <td width="220px">
+                                                        <t t-if="doc.vehicle_product.model_id.name">
+
+
+                                                            <span t-esc="doc.vehicle_product.model_id.name "
+
+                                                                  style="font-family:Verdana, Arial,sans-serif;font-size:14px;font-weight:bold;">
+
+                                                            </span>
+
+                                                            <!--
+                                                                     <span t-field="doc.vehicle_product.model_year"></span>
+                                                                 </t>-->
+
+                                                        </t>
+                                                        <t t-if="not doc.vehicle_product.model_id.name">
+                                                            <span style="font-family:Verdana, Arial,sans-serif;font-size:14px;font-weight:bold;"></span>
+
+                                                        </t>
+                                                        /
+                                                            <t t-if="doc.vehicle_product.model_year">
+                                                              <span t-esc="doc.vehicle_product.model_year"
+                                                                     style="font-family:Verdana, Arial,sans-serif;font-size:14px;font-weight:bold;"></span>
+                                                        </t>
+                                                    </td>
+
+                                                    <td style="font-family:Verdana, Arial,sans-serif;font-size:14px"
+                                                        width="30px">CC:
+                                                    </td>
+                                                    <td width="200px">
+                                                        <t t-if="doc.vehicle_product.horsepower">
+                                                            <span t-esc="doc.vehicle_product.horsepower"
+                                                                  style="font-weight:bold;display: block;">
+                                                            </span>
+                                                        </t>
+                                                        <t t-if="not doc.vehicle_product.horsepower">
+                                                            <span style="font-weight:bold;display: block;">
+                                                            </span>
+                                                        </t>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                            <tbody>
+                                                <tr>
+                                                    <td width="205px"
+                                                        style="font-family:Verdana, Arial,sans-serif;font-size:14px">
+                                                        Registration Book No. New:
+                                                    </td>
+                                                    <td>
+                                                         <t t-if=" doc.vehicle_product.vehicle_registration">
+
+                                                        <t t-if="doc.vehicle_product.reg_book_new">
+                                                            <span t-esc="doc.vehicle_product.reg_book_new"
+                                                                  style="font-weight:bold;display: block;"></span>
+                                                        </t>
+                                                        <t t-if="not doc.vehicle_product.reg_book_new">
+                                                            <span style="font-weight:bold;display: block;"></span>
+                                                        </t>
+                                                         </t>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                            <tbody>
+                                                <tr>
+                                                    <td style="font-family:Verdana, Arial,sans-serif;font-size:14px"
+                                                        width="205px">Registration Book No. Old:
+                                                    </td>
+                                                    <td>
+                                                         <t t-if=" doc.vehicle_product.vehicle_registration">
+                                                        <t t-if="doc.vehicle_product.reg_book_old">
+                                                            <span t-esc="doc.vehicle_product.reg_book_old"
+                                                                  style="font-weight:bold;display: block;"></span>
+                                                        </t>
+                                                        <t t-if="not doc.vehicle_product.reg_book_old">
+                                                            <span style="font-weight:bold;display: block;"></span>
+                                                        </t>
+                                                         </t>
+
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                            <tbody>
+                                                <tr>
+                                                    <td width="220px"
+                                                        style="font-family:Verdana, Arial,sans-serif;font-size:14px">Sales Certificate/Bill Entry#:
+                                                    </td>
+                                                    <td>
+
+                                                        <t t-if="doc.sale_certification_no">
+                                                            <span t-esc="doc.sale_certification_no"
+                                                                  style="font-weight:bold;display: block;"></span>
+                                                        </t>
+                                                        <t t-if="not doc.sale_certification_no">
+                                                            <span style="font-weight:bold;display: block;"></span>
+                                                        </t>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                            <tbody>
+                                                <tr>
+                                                    <td width="60px"
+                                                        style="font-family:Verdana, Arial,sans-serif;font-size:14px">
+                                                        Date:
+                                                    </td>
+                                                    <td>
+                                                        <t t-if="doc.sale_certification_date">
+                                                            <span t-esc="doc.sale_certification_date"
+                                                                  style="font-weight:bold;display: block;"></span>
+                                                        </t>
+                                                        <t t-if="not doc.sale_certification_date">
+                                                            <span style="font-weight:bold;display: block;"></span>
+                                                        </t>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                            <tbody>
+                                                <tr>
+                                                    <td width="120px"
+                                                        style="font-family:Verdana, Arial,sans-serif;font-size:14px">
+                                                        Invoice Number:
+                                                    </td>
+                                                    <td>
+                                                        <t t-if="'inv_num' in doc.get_sales_invoice_detail()[0]">
+                                                        <span t-esc="doc.get_sales_invoice_detail()[0]['inv_num']"  style="font-weight:bold;display: block;"></span>
+                                                        </t>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                            <tbody>
+                                                <tr>
+                                                    <td width="50px"
+                                                        style="font-family:Verdana, Arial,sans-serif;font-size:14px">
+                                                        Date:
+                                                    </td>
+                                                    <td>
+                                                         <t t-if="'date_inv' in doc.get_sales_invoice_detail()[0]">
+                                                        <span t-esc="doc.get_sales_invoice_detail()[0]['date_inv']" style="font-weight:bold;display: block;"></span>
+                                                         </t>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                            <tbody>
+                                                <tr>
+                                                    <td width="155px"
+                                                        style="font-family:Verdana, Arial,sans-serif;font-size:14px">
+                                                        CPLC Verification No:
+                                                    </td>
+                                                    <td>
+                                                        <t t-if="doc.vehicle_product.CPLC_Verification_No">
+                                                            <span t-esc="doc.vehicle_product.CPLC_Verification_No"
+                                                                  style="font-weight:bold;display: block;"></span>
+                                                        </t>
+                                                        <t t-if="not doc.vehicle_product.CPLC_Verification_No">
+                                                            <span style="font-weight:bold;display: block;"></span>
+                                                        </t>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                            <tbody>
+                                                <tr>
+                                                    <td width="125px"
+                                                        style="font-family:Verdana, Arial,sans-serif;font-size:14px">
+                                                        CPLC Date Time:
+                                                    </td>
+                                                    <td>
+                                                        <t t-if="doc.vehicle_product.CPLC_datetime">
+                                                            <span t-esc="doc.vehicle_product.CPLC_datetime"
+                                                                  style="font-weight:bold;display: block;"></span>
+                                                        </t>
+                                                        <t t-if="not doc.vehicle_product.CPLC_datetime">
+                                                            <span style="font-weight:bold;display: block;"></span>
+                                                        </t>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                            <tbody>
+                                                <tr>
+                                                    <td width="185px"
+                                                        style="font-family:Verdana, Arial,sans-serif;font-size:14px">
+                                                        Name of Registerted:
+                                                    </td>
+                                                    <td>
+                                                         <t t-if=" doc.vehicle_product.vehicle_registration">
+
+                                                        <t t-if="doc.vehicle_product.name_of_registered_son_of">
+                                                            <span t-esc="doc.vehicle_product.name_of_registered"
+                                                                  style="font-weight:bold;display: block;"></span>
+                                                        </t>
+
+                                                        <t t-if="not doc.vehicle_product.name_of_registered_son_of">
+                                                            <span style="font-weight:bold;display: block;"></span>
+                                                        </t>
+                                                         </t>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                            <tbody>
+                                                <tr>
+                                                    <td style="font-family:Verdana, Arial,sans-serif;font-size:14px"
+                                                        width="40px">S/O:
+                                                    </td>
+                                                    <td>
+                                                         <t t-if=" doc.vehicle_product.vehicle_registration">
+                                                        <t t-if="doc.vehicle_product.name_of_registered_son_of">
+                                                            <span t-esc="doc.vehicle_product.name_of_registered_son_of"
+                                                                  style="font-weight:bold;display: block;"></span>
+                                                        </t>
+                                                        <t t-if="not doc.vehicle_product.name_of_registered_son_of">
+                                                            <span style="font-weight:bold;display: block;"></span>
+                                                        </t>
+                                                         </t>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="12">
+                                        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                            <tbody>
+                                                <tr>
+                                                    <td width="65px"
+                                                        style="font-family:Verdana, Arial,sans-serif;font-size:14px">
+                                                        Address:
+                                                    </td>
+                                                    <td>
+                                                        <t t-if="doc.partner_id.street">
+                                                            <span t-esc="doc.partner_id.street"
+                                                                  style="font-weight:bold;display: block;">
+                                                            </span>
+                                                        </t>
+                                                        <t t-if="not doc.partner_id.street">
+                                                            <span style="font-weight:bold;display: block;">
+                                                            </span>
+                                                        </t>
+
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td width="650px">
+                                      <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                            <tbody>
+                                                <tr>
+                                                    <td width="55px"
+                                                        style="font-family:Verdana, Arial,sans-serif;font-size:14px">
+                                                        Date :
+                                                    </td>
+                                                    <td>
+                                                        <t t-if="doc.receiving_date">
+                                                            <span t-esc="doc.receiving_date"
+                                                                  style="font-weight:bold;display: block;"></span>
+                                                        </t>
+                                                        <t t-if="not doc.receiving_date">
+                                                            <span style="font-weight:bold;display: block;"></span>
+                                                        </t>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                            <tbody>
+                                                <tr>
+                                                    <td width="40px"
+                                                        style="font-family:Verdana, Arial,sans-serif;font-size:14px">
+                                                        CNIC:
+                                                    </td>
+                                                    <td style="font-family:Verdana, Arial,sans-serif;font-size:14px">
+                                                        <t t-if="doc.partner_id.cnic">
+                                                            <span style="font-weight:bold;display: block;"
+                                                                  t-esc="doc.partner_id.cnic">
+                                                            </span>
+                                                        </t>
+                                                        <t t-if="not doc.partner_id.cnic">
+                                                            <span style="font-weight:bold;display: block;">
+                                                            </span>
+                                                        </t>
+
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                            <tbody>
+                                                <tr>
+                                                    <td width="125px"
+                                                        style="font-family:Verdana, Arial,sans-serif;font-size:14px">
+                                                        Receiver Name:
+                                                    </td>
+                                                    <td>
+                                                        <t t-if="doc.receiver_name">
+                                                            <span t-esc="doc.receiver_name"
+                                                                  style="font-weight:bold;display: block;"></span>
+                                                        </t>
+                                                        <t t-if="not doc.receiver_name">
+                                                            <span style="font-weight:bold;display: block;"></span>
+                                                        </t>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                    <td>
+
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="12">
+                                        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                            <tbody>
+                                                <tr>
+                                                    <td width="200px"
+                                                        style="font-family:Verdana, Arial,sans-serif;font-size:14px">
+                                                        Document Details:
+                                                    </td>
+                                                    <td>
+                                                        <t t-if="doc.vehicle_product.document_details">
+                                                            <span t-esc="doc.vehicle_product.document_details"
+                                                                  style="font-weight:bold;display: block;">
+                                                            </span>
+                                                        </t>
+                                                        <t t-if="not doc.vehicle_product.document_details">
+                                                            <span style="font-weight:bold;display: block;">
+                                                            </span>
+                                                        </t>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+
+
+                    </div>
+                </t>
+                </t>
+            </t>
+        </template>
+
+    </data>
+</odoo>

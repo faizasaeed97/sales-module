@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id='fleet_vehicle_view_form' model='ir.ui.view'>
+        <field name="name">vehicle.form</field>
+        <field name="model">vehicle</field>
+        <field name="arch" type="xml">
+            <form string="Vehicle">
+
+                <header>
+                    <button string="Vehicle Moves" type="object"
+                            name="action_view_stock_move_lines_new"
+                            class="oe_stat_button" icon="fa-arrows-v"
+                            groups="stock.group_stock_user"/>
+
+                </header>
+                <sheet>
+                    <!--                            attrs="{'invisible':[('type', 'not in', ['product', 'consu'])]}"-->
+                    <div class="oe_button_box" name="button_box">
+                        <!--                        <button name="%(stock.lot_open_quants)d" icon="fa-arrows" class="oe_stat_button" string="Locate" type="action"/>-->
+                        <button name="%(stock.action_stock_report)d" icon="fa-arrow-up" class="oe_stat_button"
+                                string="Traceability Report" type="action"/>
+                    </div>
+
+                    <div>
+
+                        <table width="100%">
+                            <tbody>
+                                <tr t-attf-style="background-color:white">
+
+                                    <td class="text-left" width="480px" style="padding:5px" colspan="6">
+                                        <label for="model_id" class="oe_edit_only"/>
+                                        <h1>
+                                            <field name="model_id" placeholder="e.g. Model S"/>
+                                        </h1>
+                                        <!--                        <label for="license_plate" class="oe_edit_only"/>-->
+                                        <!--                        <h2>-->
+                                        <!--                            <field name="license_plate" class="oe_inline" placeholder="e.g. PAE 326"/>-->
+                                        <!--                        </h2>-->
+                                        <br/>
+                                        <div>
+                                            <label for="is_insured"/>
+                                            <field name="is_insured"/>
+                                        </div>
+                                        <div>
+                                            <label for="marked_reserved"/>
+                                            <field name="marked_reserved"/>
+                                            <field name="user_id" invisible="1"/>
+
+                                        </div>
+
+
+                                        <h2>
+                                            <field name="insurance_company" domain="[('is_insurance','=',True)]"
+                                                   attrs="{'invisible': [('is_insured', '=', False)],'required': [('is_insured', '=', True)]}"
+                                                   class="oe_inline" placeholder="Select Agency"/>
+                                        </h2>
+                                    </td>
+
+                                    <td class="text-right" width="200px" style="padding:5px" colspan="2">
+                                        <field name="image_medium_custom" widget="image" style="border-style: solid;
+                                   border-color: red;" width="300px" height="100px"/>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <group>
+                        <field name="vehicle_type"/>
+                        <field name="sold_status"/>
+                        <field name="warranty"/>
+                    </group>
+                    <group string="General Properties">
+                        <group col="4" colspan="8">
+                            <field name="owner_id"/>
+                            <field name="driver_id"/>
+                            <field name="location"/>
+                            <field name="vin_sn"/>
+                            <field name="lot_number"/>
+
+                            <field name="model_year"/>
+                            <field name="odometer" readonly="False"/>
+                            <field name="CPLC_Verification_No"/>
+                            <field name="CPLC_datetime"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                    </group>
+
+                    <group string="Registration Status">
+                        <group col="2" colspan="2">
+                            <field name="vehicle_registration"/>
+                            <field name="vehicle_reg"/>
+                        </group>
+                    </group>
+
+                    <group string="Registration Information" domain="[('vehicle_registration','=',True)]"
+                           attrs="{'invisible': [('vehicle_registration', '=', False)],'required': [('vehicle_registration', '=', True)]}">
+
+                        <group col="4" colspan="8">
+
+
+                            <field name="license_plate"
+                                   attrs="{'invisible': [('vehicle_registration', '=', False)],'required': [('vehicle_registration', '=', True)]}"/>
+                            <field name="date_of_reg"/>
+                            <field name="reg_book_new" attrs="{'invisible': [('vehicle_registration', '=', False)]}"/>
+                            <field name="reg_book_old"/>
+                            <field name="name_of_registered"/>
+                            <field name="name_of_registered_son_of"/>
+                        </group>
+                    </group>
+
+                    <group>
+                        <group string="Additional Properties">
+                            <group colspan="8" col="2">
+                                <field name="seats"/>
+                                <field name="doors"/>
+                                <field name="color"/>
+                                <field name="last_jobDone_date" string="Last Oil Change"/>
+                            </group>
+                        </group>
+                        <group string="Engine Options">
+                            <field name="engine_no"/>
+                            <field name="transmission"/>
+                            <field name="fuel_type"/>
+                            <label for="co2"/>
+                            <div class="o_row" name="co2">
+                                <field name="co2"/>
+                                <span>g/km</span>
+                            </div>
+                            <field name="horsepower" string="CC"/>
+                            <field name="horsepower_tax"/>
+                            <label for="power"/>
+                            <div class="o_row">
+                                <field name="power"/>
+                                <span>kW</span>
+                            </div>
+
+                        </group>
+                    </group>
+
+                    <group>
+                        <field name="document_details"/>
+                    </group>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="activity_ids" widget="mail_activity"/>
+                    <field name="message_ids" widget="mail_thread" options='{"thread_level": 1}'/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id='fleet_vehicle_view_tree' model='ir.ui.view'>
+        <field name="name">vehicle.tree</field>
+        <field name="model">vehicle</field>
+        <field name="arch" type="xml">
+            <tree string="Vehicle">
+                <field name="active" invisible="1"/>
+                <field name="model_id"/>
+                <field name="license_plate"/>
+                <field name="vin_sn"/>
+                <field name="model_year"/>
+                <field name="lot_number"/>
+                <field name="owner_id"/>
+                <field name="sold_status"/>
+                <field name="is_insured"/>
+                <field name="insurance_company"/>
+
+            </tree>
+        </field>
+    </record>
+
+
+
+    <record id='vehicle_assessment_action' model='ir.actions.act_window'>
+        <field name="name">Vehicle Assessment</field>
+        <field name="res_model">vehicle.assessment</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a new vehicle Assessment
+            </p>
+            <p>
+                Manage your fleet by keeping track
+            </p>
+        </field>
+    </record>
+
+
+
+
+
+    <menuitem name="Vehicle assessment" id="menu_root_vehi" parent="menu_root" sequence="115"/>
+    <menuitem name="Assessment " parent="menu_root_vehi" id="vehicl_assess" action="vehicle_assessment_action"/>
+
+</odoo>

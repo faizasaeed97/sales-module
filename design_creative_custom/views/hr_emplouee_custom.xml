@@ -21,13 +21,6 @@
                 <attribute name="invisible">1</attribute>
             </xpath>
 
-            <!--            <xpath expr="//field[@name='name']" position="after">-->
-            <!--                <h2>-->
-            <!--                <field name="designation" placeholder="Job Position"></field>-->
-            <!--                </h2>-->
-            <!--            </xpath>-->
-
-
             <xpath expr="//field[@name='passport_id']" position="after">
                 <field name="passport_exp_date" groups="hr.group_hr_user"></field>
 
@@ -54,6 +47,44 @@
                     <field name="veh_alloted"></field>
                     <field name="accomodation"></field>
                 </group>
+                <group string="Work schedule Config">
+                    <field name="ot_eligible"></field>
+
+                    <field name="ot_weekday"
+                           attrs="{'invisible': [('ot_eligible', '=', False)]}"
+                    ></field>
+
+                    <field name="ot_weekend" attrs="{'invisible': [('ot_eligible', '=', False)]}"></field>
+
+                    <field name="ot_ramzan"></field>
+
+                    <field name="sat_work" attrs="{'invisible': [('sat_offic', '=', True)],'required':[('sat_offic','=',False)]}"></field>
+
+                    <field name="sat_offic" attrs="{'invisible': [('sat_work', '=', True)],'required':[('sat_work','=',False)]}"></field>
+
+
+                    <field name="manual_schedule"></field>
+
+                    <field name="workschedule"
+                           attrs="{'invisible': [('manual_schedule', '=', True)],'required':[('manual_schedule','=',False)]}"></field>
+
+
+                </group>
+                <group string="Enter Manual shift" attrs="{'invisible':[('manual_schedule','=',False)]}" col="4"
+                       colspan="12">
+
+                    <field name="man_works_fhour" placeholder="e.g. 08:30"
+                           attrs="{'invisible': [('manual_schedule', '=', False)],'required':[('manual_schedule','=',True)]}"></field>
+                    <field name="man_works_fmins" placeholder="e.g. 10:30"
+                           attrs="{'invisible': [('manual_schedule', '=', False)],'required':[('manual_schedule','=',True)]}"></field>
+                    <field name="man_works_shour" placeholder="e.g. 02:10"
+                           attrs="{'invisible': [('manual_schedule', '=', False)],'required':[('manual_schedule','=',True)]}"></field>
+                    <field name="man_works_smins" placeholder="e.g. 05:30"
+                           attrs="{'invisible': [('manual_schedule', '=', False)],'required':[('manual_schedule','=',True)]}"></field>
+
+
+                </group>
+
             </xpath>
 
 

@@ -69,8 +69,8 @@ class inherithremploye(models.Model):
         if self.workschedule:
             if self.workschedule == '08:30|03:00' and self.ot_ramzan:
                 pass
-            else:
-                raise UserError('Can only select this timing if Ramzan is checked')
+            elif self.ot_ramzan:
+                raise UserError('Wrong schedule seclected')
 
     def calculateAge(self, dob):
         today = date.today()

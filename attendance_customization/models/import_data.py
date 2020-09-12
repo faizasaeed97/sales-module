@@ -62,8 +62,7 @@ class ImportAttendance(models.TransientModel):
             if attendance_list:
                 # create attendance records for each one, check if attendance not found on same date, else give error already exist.
                 for obj in attendance_list:
-                    if obj['employee_id'] and obj['attendance_date'] and not \
-                            self.is_attendance_exist_sameday(obj['employee_id'], obj['attendance_date']):
+                    if obj['employee_id'] and obj['attendance_date']:
                         print('yes..',obj['employee_id'],obj['attendance_date'])
                         self.env['attendance.custom'].create({'employee_id': obj['employee_id'],
                                                               'attendance_date':datetime.datetime.strptime(str(obj['attendance_date']), '%d/%m/%Y'),

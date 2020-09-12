@@ -220,10 +220,17 @@ class Attendance(models.Model):
 
         else:
             if not emp.manual_schedule and emp.workschedule:
-                spdata1 = str(emp.workschedule).split("|")[0]
 
-                xx = spdata1.split("-")[0]
-                yy = spdata1.split("-")[1]
+                if emp.ot_ramzan:
+                    spdata1 = str(emp.workschedule).split("|")
+
+                    xx = spdata1[0]
+                    yy = spdata1[1]
+
+                else:
+                    spdata1 = str(emp.workschedule).split("|")[0]
+                    xx = spdata1.split("-")[0]
+                    yy = spdata1.split("-")[1]
 
                 vv = dt.timedelta(hours=int(xx.split(":")[0]),
                                   minutes=int(xx.split(":")[1]))
@@ -242,9 +249,18 @@ class Attendance(models.Model):
                 # emp_schedule_checkin1 = datetime.datetime.strptime(xx, '%H:%M')
                 # emp_schedule_checkout1 = datetime.datetime.strptime(yy, '%H:%M')
 
-                spdata2 = str(emp.workschedule).split("|")[1]
-                xx1 = spdata2.split("-")[0]
-                yy1 = spdata2.split("-")[1]
+
+
+                if emp.ot_ramzan:
+                    spdata2 = str(emp.workschedule).split("|")
+
+                    xx1 = spdata2[0]
+                    yy1 = spdata2[1]
+
+                else:
+                    spdata2 = str(emp.workschedule).split("|")[1]
+                    xx1 = spdata2.split("-")[0]
+                    yy1 = spdata2.split("-")[1]
 
                 vv1 = dt.timedelta(hours=int(xx1.split(":")[0]),
                                    minutes=int(xx1.split(":")[1]))
@@ -266,7 +282,8 @@ class Attendance(models.Model):
                 fshf = emp.man_works_fhour * 60 + emp.man_works_fmins
                 sshft = emp.man_works_shour * 60 + emp.man_works_smins
                 return fshf + sshft
-            else: return 0
+            else:
+                return 0
 
     @api.depends('employee_id')
     def get_jobtitle(self):

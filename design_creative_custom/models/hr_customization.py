@@ -67,7 +67,7 @@ class inherithremploye(models.Model):
     @api.onchange('workschedule')
     def onchangeschedule_work(self):
         if self.workschedule:
-            if self.workschedule == '08:30 - 03:00' and self.ot_ramzan:
+            if self.workschedule == '08:30|03:00' and self.ot_ramzan:
                 pass
             else:
                 raise UserError('Can only select this timing if Ramzan is checked')

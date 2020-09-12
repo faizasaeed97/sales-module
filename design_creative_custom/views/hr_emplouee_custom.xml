@@ -57,20 +57,21 @@
                     <field name="ot_weekend" attrs="{'invisible': [('ot_eligible', '=', False)]}"></field>
 
                     <field name="ot_ramzan"></field>
+                    <field name="ot_ramzan_muslims" attrs="{'invisible': [('ot_ramzan', '=', False)]}" />
 
                     <field name="sat_work" attrs="{'invisible': [('sat_offic', '=', True)],'required':[('sat_offic','=',False)]}"></field>
 
                     <field name="sat_offic" attrs="{'invisible': [('sat_work', '=', True)],'required':[('sat_work','=',False)]}"></field>
 
 
-                    <field name="manual_schedule"></field>
+                    <field name="manual_schedule" attrs="{'invisible': [('ot_ramzan', '=', True)]}" ></field>
 
                     <field name="workschedule"
                            attrs="{'invisible': [('manual_schedule', '=', True)]}"></field>
 
 
                 </group>
-                <group string="Enter Manual shift" attrs="{'invisible':[('manual_schedule','=',False)]}" col="4"
+                <group string="Enter Manual shift" attrs="{'invisible':['|',('manual_schedule','=',False),('ot_ramzan','=',True)]}" col="4"
                        colspan="12">
 
                     <field name="man_works_fhour" placeholder="e.g. 08:30"

@@ -249,13 +249,11 @@ class Attendance(models.Model):
                 # emp_schedule_checkin1 = datetime.datetime.strptime(xx, '%H:%M')
                 # emp_schedule_checkout1 = datetime.datetime.strptime(yy, '%H:%M')
 
-
-
                 if emp.ot_ramzan:
                     spdata2 = str(emp.workschedule).split("|")
 
-                    xx1 = spdata2[0]
-                    yy1 = spdata2[1]
+                    xx1 = '00:00'
+                    yy1 = '00:00'
 
                 else:
                     spdata2 = str(emp.workschedule).split("|")[1]
@@ -279,9 +277,51 @@ class Attendance(models.Model):
 
                 return totmins
             elif emp.manual_schedule:
-                fshf = emp.man_works_fhour * 60 + emp.man_works_fmins
-                sshft = emp.man_works_shour * 60 + emp.man_works_smins
-                return fshf + sshft
+                FMT = '%H:%M:%S'
+
+                first_start_hour = str(emp.man_works_fhour).split(":")[0]
+                first_start_min = str(emp.man_works_fhour).split(":")[1]
+
+                first_end_hour = str(emp.man_works_fmins).split(":")[0]
+                first_end_min = str(emp.man_works_fmins).split(":")[1]
+
+                second_start_hour = str(emp.man_works_shour).split(":")[0]
+                second_start_min = str(emp.man_works_shour).split(":")[1]
+
+                second_end_hour = str(emp.man_works_smins).split(":")[0]
+                second_end_min = str(emp.man_works_smins).split(":")[1]
+
+                fss = dt.timedelta(hours=int(first_start_hour),
+                                   minutes=int(first_start_min))
+                fes = dt.timedelta(hours=int(first_end_hour),
+                                   minutes=int(first_end_min))
+
+                tdelta = datetime.datetime.strptime(str(fes), FMT) - datetime.datetime.strptime(str(fss), FMT)
+                if tdelta.days < 0:
+                    tdelta = timedelta(days=0,
+                                       seconds=tdelta.seconds, microseconds=tdelta.microseconds)
+                    tdelta -= timedelta(hours=12)
+
+                ess = dt.timedelta(hours=int(second_start_hour),
+                                   minutes=int(second_start_min))
+                ees = dt.timedelta(hours=int(second_end_hour),
+                                   minutes=int(second_end_min))
+
+                tdelta1 = datetime.datetime.strptime(str(ees), FMT) - datetime.datetime.strptime(str(ess), FMT)
+                if tdelta1.days < 0:
+                    tdelta1 = timedelta(days=0,
+                                        seconds=tdelta1.seconds, microseconds=tdelta1.microseconds)
+                    tdelta1 -= timedelta(hours=12)
+
+                tot = tdelta + tdelta1
+
+                totmins = int(str(tot).split(":")[0]) * 60 + int(str(tot).split(":")[1])
+
+                return totmins
+
+                # fshf = emp.man_works_fhour * 60 + emp.man_works_fmins
+                # sshft = emp.man_works_shour * 60 + emp.man_works_smins
+                # return fshf + sshft
             else:
                 return 0
 

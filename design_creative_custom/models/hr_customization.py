@@ -1,6 +1,6 @@
 import time
 
-from odoo import models, fields, api
+from odoo import models, fields, api, _
 from calendar import isleap
 from odoo.exceptions import UserError, ValidationError
 from datetime import date, datetime
@@ -25,7 +25,9 @@ class inherithremploye(models.Model):
     ot_weekend = fields.Boolean(string="OT Weekends")
 
     ot_ramzan = fields.Boolean(string="OT Ramadan?")
-    sat_work = fields.Boolean(string="Saturday Workers?",default=True)
+    ot_ramzan_muslims = fields.Boolean(string="OT Ramadan muslims only?")
+
+    sat_work = fields.Boolean(string="Saturday Workers?", default=True)
     sat_offic = fields.Boolean(string="Saturday officers?")
 
     manual_schedule = fields.Boolean(string="Manual schedule?")
@@ -42,7 +44,7 @@ class inherithremploye(models.Model):
     man_works_smins = fields.Char("second shift end")
 
     @api.onchange('man_works_fhour', 'man_works_fmins', 'man_works_shour', 'man_works_smins')
-    def onchangeschedule_work(self):
+    def onchangmanul_work(self):
         if self.man_works_fhour:
             try:
                 time_obj_first_check_out = datetime.datetime.strptime(self.man_works_fhour, '%H:%M')
@@ -71,6 +73,20 @@ class inherithremploye(models.Model):
                 pass
             elif self.ot_ramzan:
                 raise UserError('Wrong schedule seclected')
+
+    @api.onchange('ot_ramzan_muslims')
+    def onchanotrmza_work(self):
+        if self.ot_ramzan_muslims:
+            if self.muslim:
+                pass
+            else:
+                raise UserError('Cannot apply on Non-Muslim')
+
+    @api.onchange('ot_ramzan')
+    def oncrnana_work(self):
+        if self.ot_ramzan:
+            self.manual_schedule=False
+            self.workschedule='08:30|03:00'
 
     def calculateAge(self, dob):
         today = date.today()

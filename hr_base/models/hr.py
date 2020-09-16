@@ -11,13 +11,16 @@ from datetime import datetime, date, time, timedelta
 from datetime import date, datetime
 from dateutil.relativedelta import relativedelta
 
+
 class HrEmployee(models.Model):
     _inherit = "hr.employee"
 
     date_of_join = fields.Date('Joining Date')
-    resign=fields.Boolean(default=False,string="Resign?")
-    terminate=fields.Boolean(default=False,string="Terminate?")
-    runaway=fields.Boolean(default=False,string="Runaway?")
+    resign = fields.Boolean(default=False, string="Resign?")
+    terminate = fields.Boolean(default=False, string="Terminate?")
+    runaway = fields.Boolean(default=False, string="Runaway?")
+
+    manager_log = fields.Many2one('res.users',string="Manager")
 
     date_of_leave = fields.Date('Leave/Terminate Date')
     bank_name = fields.Char(string="Bank Name")
@@ -27,36 +30,38 @@ class HrEmployee(models.Model):
     absents = fields.Integer(string="Absents", compute="_get_days_calculation")
 
     def _get_days_calculation(self):
-        t_date_month=datetime.now().date().month
+        t_date_month = datetime.now().date().month
         for dta in self:
             recor = self.env['attendance.custom'].search(
                 [
-                 ('employee_id', '=',
-                  dta.id)
-                 ])
-            total=0
-            absnt=0
+                    ('employee_id', '=',
+                     dta.id)
+                ])
+            total = 0
+            absnt = 0
 
             for rec in recor:
                 if rec.attendance_date.month == t_date_month:
-                    total+=1
+                    total += 1
                     if rec.absent:
-                        absnt+=1
+                        absnt += 1
             dta.absents = absnt
             if not total <= 0:
-                dta.consider_days=total - absnt
+                dta.consider_days = total - absnt
             else:
-                dta.consider_days=0
+                dta.consider_days = 0
 
-
-
-
-    @api.onchange('resign')
+    @api.onchange('resign','terminate','runaway')
     def resign_lv(self):
         if self.resign:
-            self.active=False
+            self.manager_log=self.env.user.id
+            self.active = False
         else:
-            self.active=True
+            self.active = True
+        if self.terminate or self.runaway:
+            self.manager_log=self.env.user.id
+
+
 
 
 class HrPayslip_inherits(models.Model):
@@ -66,7 +71,7 @@ class HrPayslip_inherits(models.Model):
     absents = fields.Integer(string="Absents", compute="_get_days_calculation")
     consider_days = fields.Integer(string="Consider Days", compute="_get_days_calculation")
 
-    @api.depends('date_from', 'date_to','employee_id')
+    @api.depends('date_from', 'date_to', 'employee_id')
     def _get_days_calculation(self):
         for rec in self:
             if rec.date_from and rec.date_to and rec.employee_id:
@@ -76,36 +81,33 @@ class HrPayslip_inherits(models.Model):
                       rec.employee_id.id)
                      ])
                 if rec.date_to.day == 31:
-                    if total>30:
-                       total-=1
+                    if total > 30:
+                        total -= 1
 
                 df = rec.date_from
                 dt = rec.date_to
-                absnt=0
+                absnt = 0
 
                 delta = timedelta(days=1)
                 while df <= dt:
                     print(df)
                     check_attendence = self.env['attendance.custom'].search(
-                        [('absent','=',True),
-                            ('attendance_date', '=', df), ('employee_id', '=', rec.employee_id.id)])
+                        [('absent', '=', True),
+                         ('attendance_date', '=', df), ('employee_id', '=', rec.employee_id.id)])
                     if check_attendence:
-                        absnt+=1
+                        absnt += 1
                     df += delta
 
-                rec.total_work_day= total
+                rec.total_work_day = total
                 rec.absents = absnt
                 if not total <= 0:
-                    rec.consider_days=total - absnt
+                    rec.consider_days = total - absnt
                 else:
-                    rec.consider_days=0
+                    rec.consider_days = 0
             else:
                 rec.consider_days = 30
-                rec.total_work_day=30
-                rec.absents=0
-
-
-
+                rec.total_work_day = 30
+                rec.absents = 0
 
     def compute_sheet(self):
         for payslip in self.filtered(lambda slip: slip.state not in ['cancel', 'done']):
@@ -117,7 +119,6 @@ class HrPayslip_inherits(models.Model):
                 check_attendence = self.env['attendance.custom'].search(
                     [('attendance_date', '=', df), ('employee_id', '=', payslip.employee_id.id)])
                 if not check_attendence:
-
                     raise UserError(
                         _("Attendance of %s not found in system . Please mark attendance first") % (str(df)))
                 df += delta
@@ -129,14 +130,15 @@ class HrPayslip_inherits(models.Model):
             payslip.write({'line_ids': lines, 'number': number, 'state': 'verify', 'compute_date': fields.Date.today()})
         return True
 
+
 class leaveallocation_inherit(models.Model):
     _inherit = "hr.leave.allocation"
-
 
     def update_paid_days(self):
         for rec in self.search([]):
             if rec.holiday_status_id.name == 'Paid Time Off':
-                rec.number_of_days +=2.5
+                rec.number_of_days += 2.5
+
 
 class HrPayslipEmployees_inheritx(models.TransientModel):
     _inherit = 'hr.payslip.employees'
@@ -146,14 +148,14 @@ class HrPayslipEmployees_inheritx(models.TransientModel):
 
     def _get_employees(self):
         # YTI check dates too
-        t_date_month=datetime.now().date().month
+        t_date_month = datetime.now().date().month
 
-        emp=self.env['hr.employee']
-        lst=self.env['hr.employee'].search(self._get_available_contracts_domain())
+        emp = self.env['hr.employee']
+        lst = self.env['hr.employee'].search(self._get_available_contracts_domain())
         for rec in lst:
-            line=rec.slip_ids.filtered(lambda r:r.date_from.month == t_date_month)
+            line = rec.slip_ids.filtered(lambda r: r.date_from.month == t_date_month)
             if not line:
-                emp+=rec
+                emp += rec
 
         return emp
 
@@ -166,14 +168,15 @@ class HrPayslipEmployees_inheritx(models.TransientModel):
             work_entries_by_contract[work_entry.contract_id] |= work_entry
 
         for contract, work_entries in work_entries_by_contract.items():
-            calendar_start = pytz.utc.localize(datetime.combine(max(contract.date_start, payslip_run.date_start), time.min))
-            calendar_end = pytz.utc.localize(datetime.combine(min(contract.date_end or date.max, payslip_run.date_end), time.max))
-            outside = contract.resource_calendar_id._attendance_intervals(calendar_start, calendar_end) - work_entries._to_intervals()
+            calendar_start = pytz.utc.localize(
+                datetime.combine(max(contract.date_start, payslip_run.date_start), time.min))
+            calendar_end = pytz.utc.localize(
+                datetime.combine(min(contract.date_end or date.max, payslip_run.date_end), time.max))
+            outside = contract.resource_calendar_id._attendance_intervals(calendar_start,
+                                                                          calendar_end) - work_entries._to_intervals()
             if outside:
                 pass
                 # raise UserError(_("Some part of %s's calendar is not covered by any work entry. Please complete the schedule.") % contract.employee_id.name)
-
-
 
     def compute_sheet(self):
         self.ensure_one()
@@ -194,7 +197,8 @@ class HrPayslipEmployees_inheritx(models.TransientModel):
         payslips = self.env['hr.payslip']
         Payslip = self.env['hr.payslip']
 
-        contracts = self.employee_ids._get_contracts(payslip_run.date_start, payslip_run.date_end, states=['open', 'close'])
+        contracts = self.employee_ids._get_contracts(payslip_run.date_start, payslip_run.date_end,
+                                                     states=['open', 'close'])
         contracts._generate_work_entries(payslip_run.date_start, payslip_run.date_end)
         work_entries = self.env['hr.work.entry'].search([
             ('date_start', '<=', payslip_run.date_end),

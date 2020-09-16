@@ -10,10 +10,12 @@
                     <field name="date_of_join" required="1"/>
 
                     <field name="resign" attrs="{'invisible': ['|',('terminate','=',True),('runaway','=',True)]}"/>
-                     <field name="terminate" attrs="{'invisible': ['|',('resign','=',True),('runaway','=',True)]}" />
-                     <field name="runaway" attrs="{'invisible': ['|',('terminate','=',True),('resign','=',True)]}"/>
+                    <field name="terminate" attrs="{'invisible': ['|',('resign','=',True),('runaway','=',True)]}"/>
+                    <field name="runaway" attrs="{'invisible': ['|',('terminate','=',True),('resign','=',True)]}"/>
+                    <field name="manager_log" force_save="1" invisible="1"/>
 
-                    <field name="date_of_leave" attrs="{'required': ['|','|',('resign','=',True),('terminate','=',True),('runaway','=',True)]}"/>
+                    <field name="date_of_leave"
+                           attrs="{'required': ['|','|',('resign','=',True),('terminate','=',True),('runaway','=',True)]}"/>
 
                     <field name="bank_name"/>
                     <field name="Ac_number"/>

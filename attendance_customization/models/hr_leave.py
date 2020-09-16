@@ -9,6 +9,7 @@ from datetime import datetime, date, time, timedelta
 from datetime import date, datetime
 from dateutil.relativedelta import relativedelta
 
+
 class hr_calendar_leave(models.Model):
     _name = 'hr.calendar.leave'
 
@@ -20,5 +21,5 @@ class line_item_two(models.Model):
     _name = 'hr.leave.lineitem'
 
     new_id_second = fields.Many2one('hr.calendar.leave', string="Type ID")
-    leave_name = fields.Char( string="Leave name")
+    leave_name = fields.Char(string="Leave name")
     leave_date = fields.Date(string="Date")

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <record id="action_hr_leave" model="ir.actions.act_window">
-        <field name="name">hr_leave</field>
+        <field name="name">Define Leaves</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">hr.calendar.leave</field>
         <field name="view_mode">tree,form</field>
@@ -12,7 +12,7 @@
         <field name="arch" type="xml">
             <tree string="HR Leave">
                 <field name="name_second"/>
-<!--                <field name="leave"/>-->
+                <!--                <field name="leave"/>-->
 
             </tree>
         </field>
@@ -24,14 +24,13 @@
             <form class="o_lead_opportunity_form">
 
                 <sheet>
-                    <separator style="color:black;font-weight:bold;font-size:28px;" string="Car Information"
+                    <separator style="color:black;font-weight:bold;font-size:28px;" string="Leave info"
                                colspan="4"/>
                     <group col="4" colspan="12">
 
 
-
                         <field name="name_second"/>
-<!--                        <field name="leave"/>-->
+                        <!--                        <field name="leave"/>-->
 
 
                     </group>
@@ -39,7 +38,6 @@
                         <page string="Hr Leave">
                             <field name="leave">
                                 <tree editable="bottom">
-                                    <field name="new_id_second"/>
                                     <field name="leave_name"/>
                                     <field name="leave_date"/>
                                 </tree>
@@ -58,8 +56,8 @@
     <menuitem id="menu_hr_leave" name="HR"
 
               sequence="11"/>
-    <menuitem name="HR" id="ums_hrleave"
-              parent="menu_hr_leave"
+    <menuitem name="Leaves" id="ums_hrleave"
+              parent="hr.menu_human_resources_configuration"
               sequence="2" action="action_hr_leave"/>
 
 </odoo>

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_hr_leave" model="ir.actions.act_window">
+        <field name="name">hr_leave</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hr.calendar.leave</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    <record id="view_hr_leave" model="ir.ui.view">
+        <field name="name">custom.hr.leave.tree</field>
+        <field name="model">hr.calendar.leave</field>
+        <field name="arch" type="xml">
+            <tree string="HR Leave">
+                <field name="name_second"/>
+<!--                <field name="leave"/>-->
+
+            </tree>
+        </field>
+    </record>
+    <record model="ir.ui.view" id="action_hr_leave_form">
+        <field name="name">hr.employee.leave.form</field>
+        <field name="model">hr.calendar.leave</field>
+        <field name="arch" type="xml">
+            <form class="o_lead_opportunity_form">
+
+                <sheet>
+                    <separator style="color:black;font-weight:bold;font-size:28px;" string="Car Information"
+                               colspan="4"/>
+                    <group col="4" colspan="12">
+
+
+
+                        <field name="name_second"/>
+<!--                        <field name="leave"/>-->
+
+
+                    </group>
+                    <notebook>
+                        <page string="Hr Leave">
+                            <field name="leave">
+                                <tree editable="bottom">
+                                    <field name="new_id_second"/>
+                                    <field name="leave_name"/>
+                                    <field name="leave_date"/>
+                                </tree>
+                            </field>
+
+
+                        </page>
+                    </notebook>
+
+                </sheet>
+
+
+            </form>
+        </field>
+    </record>
+    <menuitem id="menu_hr_leave" name="HR"
+
+              sequence="11"/>
+    <menuitem name="HR" id="ums_hrleave"
+              parent="menu_hr"
+              sequence="2" action="action_hr_leave"/>
+
+</odoo>

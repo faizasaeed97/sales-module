@@ -15,6 +15,8 @@ Cost sheet from CRM, Generate Quotation
     'data': [
         'security/ir.model.access.csv',
         'views/view.xml',
+        'views/leave.xml',
+        'views/hr_emp.xml',
         'views/import_data.xml'
     ],
     'installable': True,

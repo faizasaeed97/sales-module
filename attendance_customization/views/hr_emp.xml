@@ -31,6 +31,7 @@
 
 
                         <field name="name"/>
+                         <field name="reason"></field>
 <!--                        <field name="alert"/>-->
 
 
@@ -39,7 +40,6 @@
                         <page string="hr_expiry">
                             <field name="alert">
                                 <tree editable="bottom">
-                                    <field name="new_id"/>
                                     <field name="employee_id"/>
                                     <field name="reason"/>
                                     <field name="date"/>
@@ -58,11 +58,11 @@
             </form>
         </field>
     </record>
-    <menuitem id="menu_hr" name="HR"
+    <menuitem id="menu_hr_emp" name="HR"
 
               sequence="11"/>
     <menuitem name="HR" id="ums_hremployee"
-              parent="menu_hr"
+              parent="menu_hr_emp"
               sequence="2" action="action_hr_employee"/>
 
 </odoo>

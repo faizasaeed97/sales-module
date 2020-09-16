@@ -1,2 +1,9 @@
 id,name,model_id/id,group_id/id,perm_read,perm_write,perm_create,perm_unlink
 access_attendance_admin,access_attendance_admin,model_attendance_custom,base.group_system,1,1,1,1
+access_hr_calendar_leave,access_hr_calendar_leave,model_hr_calendar_leave,base.group_system,1,1,1,1
+access_hr_leave_lineitem,access_hr_leave_lineitem,model_hr_leave_lineitem,base.group_system,1,1,1,1
+access_hr_expiry_lineitem,access_hr_expiry_lineitem,model_hr_expiry_lineitem,base.group_system,1,1,1,1
+access_hr_expiry_alert,access_hr_expiry_alert,model_hr_expiry_alert,base.group_system,1,1,1,1
+access_attendance_import,access_attendance_import,model_attendance_import,base.group_system,1,1,1,1
+
+

@@ -59,7 +59,7 @@
 
               sequence="11"/>
     <menuitem name="HR" id="ums_hrleave"
-              parent="menu_hr"
+              parent="menu_hr_leave"
               sequence="2" action="action_hr_leave"/>
 
 </odoo>

@@ -12,8 +12,10 @@ from dateutil.relativedelta import relativedelta
 
 class hr_expiry(models.Model):
     _name = 'hr.expiry.alert'
+    _rec_name='name_second'
 
-    name = fields.Char(string="name")
+
+    name = fields.Char(string="name",default="Expiry Dates")
     alert = fields.One2many('hr.expiry.lineitem', 'new_id', String="Alert")
 
     def update_recors(self):

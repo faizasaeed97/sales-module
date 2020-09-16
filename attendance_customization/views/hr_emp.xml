@@ -28,7 +28,7 @@
                 </header>
 
                 <sheet>
-                    <separator style="color:black;font-weight:bold;font-size:28px;" string="Car Information"
+                    <separator style="color:black;font-weight:bold;font-size:28px;" string="Expiry info"
                                colspan="4"/>
                     <group col="4" colspan="12">
 

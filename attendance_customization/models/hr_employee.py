@@ -12,7 +12,7 @@ from dateutil.relativedelta import relativedelta
 
 class hr_expiry(models.Model):
     _name = 'hr.expiry.alert'
-    _rec_name='name_second'
+    _rec_name='name'
 
 
     name = fields.Char(string="name",default="Expiry Dates")

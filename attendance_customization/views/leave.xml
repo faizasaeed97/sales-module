@@ -58,6 +58,6 @@
               sequence="11"/>
     <menuitem name="Public Holidays" id="ums_hrleave"
               parent="hr.menu_human_resources_configuration"
-              sequence="2" action="action_hr_leave"/>
+              sequence="3" action="action_hr_leave"/>
 
 </odoo>

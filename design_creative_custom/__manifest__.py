@@ -18,7 +18,8 @@
         'views/quotation_report.xml',
         'views/product_custom_view.xml',
         'views/payslip_report_inherit.xml',
-        'report/logs_report.xml'
+        'report/logs_report.xml',
+        'wizard/emp_log_wixz.xml'
 
     ],
     'installable': True,

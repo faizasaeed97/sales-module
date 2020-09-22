@@ -29,21 +29,22 @@
             </field>
         </record>
 
-            	<act_window
-            id="logs_empox_report_action"
-            name="Print Logs Report"
-            binding_model="hr.employee"
-            res_model="emplog.details"
-            view_mode="form"
-            target="new"
-        	/>
+
+
+        <record id="logs_empox_report_action_nw" model="ir.actions.act_window">
+            <field name="name">Logs report</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">emplog.details</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
 
 
         <menuitem name="Log report"
-                id="menu_report_emplogsx_details"
-                action="logs_empox_report_action"
-                parent="hr.menu_human_resources_configuration"
-                sequence="4"
+                  id="menu_report_emplogsx_details"
+                  action="logs_empox_report_action_nw"
+                  parent="hr.menu_human_resources_configuration"
+                  sequence="6"
         />
 
     </data>

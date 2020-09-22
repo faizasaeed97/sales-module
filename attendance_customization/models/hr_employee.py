@@ -12,10 +12,9 @@ from dateutil.relativedelta import relativedelta
 
 class hr_expiry(models.Model):
     _name = 'hr.expiry.alert'
-    _rec_name='name'
+    _rec_name = 'name'
 
-
-    name = fields.Char(string="name",default="Expiry Dates")
+    name = fields.Char(string="name", default="Expiry Dates")
     alert = fields.One2many('hr.expiry.lineitem', 'new_id', String="Alert")
 
     def update_recors(self):
@@ -28,7 +27,7 @@ class hr_expiry(models.Model):
                     d1 = datetime.strptime(str(dtoday), '%Y-%m-%d')
                     d2 = datetime.strptime(str(rec.cpr_exp_date), '%Y-%m-%d')
                     d3 = d2 - d1
-                    if int(d3.days) < 30 and int(d3.days) > 0 :
+                    if int(d3.days) < 30 and int(d3.days) > 0:
                         chkk = self.env['hr.expiry.lineitem'].search(
                             [('employee_id', '=', rec.id), ('reason', '=', "CPR EXPIRY")])
                         if not chkk:
@@ -44,7 +43,7 @@ class hr_expiry(models.Model):
                     d1 = datetime.strptime(str(dtoday), '%Y-%m-%d')
                     d2 = datetime.strptime(str(rec.rp_exp_date), '%Y-%m-%d')
                     d3 = d2 - d1
-                    if int(d3.days) < 30 and int(d3.days) > 0 :
+                    if int(d3.days) < 30 and int(d3.days) > 0:
                         chkk = self.env['hr.expiry.lineitem'].search(
                             [('employee_id', '=', rec.id), ('reason', '=', "PR EXPIRY")])
                         if not chkk:
@@ -52,6 +51,22 @@ class hr_expiry(models.Model):
                                 'new_id': self.id,
                                 'employee_id': rec.id,
                                 'reason': "PR EXPIRY",
+                                'date': d2,
+                                'no_of_days': int(d3.days),
+
+                            })
+                if rec.passport_exp_date:
+                    d1 = datetime.strptime(str(dtoday), '%Y-%m-%d')
+                    d2 = datetime.strptime(str(rec.passport_exp_date), '%Y-%m-%d')
+                    d3 = d2 - d1
+                    if int(d3.days) < 30 and int(d3.days) > 0:
+                        chkk = self.env['hr.expiry.lineitem'].search(
+                            [('employee_id', '=', rec.id), ('reason', '=', "PASSPORT EXPIRY")])
+                        if not chkk:
+                            crt = self.env['hr.expiry.lineitem'].create({
+                                'new_id': self.id,
+                                'employee_id': rec.id,
+                                'reason': "PASSPORT EXPIRY",
                                 'date': d2,
                                 'no_of_days': int(d3.days),
 

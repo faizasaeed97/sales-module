@@ -10,8 +10,8 @@
         <field name="name">custom.hr.leave.tree</field>
         <field name="model">hr.calendar.leave</field>
         <field name="arch" type="xml">
-            <tree string="HR Leave">
-                <field name="name_second"/>
+            <tree string="Publiolidaysc H">
+                <field name="name_second" string="Name"/>
                 <!--                <field name="leave"/>-->
 
             </tree>
@@ -24,9 +24,9 @@
             <form class="o_lead_opportunity_form">
 
                 <sheet>
-                    <separator style="color:black;font-weight:bold;font-size:28px;" string="Leave info"
+                    <separator style="color:black;font-weight:bold;font-size:28px;" string="Public Holidays"
                                colspan="4"/>
-                    <group col="4" colspan="12">
+                    <group col="2">
 
 
                         <field name="name_second"/>
@@ -35,7 +35,7 @@
 
                     </group>
                     <notebook>
-                        <page string="Hr Leave">
+                        <page string="Leave">
                             <field name="leave">
                                 <tree editable="bottom">
                                     <field name="leave_name"/>
@@ -56,7 +56,7 @@
     <menuitem id="menu_hr_leave" name="HR"
 
               sequence="11"/>
-    <menuitem name="Leaves" id="ums_hrleave"
+    <menuitem name="Public Holidays" id="ums_hrleave"
               parent="hr.menu_human_resources_configuration"
               sequence="2" action="action_hr_leave"/>
 

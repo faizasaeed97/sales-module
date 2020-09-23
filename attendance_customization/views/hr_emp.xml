@@ -40,8 +40,8 @@
                     </group>
                     <notebook>
                         <page string="hr_expiry">
-                            <field name="alert">
-                                <tree editable="bottom">
+                            <field name="alert" readonly="1">
+                                <tree >
                                     <field name="employee_id"/>
                                     <field name="reason"/>
                                     <field name="date"/>

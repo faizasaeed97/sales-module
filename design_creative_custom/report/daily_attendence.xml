@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <report
+                id="action_report_dailyx_attendance"
+                model="daily.attendace.detail"
+                string="daily Attendance"
+                report_type="qweb-html"
+                name="design_creative_custom.third_attendance"
+                file="design_creative_custom.third_attendance"
+
+        />
+
+        <template id="third_attendance">
+            <t t-call="web.html_container">
+                <t t-call="web.external_layout">
+
+                    <div class="page">
+
+                        <table class="table table-sm" style="page-break-inside: avoid;">
+                            <thead>
+                                <tr>
+                                    <td>
+                                        <div class="col-auto mw-100 mb-2"
+                                             color="#17a2b8">
+                                            <strong>Roll#</strong>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="col-auto mw-100 mb-2"
+                                             color="#17a2b8">
+                                            <strong>Employee Name</strong>
+                                        </div>
+                                    </td>
+
+                                    <td>
+                                        <div class="col-auto mw-100 mb-2"
+                                             color="#17a2b8">
+                                            <strong>Department</strong>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="col-auto mw-100 mb-2"
+                                             color="#17a2b8">
+                                            <strong>Status</strong>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="col-auto mw-100 mb-2"
+                                             color="#17a2b8">
+                                            <strong>Title</strong>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="col-auto mw-100 mb-2"
+                                             color="#17a2b8">
+                                            <strong>In</strong>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="col-auto mw-100 mb-2"
+                                             color="#17a2b8">
+                                            <strong>Out</strong>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="col-auto mw-100 mb-2"
+                                             color="#17a2b8">
+                                            <strong>In2</strong>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="col-auto mw-100 mb-2"
+                                             color="#17a2b8">
+                                            <strong>Out3</strong>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="col-auto mw-100 mb-2"
+                                             color="#17a2b8">
+                                            <strong>Total Hours</strong>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="col-auto mw-100 mb-2"
+                                             color="#17a2b8">
+                                            <strong>Early/Late In Out</strong>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="dtax" t-as="line">
+
+
+                                    <t t-if="line.get('color') == 'black'">
+                                        <tr>
+                                            <td>
+                                                <span  style="color:black;" t-esc="line.get('roll')"/>
+                                            </td>
+                                            <td>
+                                                <span style="color:black;" t-esc="line.get('emp')"/>
+                                            </td>
+                                            <td>
+                                                <span style="color:black;" t-esc="line.get('dept')"/>
+                                            </td>
+                                            <td>
+                                                <span style="color:black;" t-esc="line.get('status')"/>
+
+                                            </td>
+                                            <td>
+                                                <span style="color:black;" t-esc="line.get('title')"/>
+
+                                            </td>
+
+
+                                            <td>
+                                                <span style="color:black;" t-esc="line.get('in')"/>
+                                            </td>
+                                            <td>
+                                                <span style="color:black;" t-esc="line.get('out')"/>
+                                            </td>
+                                            <td>
+                                                <span style="color:black;" t-esc="line.get('in2')"/>
+                                            </td>
+                                            <td>
+                                                <span style="color:black;" t-esc="line.get('out2')"/>
+
+                                            </td>
+                                            <td>
+                                                <span style="color:black;" t-esc="line.get('total_hours')"/>
+
+                                            </td>
+                                            <td>
+                                                <span style="color:black;" t-esc="line.get('erly_in')"/>
+
+                                            </td>
+
+                                        </tr>
+                                    </t>
+                                    <t t-if="line.get('color') == 'green'">
+
+
+                                        <tr>
+                                            <td>
+                                                <span  style="color:green;" t-esc="line.get('roll')"/>
+                                            </td>
+                                            <td>
+                                                <span style="color:green;" t-esc="line.get('emp')"/>
+                                            </td>
+                                            <td>
+                                                <span style="color:green;" t-esc="line.get('dept')"/>
+                                            </td>
+                                            <td>
+                                                <span style="color:green;" t-esc="line.get('status')"/>
+
+                                            </td>
+                                            <td>
+                                                <span style="color:green;" t-esc="line.get('title')"/>
+
+                                            </td>
+
+
+                                            <td>
+                                                <span style="color:green;" t-esc="line.get('in')"/>
+                                            </td>
+                                            <td>
+                                                <span style="color:green;" t-esc="line.get('out')"/>
+                                            </td>
+                                            <td>
+                                                <span style="color:green;" t-esc="line.get('in2')"/>
+                                            </td>
+                                            <td>
+                                                <span style="color:green;" t-esc="line.get('out2')"/>
+
+                                            </td>
+                                            <td>
+                                                <span style="color:green;" t-esc="line.get('total_hours')"/>
+
+                                            </td>
+                                            <td>
+                                                <span style="color:green;" t-esc="line.get('erly_in')"/>
+
+                                            </td>
+
+                                        </tr>
+
+                                    </t>
+                                    <t t-if="line.get('color') == 'red'">
+
+
+                                        <tr>
+                                            <td>
+                                                <span  style="color:red;" t-esc="line.get('roll')"/>
+                                            </td>
+                                            <td>
+                                                <span style="color:red;" t-esc="line.get('emp')"/>
+                                            </td>
+                                            <td>
+                                                <span style="color:red;" t-esc="line.get('dept')"/>
+                                            </td>
+                                            <td>
+                                                <span style="color:red;" t-esc="line.get('status')"/>
+
+                                            </td>
+                                            <td>
+                                                <span style="color:red;" t-esc="line.get('title')"/>
+
+                                            </td>
+
+
+                                            <td>
+                                                <span style="color:red;" t-esc="line.get('in')"/>
+                                            </td>
+                                            <td>
+                                                <span style="color:red;" t-esc="line.get('out')"/>
+                                            </td>
+                                            <td>
+                                                <span style="color:red;" t-esc="line.get('in2')"/>
+                                            </td>
+                                            <td>
+                                                <span style="color:red;" t-esc="line.get('out2')"/>
+
+                                            </td>
+                                            <td>
+                                                <span style="color:red;" t-esc="line.get('total_hours')"/>
+
+                                            </td>
+                                            <td>
+                                                <span style="color:red;" t-esc="line.get('erly_in')"/>
+
+                                            </td>
+
+                                        </tr>
+
+                                    </t>
+                                </t>
+
+
+                            </tbody>
+
+                        </table>
+
+
+                    </div>
+                </t>
+            </t>
+        </template>
+    </data>
+</odoo>

@@ -12,9 +12,9 @@ from dateutil.relativedelta import relativedelta
 
 class hr_calendar_leave(models.Model):
     _name = 'hr.calendar.leave'
-    _rec_name='name_second'
+    _rec_name='name'
 
-    name_second = fields.Char(String="Name",default="Leave roadmap")
+    name = fields.Char(String="Name",default="Leave roadmap",readonly=1)
     leave = fields.One2many('hr.leave.lineitem', 'new_id_second', String="Leave")
 
 

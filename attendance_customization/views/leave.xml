@@ -11,7 +11,7 @@
         <field name="model">hr.calendar.leave</field>
         <field name="arch" type="xml">
             <tree string="Publiolidaysc H">
-                <field name="name_second" string="Name"/>
+                <field name="name" string="Name"/>
                 <!--                <field name="leave"/>-->
 
             </tree>
@@ -29,7 +29,7 @@
                     <group col="2">
 
 
-                        <field name="name_second"/>
+                        <field name="name"/>
                         <!--                        <field name="leave"/>-->
 
 

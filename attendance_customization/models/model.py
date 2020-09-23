@@ -120,6 +120,25 @@ class Attendance(models.Model):
     absent = fields.Boolean(string="Absent", default=False)
     sick_from = fields.Date(string="Leave From")
     sick_to = fields.Date(string="Leave To")
+    leave = fields.Boolean(string="leave", default=False)
+    leave_from = fields.Date(string="Leave From")
+    leave_to = fields.Date(string="Leave To")
+
+    Emerg = fields.Boolean(string="leave", default=False)
+    emerg_from = fields.Date(string="Emergency From")
+    emerg_to = fields.Date(string="Emergency To")
+
+    Unpaid = fields.Boolean(string="leave", default=False)
+    unpaid_from = fields.Date(string="Unpaid From")
+    unpaid_to = fields.Date(string="Unpaid To")
+
+    Mater = fields.Boolean(string="leave", default=False)
+    mater_from = fields.Date(string="Maternity From")
+    mater_to = fields.Date(string="Maternity To")
+
+    Busi = fields.Boolean(string="leave", default=False)
+    busi_from = fields.Date(string="Buissness From")
+    busi_to = fields.Date(string="buissness To")
 
     @api.model
     def create(self, vals):

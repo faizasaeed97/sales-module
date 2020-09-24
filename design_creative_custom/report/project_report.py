@@ -45,11 +45,11 @@ class logsrdetDetails(models.TransientModel):
                 # 'stage_id':self.stage_id.id,
             },
         }
-        return self.env.ref('design_creative_custom.action_report_sick_attendance').report_action(self, data=data)
+        return self.env.ref('design_creative_custom.emplogs_log_report_action').report_action(self, data=data)
 
 
 class emplogscxReport(models.AbstractModel):
-    _name = 'report.design_creative_custom.action_report_sick_attendance'
+    _name = 'report.design_creative_custom.logs_emp_templates'
     _description = "Emp logs Report"
 
     @api.model

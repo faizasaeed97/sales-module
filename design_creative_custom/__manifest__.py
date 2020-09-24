@@ -25,7 +25,7 @@
         'report/daily_attendence.xml',
         'wizard/payslip_report.xml',
         'wizard/daily_attend_wiz.xml',
-        # 'views/hr_contract_custom.xml',
+        'views/hr_contract_custom.xml',
         'wizard/emp_log_wixz.xml'
 
     ],

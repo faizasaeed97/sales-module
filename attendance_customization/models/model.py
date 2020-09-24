@@ -124,7 +124,7 @@ class Attendance(models.Model):
     leave_from = fields.Date(string="Leave From")
     leave_to = fields.Date(string="Leave To")
 
-    Emerg = fields.Boolean(string="leave", default=False)
+    Emerg = fields.Boolean(string="Emergency leave", default=False)
     emerg_from = fields.Date(string="Emergency From")
     # emerg_to = fields.Date(string="Emergency To")
 

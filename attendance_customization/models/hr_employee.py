@@ -27,7 +27,7 @@ class hr_expiry(models.Model):
                     d1 = datetime.strptime(str(dtoday), '%Y-%m-%d')
                     d2 = datetime.strptime(str(rec.cpr_exp_date), '%Y-%m-%d')
                     d3 = d2 - d1
-                    if int(d3.days) < 30 and int(d3.days) > 0:
+                    if int(d3.days) <= 35 and int(d3.days) > 0:
                         chkk = self.env['hr.expiry.lineitem'].search(
                             [('employee_id', '=', rec.id), ('reason', '=', "CPR EXPIRY")])
                         if not chkk:
@@ -43,7 +43,7 @@ class hr_expiry(models.Model):
                     d1 = datetime.strptime(str(dtoday), '%Y-%m-%d')
                     d2 = datetime.strptime(str(rec.rp_exp_date), '%Y-%m-%d')
                     d3 = d2 - d1
-                    if int(d3.days) < 30 and int(d3.days) > 0:
+                    if int(d3.days) <= 35 and int(d3.days) > 0:
                         chkk = self.env['hr.expiry.lineitem'].search(
                             [('employee_id', '=', rec.id), ('reason', '=', "PR EXPIRY")])
                         if not chkk:
@@ -59,7 +59,12 @@ class hr_expiry(models.Model):
                     d1 = datetime.strptime(str(dtoday), '%Y-%m-%d')
                     d2 = datetime.strptime(str(rec.passport_exp_date), '%Y-%m-%d')
                     d3 = d2 - d1
-                    if int(d3.days) < 30 and int(d3.days) > 0:
+                    print("date diff",d3)
+                    print("date d1",d1)
+
+                    print("date d2",d2)
+
+                    if int(d3.days) <= 35 and int(d3.days) > 0:
                         chkk = self.env['hr.expiry.lineitem'].search(
                             [('employee_id', '=', rec.id), ('reason', '=', "PASSPORT EXPIRY")])
                         if not chkk:

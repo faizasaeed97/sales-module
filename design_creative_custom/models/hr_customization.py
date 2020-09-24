@@ -113,233 +113,233 @@ class inherithremploye(models.Model):
     # designation=fields.Many2one('employee.designation',)
 
 
-class inheritcontracts(models.Model):
-    _inherit = 'hr.contract'
-
-    housing_allowance = fields.Float("Housing Allowance", default=0.00)
-    travel_allowance = fields.Float("Travel Allowance", default=0.00)
-    increment_Date = fields.Date(string="Increment Date")
-    increment_Amount = fields.Float("Amount", default=0.00)
-    leave_Status = fields.Selection(
-        [('Active', 'Active'), ('Terminated', 'Terminated'), ('Resigned', 'Resigned'), ('Vacation', 'Vacation')],
-        string='Leave Status', )
-    leave_due = fields.Float("Leave Due", default=0.00)
-    leave_amount = fields.Float("Leave Amount", default=0.00)
-    total_work_experience = fields.Char(string="Total Work Experience")
-    indemnity = fields.Char(string="Indemnity")
-    tenure = fields.Char(string="Tenure")
-    sponsorship = fields.Selection([('Design Creative', 'Design Creative'), ('Design Grafix', 'Design Grafix')],
-                                   string='Sponsorship', )
-    work_location = fields.Selection([('DG', 'DG'), ('DC', 'DC')], string='Work Location', )
-    gosi_Salary_Deduction = fields.Float("GOSI Salery deduction", default=0.00)
-    hourly_salery = fields.Float("Hourly salery", default=0.00)
-    Misce_Allowance = fields.Float("Miscellaneous Allowance", default=0.00)
-    OT = fields.Float("OT", default=0.00)
-    OT1 = fields.Float("OT 1", default=0.00)
-    OT2 = fields.Float("OT 2", default=0.00)
-    OTw = fields.Float("OT(W)", default=0.00)
-
-    p_salery = fields.Monetary(string="Salary")
-    p_salery_pd = fields.Monetary(string='Salary / Day', digits=(16, 3), default=0.0, compute='salery_comp', store=True)
-    p_salery_ph = fields.Monetary(string='Salary / Hour', digits=(16, 3), default=0.0, compute='salery_comp',
-                                  store=True)
-
-    department_id = fields.Many2one(related='employee_id.department_id', string="Department")
-
-    # p_leave_salery=fields.Monetary(string='Leave Salary',digits=(16, 3))
-    p_leave_salery_pd = fields.Monetary(string='Leave Salary / Day', digits=(16, 3), default=0.0, )
-    p_leave_salery_ph = fields.Monetary(string='Leave Salary /  Hour', digits=(16, 3), default=0.0, )
-
-    # p_ideminity=fields.Monetary(string='Ideminity',digits=(16, 3))
-    p_ideminity_pd = fields.Monetary(string='Ideminity / Day', digits=(16, 4), default=0.0)
-    p_ideminity_ph = fields.Monetary(string='Ideminity / hour', digits=(16, 4), default=0.0)
-
-    p_airfair = fields.Monetary(string='Airfare', digits=(16, 3))
-    p_airfair_pd = fields.Monetary(string='Airfare / Day', digits=(16, 3), default=0.0, store=True, compute='air_comp')
-    p_airfair_ph = fields.Monetary(string='Airfare / hour', digits=(16, 3), default=0.0, store=True, compute='air_comp')
-
-    p_lmra = fields.Monetary(string='Lmra', digits=(16, 3))
-    p_lmra_pd = fields.Monetary(string='Lmra / Day', digits=(16, 3), default=0.0, store=True, compute='lmra_comp')
-    p_lmra_ph = fields.Monetary(string='Lmra / Hour', digits=(16, 3), default=0.0, store=True, compute='lmra_comp')
-
-    p_visa = fields.Monetary(string='Visa', digits=(16, 3))
-    p_visa_pd = fields.Monetary(string='Visa / Day', digits=(16, 3), default=0.0, store=True, compute='visa_comp')
-    p_visa_ph = fields.Monetary(string='Visa / hour', digits=(16, 3), default=0.0, store=True, compute='visa_comp')
-
-    p_gosi_pd = fields.Monetary(string='Gosi / Day', digits=(16, 3), default=0.0)
-    p_gosi_ph = fields.Monetary(string='Gosi / Hour', digits=(16, 3), default=0.0)
-    grade = fields.Many2one('hr.grade', string="grade")
-    final_hourly_rate = fields.Monetary('Final  / hourly rate', compute='get_hourly_final')
-    final_day_rate = fields.Monetary('Final / Day rate', compute='get_hourly_final')
-
-    gosi_salery = fields.Monetary(string='Gosi Salery', digits=(16, 3), default=0.0)
-    gross_salery = fields.Monetary(string='Gross Salery', digits=(16, 3), compute='get_gross_salery')
-    select_incrmnt = fields.Selection([('Basic', 'Basic'), ('Housing', 'Housing'), ('Travel', 'Travel')],
-                                      string='Increment Type')
-    select_decrement = fields.Selection([('Basic', 'Basic'), ('Housing', 'Housing'), ('Travel', 'Travel')],
-                                        string='Decrement Type')
-    do_incrmnt = fields.Boolean('Will Increment?', default=False)
-    do_decre = fields.Boolean('Will Decrement?', default=False)
-
-    @api.onchange('increment_Amount')
-    def onchange_select_incrmnt(self):
-        if self.do_incrmnt:
-            if self.select_incrmnt == 'Basic':
-                self.wage += self.increment_Amount
-                self.increment_Amount = 0.0
-            elif self.select_incrmnt == 'None':
-                pass
-            elif self.select_incrmnt == 'Housing':
-                self.housing_allowance += self.increment_Amount
-                self.increment_Amount = 0.0
-            elif self.select_incrmnt == 'Travel':
-                self.travel_allowance += self.increment_Amount
-                self.increment_Amount = 0.0
-        elif self.do_decre:
-            if self.select_decrement == 'Basic':
-                self.wage -= self.increment_Amount
-                self.increment_Amount = 0.0
-            elif self.select_decrement == 'Housing':
-                self.housing_allowance -= self.increment_Amount
-                self.increment_Amount = 0.0
-            elif self.select_decrement == 'Travel':
-                self.travel_allowance -= self.increment_Amount
-                self.increment_Amount = 0.0
-
-    @api.onchange('gosi_salery')
-    def onchange_gosisalery(self):
-        if self.gosi_salery:
-            if self.employee_id.bahrain_expact == 'Bahraini':
-                self.gosi_Salary_Deduction = (self.gosi_salery * 7) / 100
-            else:
-                self.gosi_Salary_Deduction = (self.gosi_salery * 1) / 100
-
-    @api.depends('wage', 'housing_allowance', 'travel_allowance', 'increment_Amount', 'gosi_Salary_Deduction')
-    def get_gross_salery(self):
-        for rec in self:
-            rec.gross_salery = (
-                                       rec.wage + rec.housing_allowance + rec.travel_allowance + rec.increment_Amount) - rec.gosi_Salary_Deduction
-
-    @api.depends('p_salery', 'p_airfair', 'p_lmra', 'p_visa')
-    def get_hourly_final(self):
-        for rec in self:
-            rec.final_hourly_rate = rec.p_salery_ph + rec.p_leave_salery_ph + rec.p_airfair_ph + rec.p_ideminity_ph + rec.p_lmra_ph + rec.p_visa_ph \
-                                    + rec.p_gosi_ph
-            rec.final_day_rate = rec.p_salery_pd + rec.p_leave_salery_pd + rec.p_airfair_pd + rec.p_ideminity_pd + rec.p_lmra_pd + rec.p_visa_pd \
-                                 + rec.p_gosi_pd
-
-    @api.depends('p_salery')
-    def salery_comp(self):
-        for rec in self:
-            if rec.p_salery:
-                # leave calcualtion
-                year = datetime.datetime.strptime(str(fields.Datetime.now().date()), "%Y-%m-%d").strftime('%Y')
-
-                # year = datetime.datetime.strptime(fields.Datetime.now().strftime("%Y"))
-                if isleap(int(year)):
-                    rec.p_leave_salery_pd = rec.p_salery / 366
-                    rec.p_leave_salery_ph = rec.p_leave_salery_pd / 8
-
-                    rec.p_ideminity_pd = rec.p_salery / 366
-                    rec.p_ideminity_ph = rec.p_ideminity_pd / 8
-                else:
-                    rec.p_leave_salery_pd = rec.p_salery / 365
-                    rec.p_leave_salery_ph = rec.p_leave_salery_pd / 8
-
-                    rec.p_ideminity_pd = rec.p_salery / 365
-                    rec.p_ideminity_ph = rec.p_ideminity_pd / 8
-
-                # salery calculation
-                rec.p_salery_pd = rec.p_salery / 30
-                rec.p_salery_ph = rec.p_salery_pd / 8
-                # Gosi calculation
-                citizen = rec.employee_id.bahrain_expact
-
-                if citizen == 'Expats':
-                    rec.p_gosi_pd = ((rec.p_salery * 3) / 100) / 30
-                    rec.p_gosi_ph = rec.p_gosi_pd / 8
-
-                elif citizen == 'Bahraini':
-                    rec.p_gosi_pd = ((rec.p_salery * 12) / 100) / 30
-                    rec.p_gosi_ph = rec.p_gosi_pd / 8
-                # indiminity calculation
-
-    @api.depends('p_leave_salery')
-    def leave_comp(self):
-        for rec in self:
-            if rec.p_leave_salery:
-                # year = time.strftime('%Y', time.strptime(str(fields.Datetime.now().date().year), "%Y"))
-
-                year = datetime.datetime.strptime(str(fields.Datetime.now().date()), "%Y-%m-%d").strftime('%Y')
-
-                # year = datetime.datetime.strptime(fields.Datetime.now().strftime("%Y"))
-                if isleap(int(year)):
-                    rec.p_leave_salery_pd = rec.p_leave_salery / 366
-                    rec.p_leave_salery_ph = rec.p_leave_salery_pd / 8
-                else:
-                    rec.p_leave_salery_pd = rec.p_leave_salery / 365
-                    rec.p_leave_salery_ph = rec.p_leave_salery_pd / 8
-
-    @api.depends('p_airfair')
-    def air_comp(self):
-        for rec in self:
-            if rec.p_airfair:
-                # year = time.strftime('%Y', time.strptime(str(fields.Datetime.now().date().year), "%Y"))
-
-                year = datetime.datetime.strptime(str(fields.Datetime.now().date()), "%Y-%m-%d").strftime('%Y')
-
-                # year = datetime.datetime.strptime(fields.Datetime.now().strftime("%Y"))
-                if isleap(int(year)):
-                    rec.p_airfair_pd = rec.p_airfair / 731
-                    rec.p_airfair_ph = rec.p_airfair_pd / 8
-                else:
-                    rec.p_airfair_pd = rec.p_airfair / 730
-                    rec.p_airfair_ph = rec.p_airfair_pd / 8
-
-    # @api.depends('p_ideminity')
-    # def ideminity_comp(self):
-    #     for rec in self:
-    #         if rec.p_ideminity:
-    #             # year = time.strftime('%Y', time.strptime(str(fields.Datetime.now().date().year), "%Y"))
-    #
-    #             year = datetime.datetime.strptime(str(fields.Datetime.now().date()), "%Y-%m-%d").strftime('%Y')
-    #
-    #             # year = datetime.datetime.strptime(fields.Datetime.now().strftime("%Y"))
-    #             if isleap(int(year)):
-    #                 rec.p_ideminity_pd = rec.p_ideminity / 366
-    #                 rec.p_ideminity_ph = rec.p_ideminity_pd / 8
-    #             else:
-    #                 rec.p_ideminity_pd = rec.p_ideminity / 365
-    #                 rec.p_ideminity_ph = rec.p_ideminity_pd / 8
-
-    @api.depends('p_lmra')
-    def lmra_comp(self):
-        for rec in self:
-            if rec.p_lmra:
-                # year = time.strftime('%Y', time.strptime(str(fields.Datetime.now().date().year), "%Y"))
-
-                # year = datetime.datetime.strptime(str(fields.Datetime.now().date()), "%Y-%m-%d").strftime('%Y')
-
-                # year = datetime.datetime.strptime(fields.Datetime.now().strftime("%Y"))
-                rec.p_lmra_pd = rec.p_lmra / 30
-                rec.p_lmra_ph = rec.p_lmra_pd / 8
-
-    @api.depends('p_visa')
-    def visa_comp(self):
-        for rec in self:
-            if rec.p_visa:
-                # year = time.strftime('%Y', time.strptime(str(fields.Datetime.now().date().year), "%Y"))
-
-                year = datetime.datetime.strptime(str(fields.Datetime.now().date()), "%Y-%m-%d").strftime('%Y')
-
-                # year = datetime.datetime.strptime(fields.Datetime.now().strftime("%Y"))
-                if isleap(int(year)):
-                    rec.p_visa_pd = rec.p_visa / 731
-                    rec.p_visa_ph = rec.p_visa_pd / 8
-                else:
-                    rec.p_visa_pd = rec.p_visa / 730
-                    rec.p_visa_ph = rec.p_visa_pd / 8
-
+# class inheritcontracts(models.Model):
+#     _inherit = 'hr.contract'
+#
+#     housing_allowance = fields.Float("Housing Allowance", default=0.00)
+#     travel_allowance = fields.Float("Travel Allowance", default=0.00)
+#     increment_Date = fields.Date(string="Increment Date")
+#     increment_Amount = fields.Float("Amount", default=0.00)
+#     leave_Status = fields.Selection(
+#         [('Active', 'Active'), ('Terminated', 'Terminated'), ('Resigned', 'Resigned'), ('Vacation', 'Vacation')],
+#         string='Leave Status', )
+#     leave_due = fields.Float("Leave Due", default=0.00)
+#     leave_amount = fields.Float("Leave Amount", default=0.00)
+#     total_work_experience = fields.Char(string="Total Work Experience")
+#     indemnity = fields.Char(string="Indemnity")
+#     tenure = fields.Char(string="Tenure")
+#     sponsorship = fields.Selection([('Design Creative', 'Design Creative'), ('Design Grafix', 'Design Grafix')],
+#                                    string='Sponsorship', )
+#     work_location = fields.Selection([('DG', 'DG'), ('DC', 'DC')], string='Work Location', )
+#     gosi_Salary_Deduction = fields.Float("GOSI Salery deduction", default=0.00)
+#     hourly_salery = fields.Float("Hourly salery", default=0.00)
+#     Misce_Allowance = fields.Float("Miscellaneous Allowance", default=0.00)
+#     OT = fields.Float("OT", default=0.00)
+#     OT1 = fields.Float("OT 1", default=0.00)
+#     OT2 = fields.Float("OT 2", default=0.00)
+#     OTw = fields.Float("OT(W)", default=0.00)
+#
+#     p_salery = fields.Monetary(string="Salary")
+#     p_salery_pd = fields.Monetary(string='Salary / Day', digits=(16, 3), default=0.0, compute='salery_comp', store=True)
+#     p_salery_ph = fields.Monetary(string='Salary / Hour', digits=(16, 3), default=0.0, compute='salery_comp',
+#                                   store=True)
+#
+#     department_id = fields.Many2one(related='employee_id.department_id', string="Department")
+#
+#     # p_leave_salery=fields.Monetary(string='Leave Salary',digits=(16, 3))
+#     p_leave_salery_pd = fields.Monetary(string='Leave Salary / Day', digits=(16, 3), default=0.0, )
+#     p_leave_salery_ph = fields.Monetary(string='Leave Salary /  Hour', digits=(16, 3), default=0.0, )
+#
+#     # p_ideminity=fields.Monetary(string='Ideminity',digits=(16, 3))
+#     p_ideminity_pd = fields.Monetary(string='Ideminity / Day', digits=(16, 4), default=0.0)
+#     p_ideminity_ph = fields.Monetary(string='Ideminity / hour', digits=(16, 4), default=0.0)
+#
+#     p_airfair = fields.Monetary(string='Airfare', digits=(16, 3))
+#     p_airfair_pd = fields.Monetary(string='Airfare / Day', digits=(16, 3), default=0.0, store=True, compute='air_comp')
+#     p_airfair_ph = fields.Monetary(string='Airfare / hour', digits=(16, 3), default=0.0, store=True, compute='air_comp')
+#
+#     p_lmra = fields.Monetary(string='Lmra', digits=(16, 3))
+#     p_lmra_pd = fields.Monetary(string='Lmra / Day', digits=(16, 3), default=0.0, store=True, compute='lmra_comp')
+#     p_lmra_ph = fields.Monetary(string='Lmra / Hour', digits=(16, 3), default=0.0, store=True, compute='lmra_comp')
+#
+#     p_visa = fields.Monetary(string='Visa', digits=(16, 3))
+#     p_visa_pd = fields.Monetary(string='Visa / Day', digits=(16, 3), default=0.0, store=True, compute='visa_comp')
+#     p_visa_ph = fields.Monetary(string='Visa / hour', digits=(16, 3), default=0.0, store=True, compute='visa_comp')
+#
+#     p_gosi_pd = fields.Monetary(string='Gosi / Day', digits=(16, 3), default=0.0)
+#     p_gosi_ph = fields.Monetary(string='Gosi / Hour', digits=(16, 3), default=0.0)
+#     grade = fields.Many2one('hr.grade', string="grade")
+#     final_hourly_rate = fields.Monetary('Final  / hourly rate', compute='get_hourly_final')
+#     final_day_rate = fields.Monetary('Final / Day rate', compute='get_hourly_final')
+#
+#     gosi_salery = fields.Monetary(string='Gosi Salery', digits=(16, 3), default=0.0)
+#     gross_salery = fields.Monetary(string='Gross Salery', digits=(16, 3), compute='get_gross_salery')
+#     select_incrmnt = fields.Selection([('Basic', 'Basic'), ('Housing', 'Housing'), ('Travel', 'Travel')],
+#                                       string='Increment Type')
+#     select_decrement = fields.Selection([('Basic', 'Basic'), ('Housing', 'Housing'), ('Travel', 'Travel')],
+#                                         string='Decrement Type')
+#     do_incrmnt = fields.Boolean('Will Increment?', default=False)
+#     do_decre = fields.Boolean('Will Decrement?', default=False)
+#
+#     @api.onchange('increment_Amount')
+#     def onchange_select_incrmnt(self):
+#         if self.do_incrmnt:
+#             if self.select_incrmnt == 'Basic':
+#                 self.wage += self.increment_Amount
+#                 self.increment_Amount = 0.0
+#             elif self.select_incrmnt == 'None':
+#                 pass
+#             elif self.select_incrmnt == 'Housing':
+#                 self.housing_allowance += self.increment_Amount
+#                 self.increment_Amount = 0.0
+#             elif self.select_incrmnt == 'Travel':
+#                 self.travel_allowance += self.increment_Amount
+#                 self.increment_Amount = 0.0
+#         elif self.do_decre:
+#             if self.select_decrement == 'Basic':
+#                 self.wage -= self.increment_Amount
+#                 self.increment_Amount = 0.0
+#             elif self.select_decrement == 'Housing':
+#                 self.housing_allowance -= self.increment_Amount
+#                 self.increment_Amount = 0.0
+#             elif self.select_decrement == 'Travel':
+#                 self.travel_allowance -= self.increment_Amount
+#                 self.increment_Amount = 0.0
+#
+#     @api.onchange('gosi_salery')
+#     def onchange_gosisalery(self):
+#         if self.gosi_salery:
+#             if self.employee_id.bahrain_expact == 'Bahraini':
+#                 self.gosi_Salary_Deduction = (self.gosi_salery * 7) / 100
+#             else:
+#                 self.gosi_Salary_Deduction = (self.gosi_salery * 1) / 100
+#
+#     @api.depends('wage', 'housing_allowance', 'travel_allowance', 'increment_Amount', 'gosi_Salary_Deduction')
+#     def get_gross_salery(self):
+#         for rec in self:
+#             rec.gross_salery = (
+#                                        rec.wage + rec.housing_allowance + rec.travel_allowance + rec.increment_Amount) - rec.gosi_Salary_Deduction
+#
+#     @api.depends('p_salery', 'p_airfair', 'p_lmra', 'p_visa')
+#     def get_hourly_final(self):
+#         for rec in self:
+#             rec.final_hourly_rate = rec.p_salery_ph + rec.p_leave_salery_ph + rec.p_airfair_ph + rec.p_ideminity_ph + rec.p_lmra_ph + rec.p_visa_ph \
+#                                     + rec.p_gosi_ph
+#             rec.final_day_rate = rec.p_salery_pd + rec.p_leave_salery_pd + rec.p_airfair_pd + rec.p_ideminity_pd + rec.p_lmra_pd + rec.p_visa_pd \
+#                                  + rec.p_gosi_pd
+#
+#     @api.depends('p_salery')
+#     def salery_comp(self):
+#         for rec in self:
+#             if rec.p_salery:
+#                 # leave calcualtion
+#                 year = datetime.datetime.strptime(str(fields.Datetime.now().date()), "%Y-%m-%d").strftime('%Y')
+#
+#                 # year = datetime.datetime.strptime(fields.Datetime.now().strftime("%Y"))
+#                 if isleap(int(year)):
+#                     rec.p_leave_salery_pd = rec.p_salery / 366
+#                     rec.p_leave_salery_ph = rec.p_leave_salery_pd / 8
+#
+#                     rec.p_ideminity_pd = rec.p_salery / 366
+#                     rec.p_ideminity_ph = rec.p_ideminity_pd / 8
+#                 else:
+#                     rec.p_leave_salery_pd = rec.p_salery / 365
+#                     rec.p_leave_salery_ph = rec.p_leave_salery_pd / 8
+#
+#                     rec.p_ideminity_pd = rec.p_salery / 365
+#                     rec.p_ideminity_ph = rec.p_ideminity_pd / 8
+#
+#                 # salery calculation
+#                 rec.p_salery_pd = rec.p_salery / 30
+#                 rec.p_salery_ph = rec.p_salery_pd / 8
+#                 # Gosi calculation
+#                 citizen = rec.employee_id.bahrain_expact
+#
+#                 if citizen == 'Expats':
+#                     rec.p_gosi_pd = ((rec.p_salery * 3) / 100) / 30
+#                     rec.p_gosi_ph = rec.p_gosi_pd / 8
+#
+#                 elif citizen == 'Bahraini':
+#                     rec.p_gosi_pd = ((rec.p_salery * 12) / 100) / 30
+#                     rec.p_gosi_ph = rec.p_gosi_pd / 8
+#                 # indiminity calculation
+#
+#     @api.depends('p_leave_salery')
+#     def leave_comp(self):
+#         for rec in self:
+#             if rec.p_leave_salery:
+#                 # year = time.strftime('%Y', time.strptime(str(fields.Datetime.now().date().year), "%Y"))
+#
+#                 year = datetime.datetime.strptime(str(fields.Datetime.now().date()), "%Y-%m-%d").strftime('%Y')
+#
+#                 # year = datetime.datetime.strptime(fields.Datetime.now().strftime("%Y"))
+#                 if isleap(int(year)):
+#                     rec.p_leave_salery_pd = rec.p_leave_salery / 366
+#                     rec.p_leave_salery_ph = rec.p_leave_salery_pd / 8
+#                 else:
+#                     rec.p_leave_salery_pd = rec.p_leave_salery / 365
+#                     rec.p_leave_salery_ph = rec.p_leave_salery_pd / 8
+#
+#     @api.depends('p_airfair')
+#     def air_comp(self):
+#         for rec in self:
+#             if rec.p_airfair:
+#                 # year = time.strftime('%Y', time.strptime(str(fields.Datetime.now().date().year), "%Y"))
+#
+#                 year = datetime.datetime.strptime(str(fields.Datetime.now().date()), "%Y-%m-%d").strftime('%Y')
+#
+#                 # year = datetime.datetime.strptime(fields.Datetime.now().strftime("%Y"))
+#                 if isleap(int(year)):
+#                     rec.p_airfair_pd = rec.p_airfair / 731
+#                     rec.p_airfair_ph = rec.p_airfair_pd / 8
+#                 else:
+#                     rec.p_airfair_pd = rec.p_airfair / 730
+#                     rec.p_airfair_ph = rec.p_airfair_pd / 8
+#
+#     # @api.depends('p_ideminity')
+#     # def ideminity_comp(self):
+#     #     for rec in self:
+#     #         if rec.p_ideminity:
+#     #             # year = time.strftime('%Y', time.strptime(str(fields.Datetime.now().date().year), "%Y"))
+#     #
+#     #             year = datetime.datetime.strptime(str(fields.Datetime.now().date()), "%Y-%m-%d").strftime('%Y')
+#     #
+#     #             # year = datetime.datetime.strptime(fields.Datetime.now().strftime("%Y"))
+#     #             if isleap(int(year)):
+#     #                 rec.p_ideminity_pd = rec.p_ideminity / 366
+#     #                 rec.p_ideminity_ph = rec.p_ideminity_pd / 8
+#     #             else:
+#     #                 rec.p_ideminity_pd = rec.p_ideminity / 365
+#     #                 rec.p_ideminity_ph = rec.p_ideminity_pd / 8
+#
+#     @api.depends('p_lmra')
+#     def lmra_comp(self):
+#         for rec in self:
+#             if rec.p_lmra:
+#                 # year = time.strftime('%Y', time.strptime(str(fields.Datetime.now().date().year), "%Y"))
+#
+#                 # year = datetime.datetime.strptime(str(fields.Datetime.now().date()), "%Y-%m-%d").strftime('%Y')
+#
+#                 # year = datetime.datetime.strptime(fields.Datetime.now().strftime("%Y"))
+#                 rec.p_lmra_pd = rec.p_lmra / 30
+#                 rec.p_lmra_ph = rec.p_lmra_pd / 8
+#
+#     @api.depends('p_visa')
+#     def visa_comp(self):
+#         for rec in self:
+#             if rec.p_visa:
+#                 # year = time.strftime('%Y', time.strptime(str(fields.Datetime.now().date().year), "%Y"))
+#
+#                 year = datetime.datetime.strptime(str(fields.Datetime.now().date()), "%Y-%m-%d").strftime('%Y')
+#
+#                 # year = datetime.datetime.strptime(fields.Datetime.now().strftime("%Y"))
+#                 if isleap(int(year)):
+#                     rec.p_visa_pd = rec.p_visa / 731
+#                     rec.p_visa_ph = rec.p_visa_pd / 8
+#                 else:
+#                     rec.p_visa_pd = rec.p_visa / 730
+#                     rec.p_visa_ph = rec.p_visa_pd / 8
+#
 
 class accacc_mov(models.Model):
     _inherit = 'account.account'

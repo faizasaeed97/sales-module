@@ -51,7 +51,7 @@
         <menuitem name="Payslip Summery"
                   id="menu_report_payhslip_menu_details"
                   action="payslip_acyion_report_action_nw"
-                  parent="hr.menu_human_resources_configuration"
+                  parent="hr.hr_menu_hr_reports"
                   sequence="6"
         />
 

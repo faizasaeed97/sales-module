@@ -41,7 +41,7 @@
         <menuitem name="Daily Report Attendance"
                   id="menu_report_dailyatend_details"
                   action="dailyate_emp_report_action_nw"
-                  parent="hr.menu_human_resources_configuration"
+                  parent="hr.hr_menu_hr_reports"
                   sequence="6"
         />
 

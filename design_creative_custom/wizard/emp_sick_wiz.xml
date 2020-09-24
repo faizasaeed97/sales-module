@@ -42,7 +42,7 @@
         <menuitem name="Absent report"
                   id="menu_report_absents_details"
                   action="absent_emp_report_action_nw"
-                  parent="hr.menu_human_resources_configuration"
+                  parent="hr.hr_menu_hr_reports"
                   sequence="6"
         />
 

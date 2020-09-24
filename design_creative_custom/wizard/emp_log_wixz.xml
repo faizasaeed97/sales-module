@@ -43,7 +43,7 @@
         <menuitem name="Log report"
                   id="menu_report_emplogsx_details"
                   action="logs_empox_report_action_nw"
-                  parent="hr.menu_human_resources_configuration"
+                  parent="hr.hr_menu_hr_reports"
                   sequence="6"
         />
 

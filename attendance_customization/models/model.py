@@ -126,17 +126,17 @@ class Attendance(models.Model):
 
     Emerg = fields.Boolean(string="leave", default=False)
     emerg_from = fields.Date(string="Emergency From")
-    emerg_to = fields.Date(string="Emergency To")
+    # emerg_to = fields.Date(string="Emergency To")
 
-    Unpaid = fields.Boolean(string="leave", default=False)
-    unpaid_from = fields.Date(string="Unpaid From")
-    unpaid_to = fields.Date(string="Unpaid To")
+    Unpaid = fields.Boolean(string="un-paid leaves", default=False)
+    unpaid_from = fields.Date(string="Un-paid From")
+    unpaid_to = fields.Date(string="Un-paid To")
 
-    Mater = fields.Boolean(string="leave", default=False)
+    Mater = fields.Boolean(string="Maternity Leaves", default=False)
     mater_from = fields.Date(string="Maternity From")
     mater_to = fields.Date(string="Maternity To")
 
-    Busi = fields.Boolean(string="leave", default=False)
+    Busi = fields.Boolean(string="Buissness Leaves", default=False)
     busi_from = fields.Date(string="Buissness From")
     busi_to = fields.Date(string="buissness To")
 
@@ -205,11 +205,22 @@ class Attendance(models.Model):
                 record.ot_15 = '00:00'
                 record.ot_125 = '00:00'
                 day = record.attendance_date.strftime('%A')
+                atend_date = record.attendance_date
+                publicholiday = False
 
                 schedule_minuts = record.get_schedule_ot(record.employee_id, day)
                 ot_minute = (int(record.working.split(':')[0]) * 60 + int(
                     record.working.split(':')[1])) - schedule_minuts
-                if ot_minute > 0:
+                check_holiday = self.env['hr.calendar.leave'].search([('follow', '=', True)], limit=1)
+                if check_holiday:
+                    for rec in check_holiday.leave:
+                        if rec.leave_date.day == atend_date.day and rec.leave_date.month == atend_date.month:
+                            ot_minute = (int(record.working.split(':')[0]) * 60 + int(
+                                record.working.split(':')[1]))
+                            record.ot_15 = record.get_minute_hmformat(ot_minute * 60)
+                            publicholiday = True
+
+                if ot_minute > 0 and not publicholiday:
                     if day == 'Friday':
                         if record.employee_id.ot_weekend:
                             record.ot_15 = record.get_minute_hmformat(ot_minute * 60)

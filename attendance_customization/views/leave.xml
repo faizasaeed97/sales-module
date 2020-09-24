@@ -11,7 +11,7 @@
         <field name="model">hr.calendar.leave</field>
         <field name="arch" type="xml">
             <tree string="Publiolidaysc H">
-                <field name="name" string="Name"/>
+                <field name="name" string="Name" />
                 <!--                <field name="leave"/>-->
 
             </tree>
@@ -29,7 +29,8 @@
                     <group col="2">
 
 
-                        <field name="name"/>
+                        <field name="name" placeholder="e.g Calender 2020" required="1"/>
+                        <field name="follow"/>
                         <!--                        <field name="leave"/>-->
 
 

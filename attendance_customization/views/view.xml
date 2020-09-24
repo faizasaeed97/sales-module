@@ -119,6 +119,61 @@
 
                     </group>
 
+                    <group col="2" colspan="8">
+
+                        <field name="leave"/>
+
+                        <field name="leave_from"
+                               attrs="{'required':[('leave','=',True)],'invisible':[('leave','!=',True)]}"/>
+                        <field name="leave_to"
+                               attrs="{'required':[('leave','=',True)],'invisible':[('leave','!=',True)]}"/>
+
+                    </group>
+
+                    <group col="2" colspan="8">
+
+                        <field name="Emerg"/>
+
+                        <field name="emerg_from"
+                               attrs="{'required':[('Emerg','=',True)],'invisible':[('Emerg','!=',True)]}"/>
+<!--                        <field name="sick_to"-->
+<!--                               attrs="{'required':[('sick_leave','=',True)],'invisible':[('sick_leave','!=',True)]}"/>-->
+
+                    </group>
+
+                    <group col="2" colspan="8">
+
+                        <field name="Unpaid"/>
+
+                        <field name="unpaid_from"
+                               attrs="{'required':[('Unpaid','=',True)],'invisible':[('Unpaid','!=',True)]}"/>
+                        <field name="unpaid_to"
+                               attrs="{'required':[('Unpaid','=',True)],'invisible':[('Unpaid','!=',True)]}"/>
+
+                    </group>
+
+                         <group col="2" colspan="8">
+
+                        <field name="Mater"/>
+
+                        <field name="mater_from"
+                               attrs="{'required':[('Mater','=',True)],'invisible':[('Mater','!=',True)]}"/>
+                        <field name="mater_to"
+                               attrs="{'required':[('Mater','=',True)],'invisible':[('Mater','!=',True)]}"/>
+
+                    </group>
+
+                         <group col="2" colspan="8">
+
+                        <field name="Busi"/>
+
+                        <field name="busi_from"
+                               attrs="{'required':[('Busi','=',True)],'invisible':[('Busi','!=',True)]}"/>
+                        <field name="busi_to"
+                               attrs="{'required':[('Busi','=',True)],'invisible':[('Busi','!=',True)]}"/>
+
+                    </group>
+
                 </sheet>
             </form>
         </field>

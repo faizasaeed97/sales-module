@@ -14,7 +14,6 @@
     'data': [
         'security/ir.model.access.csv',
         'views/hr_emplouee_custom.xml',
-        'views/hr_contract_custom.xml',
         'views/quotation_report.xml',
         'views/product_custom_view.xml',
         'views/payslip_report_inherit.xml',
@@ -26,6 +25,7 @@
         'report/daily_attendence.xml',
         'wizard/payslip_report.xml',
         'wizard/daily_attend_wiz.xml',
+        'views/hr_contract_custom.xml',
         'wizard/emp_log_wixz.xml'
 
     ],

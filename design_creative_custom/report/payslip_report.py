@@ -80,7 +80,7 @@ class pyslippytDetails(models.TransientModel):
 
 class EmployeePayslipReportExcel(models.AbstractModel):
     _name = 'report.design_creative_custom.report_xlsx'
-    _inherit = 'report.odoo_report_xlsx.abstract'
+    # _inherit = 'report.report_xlsx.abstract'
 
     def generate_xlsx_report(self, workbook, lines, data=None):
 

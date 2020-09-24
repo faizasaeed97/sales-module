@@ -28,9 +28,9 @@ class hr_expiry(models.Model):
                     d2 = datetime.strptime(str(rec.cpr_exp_date), '%Y-%m-%d')
                     d3 = d2 - d1
                     if int(d3.days) <= 35 and int(d3.days) > 0:
-                        chkk = self.env['hr.expiry.lineitem'].search(
+                        chkk2 = self.env['hr.expiry.lineitem'].search(
                             [('employee_id', '=', rec.id), ('reason', '=', "CPR EXPIRY")])
-                        if not chkk:
+                        if not chkk2:
                             crt = self.env['hr.expiry.lineitem'].create({
                                 'new_id': self.id,
                                 'employee_id': rec.id,
@@ -44,13 +44,13 @@ class hr_expiry(models.Model):
                     d2 = datetime.strptime(str(rec.rp_exp_date), '%Y-%m-%d')
                     d3 = d2 - d1
                     if int(d3.days) <= 35 and int(d3.days) > 0:
-                        chkk = self.env['hr.expiry.lineitem'].search(
-                            [('employee_id', '=', rec.id), ('reason', '=', "PR EXPIRY")])
-                        if not chkk:
+                        chkk3 = self.env['hr.expiry.lineitem'].search(
+                            [('employee_id', '=', rec.id), ('reason', '=', "RP EXPIRY")])
+                        if not chkk3:
                             crt = self.env['hr.expiry.lineitem'].create({
                                 'new_id': self.id,
                                 'employee_id': rec.id,
-                                'reason': "PR EXPIRY",
+                                'reason': "RP EXPIRY",
                                 'date': d2,
                                 'no_of_days': int(d3.days),
 
@@ -65,9 +65,9 @@ class hr_expiry(models.Model):
                     print("date d2",d2)
 
                     if int(d3.days) <= 35 and int(d3.days) > 0:
-                        chkk = self.env['hr.expiry.lineitem'].search(
+                        chkk1 = self.env['hr.expiry.lineitem'].search(
                             [('employee_id', '=', rec.id), ('reason', '=', "PASSPORT EXPIRY")])
-                        if not chkk:
+                        if not chkk1:
                             crt = self.env['hr.expiry.lineitem'].create({
                                 'new_id': self.id,
                                 'employee_id': rec.id,

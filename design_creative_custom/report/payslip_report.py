@@ -75,12 +75,12 @@ class pyslippytDetails(models.TransientModel):
                 'dta': plist
             },
         }
-        return self.env.ref('design_creative_custom.employee_payslip_report_xlsx_id').report_action(self, data=data)
+        return self.env.ref('design_creative_custom.pyslipxc_payslip_report_xlsx_id').report_action(self, data=data)
 
 
-class EmployeePayslipReportExcel(models.AbstractModel):
-    _name = 'report.design_creative_custom.report_xlsx'
-    _inherit = 'report.report_xlsx.abstract'
+class pylsiprelipReportExcel(models.AbstractModel):
+    _name = 'report.design_creative_custom.report_xlsx_ciew'
+    # _inherit = 'report.odoo_report_xlsx.abstract'
 
     def generate_xlsx_report(self, workbook, lines, data=None):
 
@@ -124,7 +124,7 @@ class EmployeePayslipReportExcel(models.AbstractModel):
         row = 4
         col = 0
 
-        sheet.merge_range(row, col, "ID", sign_head)
+        sheet.write(row, col, "ID", sign_head)
 
         sheet.set_column(row, col+1, 400)
         sheet.write(row, col + 1, "Name", sign_head)

@@ -2,12 +2,13 @@
 <odoo>
     <data>
 
-        <report id="employee_payslip_report_xlsx_id"
+        <report id="pyslipxc_payslip_report_xlsx_id"
                 model="payslip.summery.details"
                 string="Payslip"
                 report_type="xlsx"
-                name="design_creative_custom.report_xlsx"
-                file="design_creative_custom.report_xlsx"/>
+                name="design_creative_custom.report_xlsx_ciew"
+                file="design_creative_custom.report_xlsx_ciew"
+                attachment_use="True"/>
 
 
         <!-- project task wizard -->

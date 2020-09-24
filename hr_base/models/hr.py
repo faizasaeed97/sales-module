@@ -53,13 +53,11 @@ class HrEmployee(models.Model):
 
     @api.onchange('resign','terminate','runaway')
     def resign_lv(self):
-        if self.resign:
+        if self.resign or self.terminate or self.runaway:
             self.manager_log=self.env.user.id
             self.active = False
         else:
-            self.active = True
-        if self.terminate or self.runaway:
-            self.manager_log=self.env.user.id
+            self.active=True
 
 
 

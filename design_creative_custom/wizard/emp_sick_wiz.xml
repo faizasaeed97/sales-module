@@ -5,7 +5,7 @@
 
         <!-- project task wizard -->
         <record model="ir.ui.view" id="absent_detailslogs_wizard_view">
-            <field name="name">Logs.details</field>
+            <field name="name">absent.details</field>
             <field name="model">absent.details</field>
             <field name="arch" type="xml">
                 <form string="Select">
@@ -31,7 +31,7 @@
 
 
         <record id="absent_emp_report_action_nw" model="ir.actions.act_window">
-            <field name="name">Logs report</field>
+            <field name="name">Absent report</field>
             <field name="type">ir.actions.act_window</field>
             <field name="res_model">absent.details</field>
             <field name="view_mode">form</field>

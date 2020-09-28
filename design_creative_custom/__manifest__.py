@@ -26,7 +26,12 @@
         'wizard/payslip_report.xml',
         'wizard/daily_attend_wiz.xml',
         'views/hr_contract_custom.xml',
-        'wizard/emp_log_wixz.xml'
+        'wizard/emp_log_wixz.xml',
+        'wizard/emp_info_wixz.xml',
+        'report/emp_info.xml',
+        'report/emp_wage_listing.xml',
+        'wizard/emp_wage_wixz.xml'
+
 
     ],
     'installable': True,

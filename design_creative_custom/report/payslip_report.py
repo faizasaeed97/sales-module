@@ -126,7 +126,7 @@ class pylsiprelipReportExcel(models.AbstractModel):
 
         sheet.write(row, col, "ID", sign_head)
 
-        sheet.set_column(row, col+1, 400)
+        sheet.set_column(row, col+1, 40)
         sheet.write(row, col + 1, "Name", sign_head)
         sheet.write(row, col + 2, "Date of join", sign_head)
         sheet.write(row, col + 3, "Working", sign_head)
@@ -165,7 +165,7 @@ class pylsiprelipReportExcel(models.AbstractModel):
                 sheet.set_column(row , col, 10)
                 sheet.write(row, col, rec.get('id'), std_heading)
 
-                sheet.set_column(row, col+1, 400)
+                sheet.set_column(row, col+1, 40)
                 sheet.write(row, col + 1, rec.get('emp'), std_heading)
 
                 sheet.set_column(row, col+2, 15)

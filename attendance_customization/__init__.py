@@ -2,6 +2,6 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
 # from . import controllers
-from . import models
+from . import models,report
 # from . import report
 # from . import wizard

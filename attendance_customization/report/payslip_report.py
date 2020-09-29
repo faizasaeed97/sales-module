@@ -1,0 +1,280 @@
+# -*- coding: utf-8 -*-
+
+from odoo import api, fields, models, _
+from datetime import date, datetime, time
+from datetime import timedelta
+from dateutil.relativedelta import relativedelta
+
+
+class empcostytDetails(models.TransientModel):
+    _name = 'employee.cost.details'
+    _description = "Project Report Details"
+
+    date_from = fields.Date(required=True, string="Date from")
+    date_to = fields.Date(required=True, string="Date To")
+
+    employee_id = fields.Many2one('hr.employee', string="Employee")
+
+    # start_date = fields.Date(string='Start Date', required=True)
+    # end_date = fields.Date(string='End Date', required=True)
+    # stage_id = fields.Many2one('project.task.type', string="Stage", required=True)
+
+    def print_report(self):
+        plist = []
+        regular_tot=0.0
+        ots_total=0.0
+        totx=0.0
+        start_date = self.date_from
+        end_date = self.date_to
+
+        delta = timedelta(days=1)
+        while start_date <= end_date:
+            attend = self.env['attendance.custom'].search(
+                [('attendance_date', '=', start_date)])
+            if attend:
+                day = attend.attendance_date.strftime('%A')
+                regular = (attend.get_schedule_ot(self.employee_id, day) / 60)
+                ot = 0.0
+                if attend.working:
+                    temp1 = int(str(attend.working).split(":")[0])
+                    temp2 = int(str(attend.working).split(":")[1])
+                    temp = temp1 + temp2
+                    if (temp - regular) > 0:
+                        ot = temp - regular
+
+                deduc = 0.0
+                ot_tot = 0.0
+                holi=0
+                dix = {}
+                dix['date'] = start_date
+                dix['stime'] = attend.first_check_in
+                dix['etime'] = attend.second_check_out
+                dix['rhours'] = regular
+                dix['OT'] = ot
+
+                leave_sick = self.env['attendance.custom'].search_count(
+                    [('employee_id', '=', self.employee_id.id), ('sick_leave', '=', True)
+                        , ('attendance_date', '=', start_date),
+                     ])
+                leave = self.env['attendance.custom'].search_count(
+                    [('employee_id', '=', self.employee_id.id), ('leave', '=', True)
+                        , ('attendance_date', '=', start_date),
+                     ])
+                check_holiday = self.env['hr.calendar.leave'].search([('follow', '=', True)], limit=1)
+                if check_holiday:
+                    for rec in check_holiday.leave:
+                        if rec.leave_date.day == day and rec.leave_date.month == attend.month:
+                            holi+=1
+
+
+
+                dix['sick'] = leave_sick
+                dix['vacation'] = leave
+                dix['holi'] = holi
+
+                dix['total'] = regular + ot
+                totx+=regular + ot
+                # dix['ot_tot'] = ot_tot
+                dix['data']='y'
+
+                regular_tot+=regular
+                ots_total+=ot
+
+                plist.append(dix)
+            else:
+
+                dix = {}
+                dix['date'] = start_date
+                dix['stime'] = 0
+                dix['etime'] = 0
+                dix['rhours'] = 0
+                dix['OT'] = 0
+
+                dix['sick'] = None
+                dix['vacation'] = None
+                dix['holi'] = None
+
+                dix['total'] = 0
+                dix['data'] = 'y'
+
+                plist.append(dix)
+
+
+
+
+            start_date += delta
+
+        plist.append({'data':'n','pay':'f','reg':regular_tot,'ot':ots_total,'totx':totx})
+        plist.append({'data':'n','pay':'t','reg':regular_tot*self.employee_id.contract_id.p_salery_ph,'ot':ots_total*self.employee_id.contract_id.p_salery_ph})
+
+
+        data = {
+            'ids': self.ids,
+            'model': self._name,
+            'form': {
+                'date': self.date_from,
+                'dateto': self.date_to,
+                'emp': self.employee_id.name,
+
+                'dta': plist
+            },
+        }
+        return self.env.ref('attendance_customization.empcost_payslip_report_xlsx_id').report_action(self, data=data)
+
+
+class empcostipReportExcel(models.AbstractModel):
+    _name = 'report.attendance_customization.report_xlsx_csot'
+    _inherit = 'report.odoo_report_xlsx.abstract'
+
+    def generate_xlsx_report(self, workbook, lines, data=None):
+
+        datef = lines['form']['date']
+        datet = lines['form']['dateto']
+        emp = lines['form']['emp']
+
+        dta = lines['form']['dta']
+
+        sign_head = workbook.add_format({
+            "bold": 1,
+            "border": 0,
+            "align": 'center',
+            "valign": 'vcenter',
+            "font_color": 'black',
+            'font_size': '12',
+
+        })
+
+        std_heading = workbook.add_format({
+            "bold": 0,
+            "border": 1,
+            "align": 'center',
+            "valign": 'vcenter',
+            "font_color": 'navy',
+            'font_size': '10',
+        })
+
+        format2 = workbook.add_format({
+            "bold": 1,
+            "border": 1,
+            "align": 'center',
+            "valign": 'vcenter',
+            "text_wrap":True,
+            "font_color": 'blue',
+            'font_size': '30',
+        })
+
+        sheet = workbook.add_worksheet('MasterSheet')
+
+        sheet.merge_range(1, 5, 2, 7, "Employee Cost report", format2)
+
+        sheet.merge_range(2, 1, 2, 2, "Employee", sign_head)
+        # sheet.merge_range(1, 3, 2, 9, "Employee Cost report", format2)
+        sheet.merge_range(3, 1, 3, 2, "Date from:", sign_head)
+        sheet.merge_range(4, 1, 4, 2, "Date To:", sign_head)
+
+        sheet.merge_range(2, 3, 2, 4,emp, std_heading)
+        # sheet.merge_range(1, 3, 2, 9, "Employee Cost report", format2)
+        sheet.merge_range(3, 3, 3, 4, datef, std_heading)
+        sheet.merge_range(4, 3, 4, 4, datet, std_heading)
+
+
+        row = 6
+        col = 0
+        sheet.set_column(row, col , 40)
+        sheet.write(row, col, "Date", sign_head)
+
+
+        sheet.write(row, col + 1, "START TIME", sign_head)
+        sheet.write(row, col + 2, "FINISH TIME", sign_head)
+        sheet.write(row, col + 3, "REGULAR HRS", sign_head)
+        sheet.write(row, col + 4, "OVERTIME HRS", sign_head)
+
+        sheet.write(row, col + 5, "SICK", sign_head)
+        sheet.write(row, col + 6, "VACATION", sign_head)
+        sheet.write(row, col + 7, "HOLIDAY", sign_head)
+
+        sheet.write(row, col + 8, "TOTAL HOURS", sign_head)
+
+
+        row = 8
+        col = 0
+        for rec in dta:
+
+            if rec.get('data') == 'n':
+                sheet.set_column(row + 1, col, 20)
+                if rec.get('pay')=='t':
+                    sheet.write(row + 1, col+2, "Total Payment", sign_head)
+
+                else:
+                    sheet.write(row + 1, col+2, "Total", sign_head)
+
+                sheet.write(row + 1, col+3, rec.get('reg'), sign_head)
+                sheet.write(row + 1, col+4, rec.get('ot'), sign_head)
+
+                if 'totx' in rec:
+
+                    sheet.write(row + 1, col+8, rec.get('totx'), sign_head)
+
+
+                # sheet.write(row + 1, col + 1, rec.get('ID'), std_heading)
+                # sheet.write(row + 1, col + 2, rec.get('ID'), std_heading)
+                # sheet.write(row + 1, col + 3, rec.get('ID'), std_heading)
+                row += 1
+
+            if rec.get('data') == 'y':
+                sheet.set_column(row, col, 40)
+                sheet.write(row, col, rec.get('date'), std_heading)
+
+                sheet.set_column(row, col + 1, 40)
+                sheet.write(row, col + 1, rec.get('stime'), std_heading)
+
+                sheet.set_column(row, col + 2, 15)
+                sheet.write(row, col + 2, rec.get('etime'), std_heading)
+
+                sheet.set_column(row, col + 3, 10)
+                sheet.write(row, col + 3, rec.get('rhours'), std_heading)
+
+                sheet.set_column(row, col + 4, 10)
+                sheet.write(row, col + 4, rec.get('OT'), std_heading)
+
+                sheet.set_column(row, col + 5, 10)
+                sheet.write(row, col + 5, rec.get('sick'), std_heading)
+                sheet.set_column(row, col + 6, 10)
+                sheet.write(row, col + 6, rec.get('vacation'), std_heading)
+                sheet.set_column(row, col + 7, 10)
+                sheet.write(row, col + 7, rec.get('holi'), std_heading)
+
+                sheet.set_column(row, col + 8, 15)
+                sheet.write(row, col + 8, rec.get('total'), std_heading)
+
+            row += 1
+
+        # sheet.merge_range(row1, col, row1+4, col+4,sign_admin , std_heading2)
+
+        # for rec in data.employee_id:
+        #     sheet.write(row, col, 'Employee ID', main_heading)
+        #     sheet.write_string(row, col + 1, str(rec.employee_code), main_heading)
+        #     sheet.write(row, col + 2, 'Employee Name', main_heading)
+        #     sheet.write_string(row, col + 3, str(rec.name), main_heading)
+        #     sheet.write(row + 1, col, 'Job Position', main_heading)
+        #     sheet.write_string(row + 1, col + 1, str(rec.job_id.name), main_heading)
+        #     sheet.write(row + 1, col + 2, 'Joining Date', main_heading)
+        #     sheet.write_string(row + 1, col + 3, rec.bsgjoining_date.strftime("%m/%d/%Y"))
+        #     emp_payslip = self.env['hr.payslip'].search(
+        #         [('employee_id', '=', rec.id), ('date_from', '<=', data.to_date),
+        #          ('date_to', '>', data.from_date)])
+        #     row += 3
+        #     list_dict = []
+        #     if emp_payslip:
+        #         rule_dict = OrderedDict.fromkeys((rule.name for payslip in emp_payslip for rule in payslip.line_ids),
+        #                                          0.0)
+        #         rule_dict.move_to_end('Net Salary')
+        #         sheet.write(row, col, 'Payslip Name', main_heading2)
+        #         col += 1
+        #         for rule_name in rule_dict:
+        #             sheet.write_string(row, col, rule_name, main_heading2)
+        #             col += 1
+        #         row += 1
+        #         col = 0
+
+# vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

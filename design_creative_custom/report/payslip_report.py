@@ -53,6 +53,8 @@ class pyslippytDetails(models.TransientModel):
 
                         dix['worked'] = slp.consider_days
                         dix['absent'] = slp.absents
+                        dix['desig'] = dec.contract_id.grade.designation.name
+
 
                         for nep in slp.line_ids:
                             if nep.category_id.name == "Deduction":
@@ -124,30 +126,32 @@ class pylsiprelipReportExcel(models.AbstractModel):
         row = 4
         col = 0
 
-        sheet.write(row, col, "ID", sign_head)
+        sheet.write(row, col, "Roll#", sign_head)
 
         sheet.set_column(row, col+1, 40)
         sheet.write(row, col + 1, "Name", sign_head)
-        sheet.write(row, col + 2, "Date of join", sign_head)
-        sheet.write(row, col + 3, "Working", sign_head)
-        sheet.write(row, col + 4, "Leave/sick", sign_head)
+        sheet.write(row, col + 2, "Date of Join", sign_head)
+        sheet.write(row, col + 3, "Designation", sign_head)
 
-        sheet.write(row, col + 5, "Basic", sign_head)
-        sheet.write(row, col + 6, "Travel", sign_head)
-        sheet.write(row, col + 7, "housing", sign_head)
+        sheet.write(row, col + 4, "Worked", sign_head)
+        sheet.write(row, col + 5, "Leave/sick", sign_head)
 
-        sheet.write(row, col + 8, "OT1", sign_head)
-        sheet.write(row, col + 9, "OT2", sign_head)
-        sheet.write(row, col + 10, "OT total", sign_head)
+        sheet.write(row, col + 6, "Basic Salary", sign_head)
+        sheet.write(row, col + 7, "Travel Allowance", sign_head)
+        sheet.write(row, col + 8, "Housing Allowance", sign_head)
 
-        sheet.write(row, col + 11, "Loan", sign_head)
-        sheet.write(row, col + 12, "hourly Deduct", sign_head)
+        sheet.write(row, col + 9, "OT1", sign_head)
+        sheet.write(row, col + 10, "OT2", sign_head)
+        sheet.write(row, col + 11, "Total OT", sign_head)
 
-        sheet.write(row, col + 13, "Gosi salery", sign_head)
-        sheet.write(row, col + 14, "Gross", sign_head)
-        sheet.write(row, col + 15, "Deduction", sign_head)
+        sheet.write(row, col + 12, "Loan", sign_head)
+        sheet.write(row, col + 13, "Hours Deduction", sign_head)
 
-        sheet.write(row, col + 16, "Net Pay", sign_head)
+        sheet.write(row, col + 14, "GOSI Salary deductions", sign_head)
+        sheet.write(row, col + 15, "Gross Pay", sign_head)
+        sheet.write(row, col + 16, "Deduction", sign_head)
+
+        sheet.write(row, col + 17, "Net Pay", sign_head)
 
         row = 6
         col = 0
@@ -171,40 +175,43 @@ class pylsiprelipReportExcel(models.AbstractModel):
                 sheet.set_column(row, col+2, 15)
                 sheet.write(row, col + 2, rec.get('date'), std_heading)
 
-                sheet.set_column(row, col+3, 10)
-                sheet.write(row, col + 3, rec.get('worked'), std_heading)
+                sheet.set_column(row, col + 3, 15)
+                sheet.write(row, col + 3, rec.get('desig'), std_heading)
 
                 sheet.set_column(row, col+4, 10)
-                sheet.write(row, col + 4, rec.get('absent'), std_heading)
+                sheet.write(row, col + 4, rec.get('worked'), std_heading)
 
                 sheet.set_column(row, col+5, 10)
-                sheet.write(row, col + 5, rec.get('Basic Salary'), std_heading)
+                sheet.write(row, col + 5, rec.get('absent'), std_heading)
+
                 sheet.set_column(row, col+6, 10)
-                sheet.write(row, col + 6, rec.get('Travel Allowance'), std_heading)
+                sheet.write(row, col + 6, rec.get('Basic Salary'), std_heading)
                 sheet.set_column(row, col+7, 10)
-                sheet.write(row, col + 7, rec.get('Housing Allowance'), std_heading)
+                sheet.write(row, col + 7, rec.get('Travel Allowance'), std_heading)
+                sheet.set_column(row, col+8, 10)
+                sheet.write(row, col + 8, rec.get('Housing Allowance'), std_heading)
 
-                sheet.set_column(row, col+8, 15)
-                sheet.write(row, col + 8, rec.get('OT (125) Allowance'), std_heading)
                 sheet.set_column(row, col+9, 15)
-                sheet.write(row, col + 9, rec.get('OT(1.5) Allowance'), std_heading)
-                sheet.set_column(row, col+10, 10)
-                sheet.write(row, col + 10, rec.get('ot_tot'), std_heading)
-
+                sheet.write(row, col + 9, rec.get('OT (125) Allowance'), std_heading)
+                sheet.set_column(row, col+10, 15)
+                sheet.write(row, col + 10, rec.get('OT(1.5) Allowance'), std_heading)
                 sheet.set_column(row, col+11, 10)
-                sheet.write(row, col + 11, rec.get('Loan Earning'), std_heading)
-                sheet.set_column(row, col+12, 15)
-                sheet.write(row, col + 12, rec.get('Late In Deduction'), std_heading)
+                sheet.write(row, col + 11, rec.get('ot_tot'), std_heading)
+
+                sheet.set_column(row, col+12, 10)
+                sheet.write(row, col + 12, rec.get('Loan Earning'), std_heading)
                 sheet.set_column(row, col+13, 15)
+                sheet.write(row, col + 13, rec.get('Late In Deduction'), std_heading)
+                sheet.set_column(row, col+14, 15)
 
-                sheet.write(row, col + 13, rec.get('Gosi Deduction'), std_heading)
-                sheet.set_column(row, col+14, 10)
-                sheet.write(row, col + 14, rec.get('Gross'), std_heading)
+                sheet.write(row, col + 14, rec.get('Gosi Deduction'), std_heading)
                 sheet.set_column(row, col+15, 10)
-                sheet.write(row, col + 15, rec.get('deduc'), std_heading)
+                sheet.write(row, col + 15, rec.get('Gross'), std_heading)
                 sheet.set_column(row, col+16, 10)
+                sheet.write(row, col + 16, rec.get('deduc'), std_heading)
+                sheet.set_column(row, col+17, 10)
 
-                sheet.write(row, col + 16, rec.get('Net Salary'), std_heading)
+                sheet.write(row, col + 17, rec.get('Net Salary'), std_heading)
 
             row += 1
 

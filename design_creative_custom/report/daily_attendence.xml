@@ -2,6 +2,14 @@
 <odoo>
     <data>
 
+        <record id="dailyatend_format" model="report.paperformat">
+            <field name="name">attendeance</field>
+            <field name="format">custom</field>
+            <field name="margin_top">10</field>
+            <field name="margin_bottom">0</field>
+            <field name="orientation">Landscape</field>
+        </record>
+
         <report
                 id="action_report_dailyx_attendance"
                 model="daily.attendace.detail"
@@ -9,6 +17,8 @@
                 report_type="qweb-html"
                 name="design_creative_custom.third_attendance"
                 file="design_creative_custom.third_attendance"
+                paperformat="dailyatend_format"
+
 
         />
 
@@ -17,75 +27,94 @@
                 <t t-call="web.external_layout">
 
                     <div class="page">
+                        <div class="col-auto mw-100 mb-2">
+                            <strong>Design Creative W.L.L</strong>
+                        </div>
+                        <div class="col-auto mw-100 mb-2">
+                            <h1>Daily attendance Report</h1>
+                            <h2> Date <span t-esc="df"></span> </h2>
+                        </div>
 
                         <table class="table table-sm" style="page-break-inside: avoid;">
                             <thead>
                                 <tr>
-                                    <td>
+                                    <td align="center">
                                         <div class="col-auto mw-100 mb-2"
                                              color="#17a2b8">
                                             <strong>Roll#</strong>
                                         </div>
                                     </td>
-                                    <td>
+                                    <td align="center">
                                         <div class="col-auto mw-100 mb-2"
                                              color="#17a2b8">
                                             <strong>Employee Name</strong>
                                         </div>
                                     </td>
 
-                                    <td>
+                                    <td align="center">
                                         <div class="col-auto mw-100 mb-2"
                                              color="#17a2b8">
                                             <strong>Department</strong>
                                         </div>
                                     </td>
-                                    <td>
+                                    <td align="center">
                                         <div class="col-auto mw-100 mb-2"
                                              color="#17a2b8">
                                             <strong>Status</strong>
                                         </div>
                                     </td>
-                                    <td>
+                                    <td align="center">
                                         <div class="col-auto mw-100 mb-2"
                                              color="#17a2b8">
                                             <strong>Title</strong>
                                         </div>
                                     </td>
-                                    <td>
+                                    <td align="center">
                                         <div class="col-auto mw-100 mb-2"
                                              color="#17a2b8">
-                                            <strong>In</strong>
+                                            <strong>Check In</strong>
                                         </div>
                                     </td>
-                                    <td>
+                                    <td align="center">
                                         <div class="col-auto mw-100 mb-2"
                                              color="#17a2b8">
-                                            <strong>Out</strong>
+                                            <strong>Check Out</strong>
                                         </div>
                                     </td>
-                                    <td>
+                                    <td align="center">
                                         <div class="col-auto mw-100 mb-2"
                                              color="#17a2b8">
-                                            <strong>In2</strong>
+                                            <strong>Check in 2nd</strong>
                                         </div>
                                     </td>
-                                    <td>
+                                    <td align="center">
                                         <div class="col-auto mw-100 mb-2"
                                              color="#17a2b8">
-                                            <strong>Out3</strong>
+                                            <strong>Check out 2nd</strong>
                                         </div>
                                     </td>
-                                    <td>
+                                    <td align="center">
                                         <div class="col-auto mw-100 mb-2"
                                              color="#17a2b8">
                                             <strong>Total Hours</strong>
                                         </div>
                                     </td>
-                                    <td>
+                                    <td align="center">
                                         <div class="col-auto mw-100 mb-2"
                                              color="#17a2b8">
                                             <strong>Early/Late In Out</strong>
+                                        </div>
+                                    </td>
+                                    <td align="center">
+                                        <div class="col-auto mw-100 mb-2"
+                                             color="#17a2b8">
+                                            <strong>OT 1.5</strong>
+                                        </div>
+                                    </td>
+                                    <td align="center">
+                                        <div class="col-auto mw-100 mb-2"
+                                             color="#17a2b8">
+                                            <strong>OT 1.25</strong>
                                         </div>
                                     </td>
                                 </tr>
@@ -93,150 +122,212 @@
                             <tbody>
                                 <t t-foreach="dtax" t-as="line">
 
-
-                                    <t t-if="line.get('color') == 'black'">
+                                    <t t-if="line.get('data') == 'd'">
                                         <tr>
-                                            <td>
-                                                <span  style="color:black;" t-esc="line.get('roll')"/>
-                                            </td>
-                                            <td>
-                                                <span style="color:black;" t-esc="line.get('emp')"/>
-                                            </td>
-                                            <td>
-                                                <span style="color:black;" t-esc="line.get('dept')"/>
-                                            </td>
-                                            <td>
-                                                <span style="color:black;" t-esc="line.get('status')"/>
 
-                                            </td>
-                                            <td>
-                                                <span style="color:black;" t-esc="line.get('title')"/>
-
+                                            <td align="left">
+                                                <strong><span t-esc="line.get('div')"/></strong>
                                             </td>
 
-
-                                            <td>
-                                                <span style="color:black;" t-esc="line.get('in')"/>
+                                            <td align="center">
                                             </td>
-                                            <td>
-                                                <span style="color:black;" t-esc="line.get('out')"/>
+                                            <td align="center">
                                             </td>
-                                            <td>
-                                                <span style="color:black;" t-esc="line.get('in2')"/>
+                                            <td align="center">
                                             </td>
-                                            <td>
-                                                <span style="color:black;" t-esc="line.get('out2')"/>
-
-                                            </td>
-                                            <td>
-                                                <span style="color:black;" t-esc="line.get('total_hours')"/>
-
-                                            </td>
-                                            <td>
-                                                <span style="color:black;" t-esc="line.get('erly_in')"/>
-
+                                            <td align="center">
                                             </td>
 
+                                            <td align="center">
+                                            </td>
+                                            <td align="center">
+                                            </td>
+                                            <td align="center">
+                                            </td>
+                                            <td align="center">
+                                            </td>
+
+                                            <td align="center">
+                                            </td>
+                                            <td align="center">
+                                            </td>
+                                            <td align="center">
+                                            </td>
+                                            <td align="center">
+                                            </td>
                                         </tr>
                                     </t>
-                                    <t t-if="line.get('color') == 'green'">
+                                    <t t-if="line.get('data') == 'nd'">
+
+                                        <t t-if="line.get('color') == 'black'">
+                                            <tr>
+                                                <td align="center">
+                                                    <span style="color:black;" t-esc="line.get('roll')"/>
+                                                </td>
+                                                <td align="center">
+                                                    <span style="color:black;" t-esc="line.get('emp')"/>
+                                                </td>
+                                                <td align="center">
+                                                    <span style="color:black;" t-esc="line.get('dept')"/>
+                                                </td>
+                                                <td align="center">
+                                                    <span style="color:black;" t-esc="line.get('status')"/>
+
+                                                </td>
+                                                <td align="center">
+                                                    <span style="color:black;" t-esc="line.get('title')"/>
+
+                                                </td>
 
 
-                                        <tr>
-                                            <td>
-                                                <span  style="color:green;" t-esc="line.get('roll')"/>
-                                            </td>
-                                            <td>
-                                                <span style="color:green;" t-esc="line.get('emp')"/>
-                                            </td>
-                                            <td>
-                                                <span style="color:green;" t-esc="line.get('dept')"/>
-                                            </td>
-                                            <td>
-                                                <span style="color:green;" t-esc="line.get('status')"/>
+                                                <td align="center">
+                                                    <span style="color:black;" t-esc="line.get('in')"/>
+                                                </td>
+                                                <td align="center">
+                                                    <span style="color:black;" t-esc="line.get('out')"/>
+                                                </td>
+                                                <td align="center">
+                                                    <span style="color:black;" t-esc="line.get('in2')"/>
+                                                </td>
+                                                <td align="center">
+                                                    <span style="color:black;" t-esc="line.get('out2')"/>
 
-                                            </td>
-                                            <td>
-                                                <span style="color:green;" t-esc="line.get('title')"/>
+                                                </td>
+                                                <td align="center">
+                                                    <span style="color:black;" t-esc="line.get('total_hours')"/>
 
-                                            </td>
+                                                </td>
+                                                <td align="center">
+                                                    <span style="color:black;" t-esc="line.get('erly_in')"/>
 
+                                                </td>
 
-                                            <td>
-                                                <span style="color:green;" t-esc="line.get('in')"/>
-                                            </td>
-                                            <td>
-                                                <span style="color:green;" t-esc="line.get('out')"/>
-                                            </td>
-                                            <td>
-                                                <span style="color:green;" t-esc="line.get('in2')"/>
-                                            </td>
-                                            <td>
-                                                <span style="color:green;" t-esc="line.get('out2')"/>
+                                                <td align="center">
+                                                    <span style="color:black;" t-esc="line.get('ot15')"/>
 
-                                            </td>
-                                            <td>
-                                                <span style="color:green;" t-esc="line.get('total_hours')"/>
+                                                </td>
+                                                <td align="center">
+                                                    <span style="color:black;" t-esc="line.get('ot125')"/>
 
-                                            </td>
-                                            <td>
-                                                <span style="color:green;" t-esc="line.get('erly_in')"/>
+                                                </td>
 
-                                            </td>
-
-                                        </tr>
-
-                                    </t>
-                                    <t t-if="line.get('color') == 'red'">
+                                            </tr>
+                                        </t>
+                                        <t t-if="line.get('color') == 'green'">
 
 
-                                        <tr>
-                                            <td>
-                                                <span  style="color:red;" t-esc="line.get('roll')"/>
-                                            </td>
-                                            <td>
-                                                <span style="color:red;" t-esc="line.get('emp')"/>
-                                            </td>
-                                            <td>
-                                                <span style="color:red;" t-esc="line.get('dept')"/>
-                                            </td>
-                                            <td>
-                                                <span style="color:red;" t-esc="line.get('status')"/>
+                                            <tr>
+                                                <td align="center">
+                                                    <span style="color:green;" t-esc="line.get('roll')"/>
+                                                </td>
+                                                <td align="center">
+                                                    <span style="color:green;" t-esc="line.get('emp')"/>
+                                                </td>
+                                                <td align="center">
+                                                    <span style="color:green;" t-esc="line.get('dept')"/>
+                                                </td>
+                                                <td align="center">
+                                                    <span style="color:green;" t-esc="line.get('status')"/>
 
-                                            </td>
-                                            <td>
-                                                <span style="color:red;" t-esc="line.get('title')"/>
+                                                </td>
+                                                <td align="center">
+                                                    <span style="color:green;" t-esc="line.get('title')"/>
 
-                                            </td>
+                                                </td>
 
 
-                                            <td>
-                                                <span style="color:red;" t-esc="line.get('in')"/>
-                                            </td>
-                                            <td>
-                                                <span style="color:red;" t-esc="line.get('out')"/>
-                                            </td>
-                                            <td>
-                                                <span style="color:red;" t-esc="line.get('in2')"/>
-                                            </td>
-                                            <td>
-                                                <span style="color:red;" t-esc="line.get('out2')"/>
+                                                <td align="center">
+                                                    <span style="color:green;" t-esc="line.get('in')"/>
+                                                </td>
+                                                <td align="center">
+                                                    <span style="color:green;" t-esc="line.get('out')"/>
+                                                </td>
+                                                <td align="center">
+                                                    <span style="color:green;" t-esc="line.get('in2')"/>
+                                                </td>
+                                                <td align="center">
+                                                    <span style="color:green;" t-esc="line.get('out2')"/>
 
-                                            </td>
-                                            <td>
-                                                <span style="color:red;" t-esc="line.get('total_hours')"/>
+                                                </td>
+                                                <td align="center">
+                                                    <span style="color:green;" t-esc="line.get('total_hours')"/>
 
-                                            </td>
-                                            <td>
-                                                <span style="color:red;" t-esc="line.get('erly_in')"/>
+                                                </td>
+                                                <td align="center">
+                                                    <span style="color:green;" t-esc="line.get('erly_in')"/>
 
-                                            </td>
+                                                </td>
+                                                <td align="center">
+                                                    <span style="color:green;" t-esc="line.get('ot15')"/>
 
-                                        </tr>
+                                                </td>
+                                                <td align="center">
+                                                    <span style="color:green;" t-esc="line.get('ot125')"/>
 
+                                                </td>
+
+                                            </tr>
+
+                                        </t>
+                                        <t t-if="line.get('color') == 'red'">
+
+
+                                            <tr>
+                                                <td align="center">
+                                                    <span style="color:red;" t-esc="line.get('roll')"/>
+                                                </td>
+                                                <td align="center">
+                                                    <span style="color:red;" t-esc="line.get('emp')"/>
+                                                </td>
+                                                <td align="center">
+                                                    <span style="color:red;" t-esc="line.get('dept')"/>
+                                                </td>
+                                                <td align="center">
+                                                    <span style="color:red;" t-esc="line.get('status')"/>
+
+                                                </td>
+                                                <td align="center">
+                                                    <span style="color:red;" t-esc="line.get('title')"/>
+
+                                                </td>
+
+
+                                                <td align="center">
+                                                    <span style="color:red;" t-esc="line.get('in')"/>
+                                                </td>
+                                                <td align="center">
+                                                    <span style="color:red;" t-esc="line.get('out')"/>
+                                                </td>
+                                                <td align="center">
+                                                    <span style="color:red;" t-esc="line.get('in2')"/>
+                                                </td>
+                                                <td align="center">
+                                                    <span style="color:red;" t-esc="line.get('out2')"/>
+
+                                                </td>
+                                                <td align="center">
+                                                    <span style="color:red;" t-esc="line.get('total_hours')"/>
+
+                                                </td>
+                                                <td align="center">
+                                                    <span style="color:red;" t-esc="line.get('erly_in')"/>
+
+                                                </td>
+
+                                                <td align="center">
+                                                    <span style="color:red;" t-esc="line.get('ot15')"/>
+
+                                                </td>
+                                                <td align="center">
+                                                    <span style="color:red;" t-esc="line.get('ot125')"/>
+
+                                                </td>
+
+                                            </tr>
+
+                                        </t>
                                     </t>
                                 </t>
-
 
                             </tbody>
 

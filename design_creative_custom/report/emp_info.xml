@@ -1,6 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
+        <record id="empinfox_format" model="report.paperformat">
+            <field name="name">attendeance</field>
+            <field name="format">custom</field>
+            <field name="margin_top">5</field>
+            <field name="margin_bottom">10</field>
+            <field name="orientation">Landscape</field>
+        </record>
 
         <report
                 id="action_report_document_empinfox"
@@ -9,6 +16,8 @@
                 report_type="qweb-pdf"
                 name="design_creative_custom.document_report_empinfox"
                 file="design_creative_custom.document_report_empinfox"
+                paperformat="empinfox_format"
+
 
         />
 
@@ -18,7 +27,7 @@
                     <div class="col-auto mw-100 mb-2">
                         <strong>Design Creative W.L.L</strong>
                     </div>
-                        <div class="col-auto mw-100 mb-2">
+                    <div class="col-auto mw-100 mb-2">
                         <strong>Employee Information</strong>
                     </div>
 
@@ -42,19 +51,20 @@
                                     <td>
                                         <div class="col-auto mw-100 mb-2"
                                              color="#17a2b8">
-                                            <strong>Passport Expiry</strong>
+                                            <strong>Nationality</strong>
                                         </div>
                                     </td>
                                     <td>
                                         <div class="col-auto mw-100 mb-2"
                                              color="#17a2b8">
-                                            <strong>RP Expiry</strong>
+                                            <strong>Passport No</strong>
                                         </div>
                                     </td>
+
                                     <td>
                                         <div class="col-auto mw-100 mb-2"
                                              color="#17a2b8">
-                                            <strong>CPR Expiry</strong>
+                                            <strong>CPR No</strong>
                                         </div>
                                     </td>
                                     <td>
@@ -75,43 +85,87 @@
                                             <strong>IBAN</strong>
                                         </div>
                                     </td>
+                                    <td>
+                                        <div class="col-auto mw-100 mb-2"
+                                             color="#17a2b8">
+                                            <strong>Tenure</strong>
+                                        </div>
+                                    </td>
 
                                 </tr>
                             </thead>
                             <tbody>
                                 <t t-foreach="dtax" t-as="line">
+                                    <t t-if="line.get('data') == 'd'">
+                                        <tr>
 
-                                    <tr>
-                                        <td>
-                                            <span t-esc="line.get('roll')"/>
-                                        </td>
-                                        <td>
-                                            <span t-esc="line.get('emp')"/>
-                                        </td>
-                                        <td>
-                                            <span t-esc="line.get('pexp')"/>
-                                        </td>
-                                        <td>
-                                            <span t-esc="line.get('rpexp')"/>
+                                            <td align="left">
+                                                <strong><span t-esc="line.get('div')"/></strong>
+                                            </td>
 
-                                        </td>
-                                        <td>
-                                            <span t-esc="line.get('cprexp')"/>
+                                            <td>
+                                            </td>
+                                            <td>
+                                            </td>
+                                            <td>
+                                            </td>
+                                            <td>
+                                            </td>
+                                                <td>
+                                            </td>
+                                                <td>
+                                            </td>
+                                                <td>
+                                            </td>
+                                                <td>
+                                            </td>
+                                        </tr>
+                                    </t>
+                                    <t t-if="line.get('data') == 'nd'">
 
-                                        </td>
+                                        <tr>
+                                            <td align="center">
+                                                <span t-esc="line.get('roll')"/>
+                                            </td>
+                                            <td align="center">
+                                                <span t-esc="line.get('emp')"/>
+                                            </td>
+                                            <td align="center">
+                                                <span t-esc="line.get('nat')"/>
 
-                                        <td>
-                                            <span t-esc="line.get('bname')"/>
+                                            </td>
+                                            <td align="center">
+                                                <span t-esc="line.get('pexp')"/>
+                                            </td>
 
-                                        </td>
+                                            <td align="center">
+                                                <span t-esc="line.get('cprexp')"/>
 
-                                        <td>
-                                            <span t-esc="line.get('bacount')"/>
+                                            </td>
 
-                                        </td>
+                                            <td align="center">
+                                                <span t-esc="line.get('bname')"/>
+
+                                            </td>
+
+                                            <td align="center">
+                                                <span t-esc="line.get('bacount')"/>
+
+                                            </td>
 
 
-                                    </tr>
+                                            <td align="center">
+                                                <span t-esc="line.get('iban')"/>
+
+                                            </td>
+                                            <td align="center">
+                                                <span t-esc="line.get('tenur')"/>
+
+                                            </td>
+
+
+                                        </tr>
+                                    </t>
 
                                 </t>
 

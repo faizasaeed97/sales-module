@@ -2,6 +2,14 @@
 <odoo>
     <data>
 
+        <record id="wagelisting_format" model="report.paperformat">
+            <field name="name">attendeance</field>
+            <field name="format">custom</field>
+            <field name="margin_top">10</field>
+            <field name="margin_bottom">10</field>
+            <field name="orientation">Landscape</field>
+        </record>
+
         <report
                 id="action_report_salary_listing"
                 model="emplog.wage.details"
@@ -9,6 +17,7 @@
                 report_type="qweb-pdf"
                 name="design_creative_custom.salary_report_empx"
                 file="design_creative_custom.salary_report_empx"
+                paperformat="wagelisting_format"
 
         />
 
@@ -80,45 +89,70 @@
                             </thead>
                             <tbody>
                                 <t t-foreach="dtax" t-as="line">
+                                    <t t-if="line.get('data') == 'd'">
+                                        <tr>
 
-                                    <tr>
-                                        <td align="center">
-                                            <span  t-esc="line.get('roll')"/>
-                                        </td>
-                                        <td align="center" >
-                                            <span t-esc="line.get('emp')"/>
-                                        </td>
-                                        <td align="center">
-                                            <span  t-esc="line.get('div')"/>
-                                        </td>
-                                        <td align="center">
-                                            <span  t-esc="line.get('wphone')"/>
+                                            <td align="left">
+                                                <strong><span t-esc="line.get('div')"/></strong>
+                                            </td>
 
-                                        </td>
-                                        <td align="center">
-                                            <span  t-esc="line.get('wage')"/>
+                                            <td>
+                                            </td>
+                                            <td>
+                                            </td>
+                                            <td>
+                                            </td>
+                                            <td>
+                                            </td>
+                                            <td>
+                                            </td>
+                                            <td>
+                                            </td>
+                                               <td>
+                                            </td>
+                                        </tr>
+                                    </t>
+                                    <t t-if="line.get('data') == 'nd'">
 
-                                        </td>
+                                        <tr>
+                                            <td align="center">
+                                                <span t-esc="line.get('roll')"/>
+                                            </td>
+                                            <td align="center">
+                                                <span t-esc="line.get('emp')"/>
+                                            </td>
+                                            <td align="center">
+                                                <span t-esc="line.get('div')"/>
+                                            </td>
+                                            <td align="center">
+                                                <span t-esc="line.get('wphone')"/>
 
-                                        <td align="center">
-                                            <span  t-esc="line.get('hallow')"/>
+                                            </td>
+                                            <td align="center">
+                                                <span t-esc="line.get('wage')"/>
 
-                                        </td>
+                                            </td>
 
-                                        <td align="center">
-                                            <span  t-esc="line.get('tallow')"/>
+                                            <td align="center">
+                                                <span t-esc="line.get('hallow')"/>
 
-                                        </td>
-                                        <td align="center">
-                                            <span  t-esc="line.get('gosi_deduc')"/>
+                                            </td>
 
-                                        </td>
+                                            <td align="center">
+                                                <span t-esc="line.get('tallow')"/>
+
+                                            </td>
+                                            <td align="center">
+                                                <span t-esc="line.get('gosi_deduc')"/>
+
+                                            </td>
 
 
-                                    </tr>
+                                        </tr>
+
+                                    </t>
 
                                 </t>
-
                             </tbody>
 
                         </table>

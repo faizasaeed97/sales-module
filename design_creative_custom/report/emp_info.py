@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
 from odoo import api, fields, models, _
+from dateutil.relativedelta import relativedelta
+
 
 
 class logsemprdetDetails(models.TransientModel):
@@ -12,23 +14,53 @@ class logsemprdetDetails(models.TransientModel):
     # start_date = fields.Date(string='Start Date', required=True)
     # end_date = fields.Date(string='End Date', required=True)
     # stage_id = fields.Many2one('project.task.type', string="Stage", required=True)
+    def diff_month(self, d1, d2):
+        return (d1.year - d2.year) * 12 + d1.month - d2.month
 
     def print_report(self):
-        emps = self.env['hr.employee'].search(
-            [])
         plist = []
-        for rec in emps:
+        today = fields.Date.today()
+
+
+
+        dept = self.env['hr.department'].search(
+            [])
+
+        for dpt in dept:
             dix = {}
-
-            dix['emp'] = rec.name
-            dix['roll'] = rec.identification_id
-            dix['pexp'] = rec.passport_exp_date
-            dix['rpexp'] = rec.rp_exp_date
-            dix['cprexp'] = rec.cpr_exp_date
-            dix['bname'] = rec.bank_name
-            dix['bacount'] = rec.bank_account_id.display_name
-
+            dix['data'] = 'd'
+            dix['div'] = dpt.name
             plist.append(dix)
+            emps = self.env['hr.employee'].search(
+            [('contract_id.grade.department', '=', dpt.id)])
+
+
+            for rec in emps:
+                dix = {}
+                dd=0
+                if rec.date_of_join:
+
+                    difference_in_years = relativedelta(today, rec.date_of_join).years
+                    month=self.diff_month(today,rec.date_of_join)
+                    dd += (difference_in_years * 365)
+                    dd+= (month * 30)
+                    delta = (today - rec.date_of_join)
+                    tenur= str(difference_in_years) +" Y "+str(month)+" M " +str((delta.days)-dd)+" D"
+                else:
+                    tenur="N/A"
+
+                dix['emp'] = rec.name
+                dix['roll'] = rec.identification_id
+                dix['pexp'] = rec.passport_id
+                dix['nat'] = rec.country_id.name
+                dix['cprexp'] = rec.cpr_no
+                dix['bname'] = rec.bank_name
+                dix['bacount'] = rec.bank_account_id.display_name
+                dix['iban'] = rec.iban
+                dix['data'] = 'nd'
+                dix['tenur'] = tenur
+
+                plist.append(dix)
 
         data = {
             'ids': self.ids,

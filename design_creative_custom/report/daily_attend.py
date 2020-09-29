@@ -16,45 +16,58 @@ class dailyxtsrdetDetails(models.TransientModel):
     def print_report(self):
         plist = []
 
-        emps = self.env['hr.employee'].search(
+        dept = self.env['hr.department'].search(
             [])
-        for dec in emps:
-            attends = self.env['attendance.custom'].search(
-                [('employee_id', '=', dec.id),
-                 ('attendance_date', '=', self.date_d),
-                 ])
-            if attends:
 
-                dix = {}
-                dix['roll'] = dec.identification_id
+        for rec in dept:
+            dix = {}
+            dix['data'] = 'd'
+            dix['div'] = rec.name
+            plist.append(dix)
 
-                dix['emp'] = dec.name
-                dix['dept'] = dec.contract_id.grade.department.name
-                dix['status'] = attends.status
-                dix['title'] = dec.workschedule
+            emps = self.env['hr.employee'].search(
+                [('contract_id.grade.department', '=', rec.id)])
+            for dec in emps:
+                attends = self.env['attendance.custom'].search(
+                    [('employee_id', '=', dec.id),
+                     ('attendance_date', '=', self.date_d),
+                     ])
+                if attends:
 
-                dix['in'] = attends.first_check_in
-                dix['out'] = attends.first_check_out
-                dix['in2'] = attends.second_check_in
-                dix['out2'] = attends.second_check_out
-                dix['total_hours'] = attends.working
-                dix['color'] = "black"
+                    dix = {}
+                    dix['roll'] = dec.identification_id
 
-                if attends.early_in:
-                    dix['erly_in'] = "Early In"
-                    dix['color'] = "green"
+                    dix['emp'] = dec.name
+                    dix['dept'] = dec.contract_id.grade.department.name
+                    dix['status'] = attends.status
+                    dix['title'] = dec.workschedule
+                    dix['in'] = attends.first_check_in
+                    dix['out'] = attends.first_check_out
+                    dix['in2'] = attends.second_check_in
+                    dix['out2'] = attends.second_check_out
+                    dix['total_hours'] = attends.working
+
+                    dix['ot15'] = attends.ot_15
+                    dix['ot125'] = attends.ot_125
+                    dix['data'] = 'nd'
+
+                    dix['color'] = "black"
+
+                    if attends.early_in:
+                        dix['erly_in'] = "Early In"
+                        dix['color'] = "green"
 
 
-                elif attends.early_out:
-                    dix['erly_in'] = "Early Out"
-                    dix['color'] = "green"
+                    elif attends.early_out:
+                        dix['erly_in'] = "Early Out"
+                        dix['color'] = "green"
 
 
-                elif attends.late_in:
-                    dix['erly_in'] = "Late in"
-                    dix['color'] = "red"
+                    elif attends.late_in:
+                        dix['erly_in'] = "Late in"
+                        dix['color'] = "red"
 
-                plist.append(dix)
+                    plist.append(dix)
 
         data = {
             'ids': self.ids,

@@ -1,6 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
+        <record id="sickleave_format" model="report.paperformat">
+            <field name="name">attendeance</field>
+            <field name="format">custom</field>
+            <field name="margin_top">10</field>
+            <field name="margin_bottom">0</field>
+            <field name="orientation">Landscape</field>
+        </record>
 
         <report
                 id="action_report_sick_attendance"
@@ -9,6 +16,8 @@
                 report_type="qweb-html"
                 name="design_creative_custom.sick_attendance"
                 file="design_creative_custom.sick_attendance"
+                paperformat="sickleave_format"
+
 
         />
 
@@ -94,14 +103,14 @@
                                             <td>
                                                 <span t-esc="line.get('emp')"/>
                                             </td>
-                                            <td>
+                                            <td align="center">
                                                 <span t-esc="line.get('nat')"/>
                                             </td>
                                             <td>
                                                 <span t-esc="line.get('div')"/>
 
                                             </td>
-                                            <td>
+                                            <td align="center">
                                                 <span t-esc="line.get('total')"/>
 
                                             </td>

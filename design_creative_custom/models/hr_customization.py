@@ -42,6 +42,7 @@ class inherithremploye(models.Model):
 
     man_works_shour = fields.Char("Second shift start")
     man_works_smins = fields.Char("second shift end")
+    iban=fields.Char(string="IBAN")
 
     @api.onchange('man_works_fhour', 'man_works_fmins', 'man_works_shour', 'man_works_smins')
     def onchangmanul_work(self):

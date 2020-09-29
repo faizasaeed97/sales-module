@@ -30,7 +30,7 @@ class empcostytDetails(models.TransientModel):
         delta = timedelta(days=1)
         while start_date <= end_date:
             attend = self.env['attendance.custom'].search(
-                [('attendance_date', '=', start_date)])
+                [('attendance_date', '=', start_date),('employee_id', '=', self.employee_id.id)],limit=1)
             if attend:
                 day = attend.attendance_date.strftime('%A')
                 regular = (attend.get_schedule_ot(self.employee_id, day) / 60)

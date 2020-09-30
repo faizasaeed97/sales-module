@@ -24,6 +24,15 @@ class attsummerytDetails(models.TransientModel):
         list_day = []
         ddic_day = []
 
+        start_date = self.date_from
+        end_date = self.date_to
+        dix = {}
+
+        delta = timedelta(days=1)
+        while start_date <= end_date:
+            ddic_day.append(start_date.day)
+            start_date += delta
+
         emps = self.env['hr.employee'].search(
             [])
 
@@ -31,22 +40,22 @@ class attsummerytDetails(models.TransientModel):
 
             start_date = self.date_from
             end_date = self.date_to
+            dix = {}
 
             delta = timedelta(days=1)
             while start_date <= end_date:
                 ddic = {}
-                ddic_day.append(start_date.day)
 
                 stax = self.env['attendance.custom'].search(
                     [('employee_id', '=', dec.id),
                      ('attendance_date', '=', start_date),
-                     ])
+                     ],limit=1)
                 if stax:
-                    ddic[start_date.day] = stax.a_stat
+                    dix[start_date.day] = stax.a_stat
                 else:
-                    ddic[start_date.day] = " "
-                ddic['empp'] = dec.name
-                list_day.append(ddic)
+                    dix[start_date.day] = " "
+                # ddic['empp'] = dec.name
+                # list_day.append(ddic)
 
                 start_date += delta
 
@@ -101,7 +110,7 @@ class attsummerytDetails(models.TransientModel):
 
             total = attends
 
-            dix = {}
+
             dix['roll'] = dec.identification_id
 
             dix['emp'] = dec.name
@@ -128,7 +137,7 @@ class attsummerytDetails(models.TransientModel):
                 'date_to': self.date_to,
                 'dta': plist,
                 'day_l': ddic_day,
-                'day_data': list_day
+                # 'day_data': list_day
             },
         }
         return self.env.ref('attendance_customization.action_report_summ_attendancee').report_action(self, data=data)
@@ -144,7 +153,7 @@ class empsummeryogscxReportss(models.AbstractModel):
         date_t = data['form']['date_to']
         datax = data['form']['dta']
         dayl = data['form']['day_l']
-        dayv = data['form']['day_data']
+        # dayv = data['form']['day_data']
 
         return {
             'doc_ids': data['ids'],
@@ -153,7 +162,7 @@ class empsummeryogscxReportss(models.AbstractModel):
             'dt': date_t,
             'dtax': datax,
             'dayl': dayl,
-            'dayd': dayv
+            # 'dayd': dayv
 
             # 'end_date':end_date,
             # 'project_id':self.env['project.project'].browse(project_id),

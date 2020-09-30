@@ -27,10 +27,10 @@
         <template id="summery_attendance_staffxx">
             <t t-call="web.html_container">
                 <t t-call="web.external_layout">
-                    <div class="col-auto mw-100 mb-2">
+                    <div>
                         <strong>Design Creative W.L.L</strong>
                     </div>
-                    <div class="col-auto mw-100 mb-2">
+                    <div>
                         <h1>Attendance Sheet</h1>
                     </div>
 
@@ -40,19 +40,19 @@
                             <thead>
                                 <tr>
                                     <!--                                    <td>-->
-                                    <!--                                        <div class="col-auto mw-100 mb-2"-->
+                                    <!--                                        <div  -->
                                     <!--                                             color="#17a2b8">-->
                                     <!--                                            <strong>SN</strong>-->
                                     <!--                                        </div>-->
                                     <!--                                    </td>-->
                                     <td>
-                                        <div class="col-auto mw-100 mb-2"
-                                             color="#17a2b8">
+                                        <div
+                                                color="#17a2b8">
                                             <strong>ID</strong>
                                         </div>
                                     </td>
                                     <td>
-                                        <div class="col-auto mw-100 mb-2" width="30%"
+                                        <div width="40%"
                                              color="#17a2b8">
                                             <strong>Name</strong>
                                         </div>
@@ -67,80 +67,86 @@
 
 
                                     <td>
-                                        <div class="col-auto mw-100 mb-2"
-                                             color="#17a2b8">
-                                            <strong>Attended</strong>
+                                        <div
+                                                color="#17a2b8">
+                                            <strong>Attended (A)</strong>
                                         </div>
                                     </td>
                                     <!--                                    <td>-->
-                                    <!--                                        <div class="col-auto mw-100 mb-2"-->
+                                    <!--                                        <div  -->
                                     <!--                                             color="#17a2b8">-->
                                     <!--                                            <strong>Missing</strong>-->
                                     <!--                                        </div>-->
                                     <!--                                    </td>-->
                                     <td>
-                                        <div class="col-auto mw-100 mb-2"
-                                             color="#17a2b8">
-                                            <strong>Absent</strong>
+                                        <div
+                                                color="#17a2b8">
+                                            <strong>Absent (B)</strong>
                                         </div>
                                     </td>
                                     <td>
-                                        <div class="col-auto mw-100 mb-2"
-                                             color="#17a2b8">
-                                            <strong>Leave</strong>
+                                        <div
+                                                color="#17a2b8">
+                                            <strong>Leave (V)</strong>
                                         </div>
                                     </td>
                                     <td>
-                                        <div class="col-auto mw-100 mb-2"
-                                             color="#17a2b8">
-                                            <strong>Sick Lv</strong>
+                                        <div
+                                                color="#17a2b8">
+                                            <strong>Sick Lv (S)</strong>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div
+                                                color="#17a2b8">
+                                            <strong>Day off (X)</strong>
                                         </div>
                                     </td>
                                     <!--                                    <td>-->
-                                    <!--                                        <div class="col-auto mw-100 mb-2"-->
-                                    <!--                                             color="#17a2b8">-->
-                                    <!--                                            <strong>Day off</strong>-->
-                                    <!--                                        </div>-->
-                                    <!--                                    </td>-->
-                                    <!--                                    <td>-->
-                                    <!--                                        <div class="col-auto mw-100 mb-2"-->
+                                    <!--                                        <div  -->
                                     <!--                                             color="#17a2b8">-->
                                     <!--                                            <strong>Conflict</strong>-->
                                     <!--                                        </div>-->
                                     <!--                                    </td>-->
                                     <td>
-                                        <div class="col-auto mw-100 mb-2"
-                                             color="#17a2b8">
-                                            <strong>Emerg</strong>
+                                        <div
+                                                color="#17a2b8">
+                                            <strong>Emerg (G)</strong>
                                         </div>
                                     </td>
                                     <!--                                    <td>-->
-                                    <!--                                        <div class="col-auto mw-100 mb-2"-->
+                                    <!--                                        <div  -->
                                     <!--                                             color="#17a2b8">-->
                                     <!--                                            <strong>Death</strong>-->
                                     <!--                                        </div>-->
                                     <!--                                    </td>-->
                                     <td>
-                                        <div class="col-auto mw-100 mb-2"
-                                             color="#17a2b8">
-                                            <strong>Unpaid</strong>
+                                        <div
+                                                color="#17a2b8">
+                                            <strong>Unpaid (O)</strong>
                                         </div>
                                     </td>
                                     <td>
-                                        <div class="col-auto mw-100 mb-2"
-                                             color="#17a2b8">
-                                            <strong>Mater</strong>
+                                        <div
+                                                color="#17a2b8">
+                                            <strong>Unpaid (P)</strong>
                                         </div>
                                     </td>
                                     <td>
-                                        <div class="col-auto mw-100 mb-2"
-                                             color="#17a2b8">
-                                            <strong>Busi</strong>
+                                        <div
+                                                color="#17a2b8">
+                                            <strong>Mater (D)</strong>
                                         </div>
                                     </td>
                                     <td>
-                                        <div class="col-auto mw-100 mb-2"
-                                             color="#17a2b8">
+                                        <div
+                                                color="#17a2b8">
+                                            <strong>Busi (U)</strong>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div
+                                                color="#17a2b8">
                                             <strong>Total</strong>
                                         </div>
                                     </td>
@@ -156,20 +162,20 @@
                                         <td>
                                             <span align="center" t-esc="line.get('roll')"/>
                                         </td>
-                                        <td align="center" width="30%">
+                                        <td align="center" width="40%">
                                             <span t-esc="line.get('emp')"/>
                                         </td>
 
 
-                                        <t t-foreach="dayd" t-as="pine">
-                                            <t t-foreach="dayl" t-as="hine">
-                                                <td>
-                                                    <div>
-                                                        <strong><span t-esc="pine.get(str(hine))"></span></strong>
-                                                    </div>
-                                                </td>
-                                            </t>
+                                        <!--                                        <t t-foreach="dayd" t-as="pine">-->
+                                        <t t-foreach="dayl" t-as="hine">
+                                            <td align="center">
+                                                <div>
+                                                    <strong><span t-esc="line.get(str(hine))"></span></strong>
+                                                </div>
+                                            </td>
                                         </t>
+                                        <!--                                        </t>-->
 
 
                                         <td align="center">
@@ -197,8 +203,8 @@
                                             <span t-esc="line.get('leave_Emerg')"/>
 
                                         </td>
-                                        <td>
-                                            <span align="center" t-esc="line.get('leave_Unpaid')"/>
+                                        <td align="center">
+                                            <span t-esc="line.get('leave_Unpaid')"/>
 
                                         </td>
 

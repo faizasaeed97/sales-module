@@ -12,19 +12,19 @@
 
 
         <report
-                id="action_report_summ_attendance"
+                id="action_report_summ_attendancee"
                 model="attend.summery.details"
                 string="Attendance Summery"
                 report_type="qweb-pdf"
-                name="design_creative_custom.summery_attendance_staff"
-                file="design_creative_custom.summery_attendance_staff"
+                name="attendance_customization.summery_attendance_staffxx"
+                file="attendance_customization.summery_attendance_staffxx"
                 paperformat="summeryatend_format"
 
 
         />
 
 
-        <template id="summery_attendance_staff">
+        <template id="summery_attendance_staffxx">
             <t t-call="web.html_container">
                 <t t-call="web.external_layout">
                     <div class="col-auto mw-100 mb-2">
@@ -58,13 +58,11 @@
                                         </div>
                                     </td>
                                     <t t-foreach="dayl" t-as="line">
-                                              <td>
-                                        <div class="col-auto mw-100 mb-2" width="5%"
-                                             color="#17a2b8">
-                                            <strong><span t-esc="line"></span></strong>
-                                        </div>
-                                    </td>
-
+                                        <td>
+                                            <div>
+                                                <strong><span t-esc="line"></span></strong>
+                                            </div>
+                                        </td>
                                     </t>
 
 
@@ -161,6 +159,19 @@
                                         <td align="center" width="30%">
                                             <span t-esc="line.get('emp')"/>
                                         </td>
+
+
+                                        <t t-foreach="dayd" t-as="pine">
+                                            <t t-foreach="dayl" t-as="hine">
+                                                <td>
+                                                    <div>
+                                                        <strong><span t-esc="pine.get(str(hine))"></span></strong>
+                                                    </div>
+                                                </td>
+                                            </t>
+                                        </t>
+
+
                                         <td align="center">
                                             <span t-esc="line.get('atend')"/>
                                         </td>

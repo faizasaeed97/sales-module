@@ -141,6 +141,7 @@ class empcostipReportExcel(models.AbstractModel):
             "valign": 'vcenter',
             "font_color": 'black',
             'font_size': '12',
+            'pattern_back_colour':'green'
 
         })
 
@@ -164,6 +165,9 @@ class empcostipReportExcel(models.AbstractModel):
         })
 
         sheet = workbook.add_worksheet('MasterSheet')
+
+        # style = xlwt.easyxf('pattern: pattern solid, fore_colour custom_colour')
+
 
         sheet.merge_range(1, 5, 2, 7, "Employee Cost report", format2)
 

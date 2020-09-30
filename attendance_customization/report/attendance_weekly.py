@@ -21,6 +21,8 @@ class attsuyweeltDetails(models.TransientModel):
     # end_date = fields.Date(string='End Date', required=True)
     # stage_id = fields.Many2one('project.task.type', string="Stage", required=True)
 
+
+
     def print_report(self):
         plist = []
 

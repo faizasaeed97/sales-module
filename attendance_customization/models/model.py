@@ -97,6 +97,9 @@ class Attendance(models.Model):
     status = fields.Char(string='Status')
     custom_ID = fields.Char(string='ID')
     title = fields.Char(string='Title')
+    a_stat = fields.Char(string='Status',default="B")
+
+
 
     first_check_in = fields.Char(string='Check In(1st)')
     first_check_out = fields.Char(string='Check Out(1st)')
@@ -139,6 +142,26 @@ class Attendance(models.Model):
     Busi = fields.Boolean(string="Buissness Leaves", default=False)
     busi_from = fields.Date(string="Buissness From")
     busi_to = fields.Date(string="buissness To")
+
+    @api.onchange('leave')
+    def onchn_lev(self):
+        if self.leave:
+            self.a_stat="V"
+
+    @api.onchange('Emerg')
+    def onchn_Emerg(self):
+        if self.Emerg:
+            self.a_stat="G"
+
+    @api.onchange('Unpaid')
+    def onchn_lUnpaid(self):
+        if self.Unpaid:
+            self.a_stat="O"
+
+    @api.onchange('sick_leave')
+    def onchn_sick_leave(self):
+        if self.sick_leave:
+            self.a_stat="S"
 
     @api.model
     def create(self, vals):

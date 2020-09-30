@@ -45,6 +45,7 @@ class attsummerytDetails(models.TransientModel):
                     ddic[start_date.day] = stax.a_stat
                 else:
                     ddic[start_date.day] = " "
+                ddic['empp'] = dec.name
                 list_day.append(ddic)
 
                 start_date += delta
@@ -126,14 +127,15 @@ class attsummerytDetails(models.TransientModel):
                 'date_from': self.date_from,
                 'date_to': self.date_to,
                 'dta': plist,
-                'day_l': ddic_day
+                'day_l': ddic_day,
+                'day_data': list_day
             },
         }
-        return self.env.ref('design_creative_custom.action_report_summ_attendance').report_action(self, data=data)
+        return self.env.ref('attendance_customization.action_report_summ_attendancee').report_action(self, data=data)
 
 
 class empsummeryogscxReportss(models.AbstractModel):
-    _name = 'report.design_creative_custom.summery_attendance_staff'
+    _name = 'report.attendance_customization.summery_attendance_staffxx'
     _description = "Emp logs Report"
 
     @api.model
@@ -142,6 +144,7 @@ class empsummeryogscxReportss(models.AbstractModel):
         date_t = data['form']['date_to']
         datax = data['form']['dta']
         dayl = data['form']['day_l']
+        dayv = data['form']['day_data']
 
         return {
             'doc_ids': data['ids'],
@@ -149,7 +152,8 @@ class empsummeryogscxReportss(models.AbstractModel):
             'df': date_f,
             'dt': date_t,
             'dtax': datax,
-            'dayl': dayl
+            'dayl': dayl,
+            'dayd': dayv
 
             # 'end_date':end_date,
             # 'project_id':self.env['project.project'].browse(project_id),

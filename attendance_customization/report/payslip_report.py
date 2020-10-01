@@ -24,6 +24,9 @@ class empcostytDetails(models.TransientModel):
         regular_tot=0.0
         ots_total=0.0
         totx=0.0
+        sick=0
+        voca=0
+        hol=0
         start_date = self.date_from
         end_date = self.date_to
 
@@ -79,6 +82,9 @@ class empcostytDetails(models.TransientModel):
 
                 regular_tot+=regular
                 ots_total+=ot
+                sick+=leave_sick
+                voca+=leave
+                hol+=holi
 
                 plist.append(dix)
             else:
@@ -104,8 +110,12 @@ class empcostytDetails(models.TransientModel):
 
             start_date += delta
 
-        plist.append({'data':'n','pay':'f','reg':regular_tot,'ot':ots_total,'totx':totx})
-        plist.append({'data':'n','pay':'t','reg':regular_tot*self.employee_id.contract_id.p_salery_ph,'ot':ots_total*self.employee_id.contract_id.p_salery_ph})
+        plist.append({'data':'n','pay':'x','reg':0,'ot':0,'sik':sick,'voc':voca,'holi':hol,'totx':totx})
+
+
+        plist.append({'data':'n','pay':'f','reg':regular_tot,'ot':ots_total,'sik':sick,'voc':voca,'holi':hol,'totx':totx})
+        plist.append({'data':'n','pay':'t','reg':regular_tot*self.employee_id.contract_id.p_salery_ph,'ot':ots_total*self.employee_id.contract_id.p_salery_ph
+                      ,'totx':totx*self.employee_id.contract_id.p_salery_ph,'sik':sick,'voc':voca,'holi':hol,})
 
 
         data = {
@@ -141,7 +151,34 @@ class empcostipReportExcel(models.AbstractModel):
             "valign": 'vcenter',
             "font_color": 'black',
             'font_size': '12',
-            'pattern_back_colour':'green'
+
+        })
+
+        sign_head_sick = workbook.add_format({
+            "bold": 1,
+            "border": 0,
+            "align": 'center',
+            "valign": 'vcenter',
+            "font_color": 'blue',
+            'font_size': '12',
+
+        })
+        sign_head_vaca = workbook.add_format({
+            "bold": 1,
+            "border": 0,
+            "align": 'center',
+            "valign": 'vcenter',
+            "font_color": 'red',
+            'font_size': '12',
+
+        })
+        sign_head_holi = workbook.add_format({
+            "bold": 1,
+            "border": 0,
+            "align": 'center',
+            "valign": 'vcenter',
+            "font_color": 'green',
+            'font_size': '12',
 
         })
 
@@ -164,22 +201,34 @@ class empcostipReportExcel(models.AbstractModel):
             'font_size': '30',
         })
 
+        sign_head_pay = workbook.add_format({
+            "bold": 1,
+            "border": 1,
+            "align": 'center',
+            "valign": 'vcenter',
+            "font_color": 'navy blue',
+            'font_size': '14',
+
+        })
+
+
+
         sheet = workbook.add_worksheet('MasterSheet')
 
         # style = xlwt.easyxf('pattern: pattern solid, fore_colour custom_colour')
 
 
-        sheet.merge_range(1, 5, 2, 7, "Employee Cost report", format2)
+        sheet.merge_range(1, 3, 2, 6, "Employee Cost report", format2)
 
-        sheet.merge_range(2, 1, 2, 2, "Employee", sign_head)
+        sheet.merge_range(3, 1, 3, 2, "Employee", sign_head)
         # sheet.merge_range(1, 3, 2, 9, "Employee Cost report", format2)
-        sheet.merge_range(3, 1, 3, 2, "Date from:", sign_head)
-        sheet.merge_range(4, 1, 4, 2, "Date To:", sign_head)
+        sheet.merge_range(4, 1, 4, 2, "Date from:", sign_head)
+        sheet.merge_range(5, 1, 5, 2, "Date To:", sign_head)
 
-        sheet.merge_range(2, 3, 2, 4,emp, std_heading)
+        sheet.merge_range(3, 3, 3, 4,emp, std_heading)
         # sheet.merge_range(1, 3, 2, 9, "Employee Cost report", format2)
-        sheet.merge_range(3, 3, 3, 4, datef, std_heading)
-        sheet.merge_range(4, 3, 4, 4, datet, std_heading)
+        sheet.merge_range(4, 3, 4, 4, datef, std_heading)
+        sheet.merge_range(5, 3, 5, 4, datet, std_heading)
 
 
         row = 6
@@ -193,9 +242,9 @@ class empcostipReportExcel(models.AbstractModel):
         sheet.write(row, col + 3, "REGULAR HRS", sign_head)
         sheet.write(row, col + 4, "OVERTIME HRS", sign_head)
 
-        sheet.write(row, col + 5, "SICK", sign_head)
-        sheet.write(row, col + 6, "VACATION", sign_head)
-        sheet.write(row, col + 7, "HOLIDAY", sign_head)
+        sheet.write(row, col + 5, "SICK", sign_head_sick)
+        sheet.write(row, col + 6, "VACATION", sign_head_vaca)
+        sheet.write(row, col + 7, "HOLIDAY", sign_head_holi)
 
         sheet.write(row, col + 8, "TOTAL HOURS", sign_head)
 
@@ -206,14 +255,25 @@ class empcostipReportExcel(models.AbstractModel):
 
             if rec.get('data') == 'n':
                 sheet.set_column(row + 1, col, 20)
-                if rec.get('pay')=='t':
-                    sheet.write(row + 1, col+2, "Total Payment", sign_head)
+                if rec.get('pay')=='f':
+                    sheet.write(row + 1, col+2, "Total Hours", sign_head)
+
+                elif rec.get('pay')=='x':
+                    sheet.write(row + 1, col + 2, "Total", sign_head)
+
 
                 else:
-                    sheet.write(row + 1, col+2, "Total", sign_head)
+                    sheet.write(row + 1, col+2, "Total Payment", sign_head_pay)
+
+
 
                 sheet.write(row + 1, col+3, rec.get('reg'), sign_head)
                 sheet.write(row + 1, col+4, rec.get('ot'), sign_head)
+
+                sheet.write(row + 1, col+5, rec.get('sik'), sign_head)
+                sheet.write(row + 1, col+6, rec.get('voc'), sign_head)
+                sheet.write(row + 1, col+7, rec.get('holi'), sign_head)
+
 
                 if 'totx' in rec:
 

@@ -41,7 +41,7 @@ class logsemprdetDetails(models.TransientModel):
                 if rec.date_of_join:
 
                     difference_in_years = relativedelta(today, rec.date_of_join).years
-                    month=self.diff_month(today,rec.date_of_join)
+                    month=self.diff_month(today,rec.date_of_join) - (difference_in_years*12)
                     dd += (difference_in_years * 365)
                     dd+= (month * 30)
                     delta = (today - rec.date_of_join)

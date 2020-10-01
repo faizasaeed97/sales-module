@@ -5,8 +5,8 @@
         <record id="dailyatend_format" model="report.paperformat">
             <field name="name">attendeance</field>
             <field name="format">custom</field>
-            <field name="margin_top">10</field>
-            <field name="margin_bottom">0</field>
+            <field name="margin_top">5</field>
+            <field name="margin_bottom">10</field>
             <field name="orientation">Landscape</field>
         </record>
 
@@ -32,7 +32,7 @@
                         </div>
                         <div class="col-auto mw-100 mb-2">
                             <h1>Daily attendance Report</h1>
-                            <h2> Date <span t-esc="df"></span> </h2>
+                            <h2> Date <span t-esc="df"></span></h2>
                         </div>
 
                         <table class="table table-sm" style="page-break-inside: avoid;">
@@ -93,12 +93,7 @@
                                             <strong>Check out 2nd</strong>
                                         </div>
                                     </td>
-                                    <td align="center">
-                                        <div class="col-auto mw-100 mb-2"
-                                             color="#17a2b8">
-                                            <strong>Total Hours</strong>
-                                        </div>
-                                    </td>
+
                                     <td align="center">
                                         <div class="col-auto mw-100 mb-2"
                                              color="#17a2b8">
@@ -115,6 +110,12 @@
                                         <div class="col-auto mw-100 mb-2"
                                              color="#17a2b8">
                                             <strong>OT 1.25</strong>
+                                        </div>
+                                    </td>
+                                    <td align="center">
+                                        <div class="col-auto mw-100 mb-2"
+                                             color="#17a2b8">
+                                            <strong>Total Hours</strong>
                                         </div>
                                     </td>
                                 </tr>
@@ -193,10 +194,7 @@
                                                     <span style="color:black;" t-esc="line.get('out2')"/>
 
                                                 </td>
-                                                <td align="center">
-                                                    <span style="color:black;" t-esc="line.get('total_hours')"/>
 
-                                                </td>
                                                 <td align="center">
                                                     <span style="color:black;" t-esc="line.get('erly_in')"/>
 
@@ -208,6 +206,10 @@
                                                 </td>
                                                 <td align="center">
                                                     <span style="color:black;" t-esc="line.get('ot125')"/>
+
+                                                </td>
+                                                     <td align="center">
+                                                    <span style="color:black;" t-esc="line.get('total_hours')"/>
 
                                                 </td>
 
@@ -249,10 +251,7 @@
                                                     <span style="color:green;" t-esc="line.get('out2')"/>
 
                                                 </td>
-                                                <td align="center">
-                                                    <span style="color:green;" t-esc="line.get('total_hours')"/>
 
-                                                </td>
                                                 <td align="center">
                                                     <span style="color:green;" t-esc="line.get('erly_in')"/>
 
@@ -263,6 +262,10 @@
                                                 </td>
                                                 <td align="center">
                                                     <span style="color:green;" t-esc="line.get('ot125')"/>
+
+                                                </td>
+                                                    <td align="center">
+                                                    <span style="color:green;" t-esc="line.get('total_hours')"/>
 
                                                 </td>
 
@@ -305,10 +308,7 @@
                                                     <span style="color:red;" t-esc="line.get('out2')"/>
 
                                                 </td>
-                                                <td align="center">
-                                                    <span style="color:red;" t-esc="line.get('total_hours')"/>
 
-                                                </td>
                                                 <td align="center">
                                                     <span style="color:red;" t-esc="line.get('erly_in')"/>
 
@@ -320,6 +320,10 @@
                                                 </td>
                                                 <td align="center">
                                                     <span style="color:red;" t-esc="line.get('ot125')"/>
+
+                                                </td>
+                                                     <td align="center">
+                                                    <span style="color:red;" t-esc="line.get('total_hours')"/>
 
                                                 </td>
 

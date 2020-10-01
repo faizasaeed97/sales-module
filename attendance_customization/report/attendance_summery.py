@@ -108,6 +108,7 @@ class attsummerytDetails(models.TransientModel):
                  ('attendance_date', '<=', self.date_to),
                  ])
 
+
             total = attends
 
 
@@ -119,6 +120,12 @@ class attsummerytDetails(models.TransientModel):
             dix['Absent'] = Absent
 
             dix['leave'] = leave
+            dix['dayoff'] = leave_Unpaid
+            dix['death'] = leave_Emerg
+            dix['paid'] = leave
+
+
+
             dix['leave_sick'] = leave_sick
             dix['leave_Emerg'] = leave_Emerg
             dix['leave_Unpaid'] = leave_Unpaid

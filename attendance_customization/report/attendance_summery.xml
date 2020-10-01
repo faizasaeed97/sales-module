@@ -5,8 +5,8 @@
         <record id="summeryatend_format" model="report.paperformat">
             <field name="name">attendeance</field>
             <field name="format">custom</field>
-            <field name="margin_top">1</field>
-            <field name="margin_bottom">10</field>
+            <field name="margin_top">5</field>
+            <field name="margin_bottom">8</field>
             <field name="orientation">Landscape</field>
         </record>
 
@@ -114,12 +114,12 @@
                                             <strong>Emerg (G)</strong>
                                         </div>
                                     </td>
-                                    <!--                                    <td>-->
-                                    <!--                                        <div  -->
-                                    <!--                                             color="#17a2b8">-->
-                                    <!--                                            <strong>Death</strong>-->
-                                    <!--                                        </div>-->
-                                    <!--                                    </td>-->
+                                    <td>
+                                        <div
+                                                color="#17a2b8">
+                                            <strong>Death</strong>
+                                        </div>
+                                    </td>
                                     <td>
                                         <div
                                                 color="#17a2b8">
@@ -129,7 +129,7 @@
                                     <td>
                                         <div
                                                 color="#17a2b8">
-                                            <strong>Unpaid (P)</strong>
+                                            <strong>paid (P)</strong>
                                         </div>
                                     </td>
                                     <td>
@@ -199,12 +199,25 @@
 
                                         </td>
 
+                                               <td align="center">
+                                            <span t-esc="line.get('dayoff')"/>
+
+                                        </td>
+
                                         <td align="center">
                                             <span t-esc="line.get('leave_Emerg')"/>
 
                                         </td>
+                                              <td align="center">
+                                            <span t-esc="line.get('death')"/>
+
+                                        </td>
                                         <td align="center">
                                             <span t-esc="line.get('leave_Unpaid')"/>
+
+                                        </td>
+                                              <td align="center">
+                                            <span t-esc="line.get('paid')"/>
 
                                         </td>
 

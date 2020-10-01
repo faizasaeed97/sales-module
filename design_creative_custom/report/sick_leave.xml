@@ -4,8 +4,8 @@
         <record id="sickleave_format" model="report.paperformat">
             <field name="name">attendeance</field>
             <field name="format">custom</field>
-            <field name="margin_top">10</field>
-            <field name="margin_bottom">0</field>
+            <field name="margin_top">5</field>
+            <field name="margin_bottom">10</field>
             <field name="orientation">Landscape</field>
         </record>
 

@@ -25,6 +25,7 @@ class pyslippytDetails(models.TransientModel):
         plist = []
         month = self.month
         year = self.year
+        grand=0.0
 
         dept = self.env['hr.department'].search(
             [])
@@ -40,33 +41,53 @@ class pyslippytDetails(models.TransientModel):
             for dec in emps:
                 slip = self.env['hr.payslip'].search(
                     [('contract_id', '=', dec.contract_id.id)])
-                for slp in slip:
-                    if slp.date_from.month == int(month) and slp.date_from.year == int(year):
-                        deduc = 0.0
-                        ot_tot = 0.0
-                        dix = {}
-                        dix['data'] = 'nd'
-                        dix['div'] = rec.name
-                        dix['date'] = dec.date_of_join
-                        dix['emp'] = dec.name
-                        dix['id'] = dec.identification_id
+                dix = {}
+                if slip:
+                    for slp in slip:
+                        if slp.date_from.month == int(month) and slp.date_from.year == int(year):
+                            deduc = 0.0
+                            ot_tot = 0.0
 
-                        dix['worked'] = slp.consider_days
-                        dix['absent'] = slp.absents
-                        dix['desig'] = dec.contract_id.grade.designation.name
+                            dix['data'] = 'nd'
+                            dix['div'] = rec.name
+                            dix['date'] = dec.date_of_join
+                            dix['emp'] = dec.name
+                            dix['id'] = dec.identification_id
+
+                            dix['worked'] = slp.consider_days
+                            dix['absent'] = slp.absents
+                            dix['desig'] = dec.contract_id.grade.designation.name
 
 
-                        for nep in slp.line_ids:
-                            if nep.category_id.name == "Deduction":
-                                deduc += nep.total
-                            if nep.name in ["OT(1.5) Allowance", "OT (125) Allowance"]:
-                                ot_tot += nep.total
+                            for nep in slp.line_ids:
+                                if nep.category_id.name == "Deduction":
+                                    deduc += nep.total
+                                if nep.name in ["OT(1.5) Allowance", "OT (125) Allowance"]:
+                                    ot_tot += nep.total
+                                if nep.name == 'Net Salary':
+                                    grand+=nep.total
 
-                            dix[nep.name] = nep.total
-                        dix['deduc'] = deduc
-                        dix['ot_tot'] = ot_tot
+                                dix[nep.name] = nep.total
+                            dix['deduc'] = deduc
+                            dix['ot_tot'] = ot_tot
+                        else:
+                            dix['data'] = 'nd'
+                            dix['div'] = rec.name
+                            dix['date'] = dec.date_of_join
+                            dix['emp'] = dec.name
+                            dix['id'] = dec.identification_id
 
-                        plist.append(dix)
+
+                else:
+                    dix['data'] = 'nd'
+                    dix['div'] = rec.name
+                    dix['date'] = dec.date_of_join
+                    dix['emp'] = dec.name
+                    dix['id'] = dec.identification_id
+
+                plist.append(dix)
+        plist.append(
+            {'data': 'n', 'grand': grand})
 
         data = {
             'ids': self.ids,
@@ -90,13 +111,23 @@ class pylsiprelipReportExcel(models.AbstractModel):
         year = lines['form']['year']
         dta = lines['form']['dta']
 
+        sign_head_grand = workbook.add_format({
+            "bold": 1,
+            "border": 1,
+            "align": 'center',
+            "valign": 'vcenter',
+            "font_color": 'blue',
+            'font_size': '12',
+
+        })
+
         sign_head = workbook.add_format({
             "bold": 1,
-            "border": 0,
+            "border": 1,
             "align": 'center',
             "valign": 'vcenter',
             "font_color": 'black',
-            'font_size': '12',
+            'font_size': '11',
 
         })
 
@@ -115,22 +146,32 @@ class pylsiprelipReportExcel(models.AbstractModel):
             "align": 'center',
             "valign": 'vcenter',
             "font_color": 'blue',
-            'font_size': '30',
+            'font_size': '25',
         })
 
         sheet = workbook.add_worksheet('MasterSheet')
 
         sheet.merge_range(2, 5, 3, 10, "Payslip report", format2)
 
+        sheet.merge_range(2, 1, 2, 2, "Month", sign_head)
+        sheet.merge_range(3, 1, 3, 2, "Year", sign_head)
+
+        sheet.merge_range(2, 3, 2, 4, month, std_heading)
+        sheet.merge_range(3, 3, 3, 4, year, std_heading)
+
+
 
         row = 4
         col = 0
-
+        sheet.set_column(row, col , 30)
         sheet.write(row, col, "Roll#", sign_head)
 
         sheet.set_column(row, col+1, 40)
         sheet.write(row, col + 1, "Name", sign_head)
+        sheet.set_column(row, col+2, 30)
         sheet.write(row, col + 2, "Date of Join", sign_head)
+        sheet.set_column(row, col+3, 30)
+
         sheet.write(row, col + 3, "Designation", sign_head)
 
         sheet.write(row, col + 4, "Worked", sign_head)
@@ -164,6 +205,12 @@ class pylsiprelipReportExcel(models.AbstractModel):
                 # sheet.write(row + 1, col + 2, rec.get('ID'), std_heading)
                 # sheet.write(row + 1, col + 3, rec.get('ID'), std_heading)
                 row+=1
+
+            if rec.get('data') == 'n':
+                sheet.write(row+1, 0, "Grand Total", sign_head_grand)
+
+                sheet.set_column(row + 1, col, 20)
+                sheet.write(row + 1, col+17, rec.get('grand'), sign_head_grand)
 
             if rec.get('data') == 'nd':
                 sheet.set_column(row , col, 10)

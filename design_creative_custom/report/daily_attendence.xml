@@ -6,7 +6,7 @@
             <field name="name">attendeance</field>
             <field name="format">custom</field>
             <field name="margin_top">5</field>
-            <field name="margin_bottom">10</field>
+            <field name="margin_bottom">5</field>
             <field name="orientation">Landscape</field>
         </record>
 
@@ -35,7 +35,7 @@
                             <h2> Date <span t-esc="df"></span></h2>
                         </div>
 
-                        <table class="table table-sm" style="page-break-inside: avoid;">
+                        <table class="table" style="page-break-inside: avoid;">
                             <thead>
                                 <tr>
                                     <td align="center">

@@ -114,12 +114,12 @@
                                             <strong>Emerg (G)</strong>
                                         </div>
                                     </td>
-                                    <td>
-                                        <div
-                                                color="#17a2b8">
-                                            <strong>Death</strong>
-                                        </div>
-                                    </td>
+<!--                                    <td>-->
+<!--                                        <div-->
+<!--                                                color="#17a2b8">-->
+<!--                                            <strong>Death</strong>-->
+<!--                                        </div>-->
+<!--                                    </td>-->
                                     <td>
                                         <div
                                                 color="#17a2b8">
@@ -208,10 +208,10 @@
                                             <span t-esc="line.get('leave_Emerg')"/>
 
                                         </td>
-                                              <td align="center">
-                                            <span t-esc="line.get('death')"/>
+<!--                                              <td align="center">-->
+<!--                                            <span t-esc="line.get('death')"/>-->
 
-                                        </td>
+<!--                                        </td>-->
                                         <td align="center">
                                             <span t-esc="line.get('leave_Unpaid')"/>
 

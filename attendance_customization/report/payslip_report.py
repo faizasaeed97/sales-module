@@ -134,7 +134,7 @@ class empcostytDetails(models.TransientModel):
 
 class empcostipReportExcel(models.AbstractModel):
     _name = 'report.attendance_customization.report_xlsx_csot'
-    # _inherit = 'report.odoo_report_xlsx.abstract'
+    _inherit = 'report.odoo_report_xlsx.abstract'
 
     def generate_xlsx_report(self, workbook, lines, data=None):
 

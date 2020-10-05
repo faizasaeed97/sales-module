@@ -103,7 +103,7 @@ class pyslippytDetails(models.TransientModel):
 
 class pylsiprelipReportExcel(models.AbstractModel):
     _name = 'report.design_creative_custom.report_xlsx_ciew'
-    _inherit = 'report.odoo_report_xlsx.abstract'
+    # _inherit = 'report.odoo_report_xlsx.abstract'
 
     def generate_xlsx_report(self, workbook, lines, data=None):
 

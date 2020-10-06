@@ -18,6 +18,8 @@ Cost sheet from CRM, Generate Quotation
         'views/leave.xml',
         'views/hr_emp.xml',
         'views/import_data.xml',
+        'views/hr_emp_define.xml',
+
         # 'wizard/attend_summery_wiz.xml',
         # 'report/emp_cost_report.xml',
         'report/attendance_summery.xml',

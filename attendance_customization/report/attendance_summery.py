@@ -34,7 +34,7 @@ class attsummerytDetails(models.TransientModel):
             start_date += delta
 
         emps = self.env['hr.employee'].search(
-            [])
+            [('department_id.name', '!=', 'Management')])
 
         for dec in emps:
 

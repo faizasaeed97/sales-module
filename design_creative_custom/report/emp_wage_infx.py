@@ -35,7 +35,10 @@ class logsrdetDetails(models.TransientModel):
                 dix['wage'] = rec.contract_id.wage
                 dix['hallow'] = rec.contract_id.housing_allowance
                 dix['tallow'] = rec.contract_id.travel_allowance
-                dix['gosi_deduc'] = rec.contract_id.gosi_Salary_Deduction
+                dix['gosi_deduc'] = rec.contract_id.gosi_salery
+
+                dix['nets'] = rec.contract_id.housing_allowance+ rec.contract_id.wage + rec.contract_id.travel_allowance
+
                 dix['data'] = 'nd'
 
                 plist.append(dix)

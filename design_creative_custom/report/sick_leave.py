@@ -18,7 +18,7 @@ class absentsrdetDetails(models.TransientModel):
         plist=[]
 
         dept = self.env['hr.department'].search(
-            [])
+            [('name', '!=', 'Management')])
 
         for rec in dept:
             dix = {}

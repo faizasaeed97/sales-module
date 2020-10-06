@@ -398,6 +398,16 @@ class hr_gradeclass(models.Model):
     department = fields.Many2one('hr.department', string='Department', required=1)
     designation = fields.Many2one('hr.job', string='Designations', required=1)
 
+
+    @api.constrains('department')
+    def change_department(self):
+        if self.department:
+            get_contr=self.env['hr.contract'].search([('grade','=',self.id)],limit=1)
+            if get_contr:
+                get_contr.employee_id.write({'department_id' :self.department.id})
+
+
+
     @api.depends('grade', 'department', 'designation')
     def comp_name(self):
         for rec in self:

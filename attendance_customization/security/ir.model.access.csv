@@ -6,4 +6,10 @@ access_hr_expiry_lineitem,access_hr_expiry_lineitem,model_hr_expiry_lineitem,bas
 access_hr_expiry_alert,access_hr_expiry_alert,model_hr_expiry_alert,base.group_system,1,1,1,1
 access_attendance_import,access_attendance_import,model_attendance_import,base.group_system,1,1,1,1
 
+access_hr_define_emp,access_hr_define_emp,model_hr_define_emp,base.group_system,1,1,1,1
+access_hr_define_members,access_hr_define_members,model_hr_define_members,base.group_system,1,1,1,1
+
+
+
+
 

@@ -3,5 +3,5 @@
 
 from . import model, import_data
 from . import  model,hr_leave
-from . import  model,hr_employee
+from . import  model,hr_employee,define_manager
 

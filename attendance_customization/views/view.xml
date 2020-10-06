@@ -55,6 +55,13 @@
 
                 <field name="ot_15"/>
                 <field name="ot_125"/>
+                <field name="allow_viewotf" invisible="1"/>
+                <field name="allow_viewoto" invisible="1"/>
+
+
+                <field name="check_ot_lunch" attrs="{'invisible':[('allow_viewotf','!=',True)]}"/>
+                <field name="check_ot_normal" attrs="{'invisible':[('allow_viewoto','!=',True)]}"/>
+
                 <field name="working"/>
                 <field name="absent"/>
 
@@ -136,8 +143,8 @@
 
                         <field name="emerg_from"
                                attrs="{'required':[('Emerg','=',True)],'invisible':[('Emerg','!=',True)]}"/>
-<!--                        <field name="sick_to"-->
-<!--                               attrs="{'required':[('sick_leave','=',True)],'invisible':[('sick_leave','!=',True)]}"/>-->
+                        <!--                        <field name="sick_to"-->
+                        <!--                               attrs="{'required':[('sick_leave','=',True)],'invisible':[('sick_leave','!=',True)]}"/>-->
 
                     </group>
 
@@ -152,7 +159,7 @@
 
                     </group>
 
-                         <group col="2" colspan="8">
+                    <group col="2" colspan="8">
 
                         <field name="Mater"/>
 
@@ -163,7 +170,7 @@
 
                     </group>
 
-                         <group col="2" colspan="8">
+                    <group col="2" colspan="8">
 
                         <field name="Busi"/>
 

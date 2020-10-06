@@ -60,6 +60,10 @@ class logsemprdetDetails(models.TransientModel):
                 dix['data'] = 'nd'
                 dix['tenur'] = tenur
 
+                dix['pexpd'] = rec.passport_exp_date
+                dix['rpexpd'] = rec.rp_exp_date
+                dix['cprexpd'] = rec.cpr_exp_date
+
                 plist.append(dix)
 
         data = {

@@ -60,11 +60,29 @@
                                             <strong>Passport No</strong>
                                         </div>
                                     </td>
+                                    <td>
+                                        <div class="col-auto mw-100 mb-2"
+                                             color="#17a2b8">
+                                            <strong>Passport Expiry</strong>
+                                        </div>
+                                    </td>
 
                                     <td>
                                         <div class="col-auto mw-100 mb-2"
                                              color="#17a2b8">
                                             <strong>CPR No</strong>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="col-auto mw-100 mb-2"
+                                             color="#17a2b8">
+                                            <strong>CPR expiry</strong>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="col-auto mw-100 mb-2"
+                                             color="#17a2b8">
+                                            <strong>RP Expiry</strong>
                                         </div>
                                     </td>
                                     <td>
@@ -111,13 +129,19 @@
                                             </td>
                                             <td>
                                             </td>
-                                                <td>
+                                            <td>
                                             </td>
-                                                <td>
+                                            <td>
                                             </td>
-                                                <td>
+                                            <td>
                                             </td>
-                                                <td>
+                                            <td>
+                                            </td>
+                                            <td>
+                                            </td>
+                                            <td>
+                                            </td>
+                                            <td>
                                             </td>
                                         </tr>
                                     </t>
@@ -137,12 +161,19 @@
                                             <td align="center">
                                                 <span t-esc="line.get('pexp')"/>
                                             </td>
-
+                                            <td align="center">
+                                                <span t-esc="line.get('pexpd')"/>
+                                            </td>
                                             <td align="center">
                                                 <span t-esc="line.get('cprexp')"/>
 
                                             </td>
-
+                                            <td align="center">
+                                                <span t-esc="line.get('cprexpd')"/>
+                                            </td>
+                                            <td align="center">
+                                                <span t-esc="line.get('rpexpd')"/>
+                                            </td>
                                             <td align="center">
                                                 <span t-esc="line.get('bname')"/>
 

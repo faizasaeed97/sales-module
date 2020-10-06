@@ -97,9 +97,7 @@ class Attendance(models.Model):
     status = fields.Char(string='Status')
     custom_ID = fields.Char(string='ID')
     title = fields.Char(string='Title')
-    a_stat = fields.Char(string='Status',default="B")
-
-
+    a_stat = fields.Char(string='Status', default="B")
 
     first_check_in = fields.Char(string='Check In(1st)')
     first_check_out = fields.Char(string='Check Out(1st)')
@@ -143,25 +141,54 @@ class Attendance(models.Model):
     busi_from = fields.Date(string="Buissness From")
     busi_to = fields.Date(string="buissness To")
 
+    check_ot_lunch = fields.Boolean(default=False, string="Allow OT Lunch")
+    allow_viewotf = fields.Boolean("allow", compute='chk_allowed', default=False)
+    allow_viewoto = fields.Boolean("allow", compute='chk_allowed', default=False)
+
+    check_ot_normal = fields.Boolean(default=False, string="Allow OT Normal")
+
+    def chk_allowed(self):
+        log_usr = self.env.user.id
+        for dec in self:
+            allow_viewotf=False
+            allow_viewoto=False
+            get_rec = dec.env['hr.define.emp'].search([('employee_id', '=', log_usr)])
+            if get_rec:
+                for rec in get_rec.members:
+                    if rec.employee_id.id == dec.employee_id.id and dec.ot_15:
+                        allow_viewotf = True
+
+                    if rec.employee_id.id == dec.employee_id.id and dec.ot_125:
+                        allow_viewoto = True
+            if allow_viewotf:
+                dec.allow_viewotf = True
+            else:
+                dec.allow_viewotf = False
+
+            if allow_viewoto:
+                dec.allow_viewoto = True
+            else:
+                dec.allow_viewoto = False
+
     @api.onchange('leave')
     def onchn_lev(self):
         if self.leave:
-            self.a_stat="V"
+            self.a_stat = "V"
 
     @api.onchange('Emerg')
     def onchn_Emerg(self):
         if self.Emerg:
-            self.a_stat="G"
+            self.a_stat = "G"
 
     @api.onchange('Unpaid')
     def onchn_lUnpaid(self):
         if self.Unpaid:
-            self.a_stat="O"
+            self.a_stat = "O"
 
     @api.onchange('sick_leave')
     def onchn_sick_leave(self):
         if self.sick_leave:
-            self.a_stat="S"
+            self.a_stat = "S"
 
     @api.model
     def create(self, vals):
@@ -231,7 +258,7 @@ class Attendance(models.Model):
                 atend_date = record.attendance_date
                 publicholiday = False
 
-                schedule_minuts = record.get_schedule_ot(record.employee_id, day)
+                schedule_minuts = record.get_schedule_ot(record.employee_id, day)['min']
                 ot_minute = (int(record.working.split(':')[0]) * 60 + int(
                     record.working.split(':')[1])) - schedule_minuts
                 check_holiday = self.env['hr.calendar.leave'].search([('follow', '=', True)], limit=1)
@@ -264,12 +291,12 @@ class Attendance(models.Model):
     def get_schedule_ot(self, emp, day):
         if day == 'Saturday':
             if emp.sat_work:
-                return 300
+                return {'min':300,'fs':300,'ss':300}
 
             elif emp.sat_offic:
-                return 270
+                return {'min':270,'fs':270,'ss':270}
             else:
-                return 0
+                return {'min':0,'fs':0,'ss':0}
 
         else:
             if not emp.manual_schedule and emp.workschedule:
@@ -328,7 +355,7 @@ class Attendance(models.Model):
 
                 totmins = int(str(tot).split(":")[0]) * 60 + int(str(tot).split(":")[1])
 
-                return totmins
+                return {'min':totmins,'fs':tdelta,'ss':tdelta1}
             elif emp.manual_schedule:
                 FMT = '%H:%M:%S'
 
@@ -370,13 +397,13 @@ class Attendance(models.Model):
 
                 totmins = int(str(tot).split(":")[0]) * 60 + int(str(tot).split(":")[1])
 
-                return totmins
+                return {'min':totmins,'fs':tdelta,'ss':tdelta1}
 
                 # fshf = emp.man_works_fhour * 60 + emp.man_works_fmins
                 # sshft = emp.man_works_shour * 60 + emp.man_works_smins
                 # return fshf + sshft
             else:
-                return 0
+                return {'min':0,'fs':0,'ss':0}
 
     @api.depends('employee_id')
     def get_jobtitle(self):
@@ -415,6 +442,14 @@ class Attendance(models.Model):
                                                   0] + ':' \
                                               + str(time_obj_first_check_out - time_obj_first_check_in).split(":")[1]
 
+            elif rec.first_check_in:
+                day = record.attendance_date.strftime('%A')
+
+                get_hrs=str(rec.get_schedule_ot(rec.employee_id,day)['fs']/60)
+
+                rec.first_shift_total_hours=str(get_hrs.split(".")[0] +':'+ get_hrs.split(".")[1])
+
+
             else:
                 rec.first_shift_total_hours = '00:00'
 
@@ -437,6 +472,13 @@ class Attendance(models.Model):
                 rec.second_shift_total_hours = str(time_obj_second_check_out - time_obj_second_check_in).split(":")[
                                                    0] + ':' \
                                                + str(time_obj_second_check_out - time_obj_second_check_in).split(":")[1]
+            elif rec.second_check_out:
+                day = record.attendance_date.strftime('%A')
+
+                get_hrs = str(rec.get_schedule_ot(rec.employee_id, day)['ss'] / 60)
+
+                rec.second_shift_total_hours = str(get_hrs.split(".")[0] + ':' + get_hrs.split(".")[1])
+
             else:
                 rec.second_shift_total_hours = '00:00'
 

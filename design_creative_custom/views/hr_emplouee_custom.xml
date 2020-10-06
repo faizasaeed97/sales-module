@@ -107,7 +107,7 @@
                 <header>
                     <button string="Chat" class="btn btn-primary o_employee_chat_btn"
                             attrs="{'invisible': [('user_id','=', False)]}"/>
-                    <button name="%(plan_wizard_action)d" string="Launch Plan" type="action"
+                    <button name="%(hr.plan_wizard_action)d" string="Launch Plan" type="action"
                             groups="hr.group_hr_manager"/>
                 </header>
                 <sheet>
@@ -261,7 +261,7 @@
                                         <button string="Generate" class="btn btn-link" type="object"
                                                 name="generate_random_barcode"
                                                 attrs="{'invisible': [('barcode', '!=', False)]}"/>
-                                        <button name="%(hr_employee_print_badge)d" string="Print Badge"
+                                        <button name="%(hr.hr_employee_print_badge)d" string="Print Badge"
                                                 class="btn btn-link" type="action"
                                                 attrs="{'invisible': [('barcode', '=', False)]}"/>
                                     </div>

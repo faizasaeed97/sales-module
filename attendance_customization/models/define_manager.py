@@ -49,7 +49,7 @@ class line_item_member(models.Model):
     def employee_id_onchng(self):
         if self.employee_id:
             if self.new_id.employee_id:
-                if self.employee_id.contract_id.grade.department.id == self.new_id.department_id.id:
+                if self.employee_id.department_id.id == self.new_id.department_id.id:
                     pass
                 else:
                     raise UserError("Member should belong to the same department as of head")

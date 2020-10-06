@@ -443,7 +443,7 @@ class Attendance(models.Model):
                                               + str(time_obj_first_check_out - time_obj_first_check_in).split(":")[1]
 
             elif rec.first_check_in:
-                day = record.attendance_date.strftime('%A')
+                day = rec.attendance_date.strftime('%A')
 
                 get_hrs=str(rec.get_schedule_ot(rec.employee_id,day)['fs']/60)
 
@@ -473,7 +473,7 @@ class Attendance(models.Model):
                                                    0] + ':' \
                                                + str(time_obj_second_check_out - time_obj_second_check_in).split(":")[1]
             elif rec.second_check_out:
-                day = record.attendance_date.strftime('%A')
+                day = rec.attendance_date.strftime('%A')
 
                 get_hrs = str(rec.get_schedule_ot(rec.employee_id, day)['ss'] / 60)
 

@@ -355,7 +355,8 @@ class Attendance(models.Model):
 
                 totmins = int(str(tot).split(":")[0]) * 60 + int(str(tot).split(":")[1])
 
-                return {'min':totmins,'fs':tdelta,'ss':tdelta1}
+                return {'min':totmins,'fs':int(str(tdelta).split(":")[0]) * 60 + int(str(tdelta).split(":")[1]),
+                        'ss':int(str(tdelta1).split(":")[0]) * 60 + int(str(tdelta1).split(":")[1])}
             elif emp.manual_schedule:
                 FMT = '%H:%M:%S'
 
@@ -397,8 +398,8 @@ class Attendance(models.Model):
 
                 totmins = int(str(tot).split(":")[0]) * 60 + int(str(tot).split(":")[1])
 
-                return {'min':totmins,'fs':tdelta,'ss':tdelta1}
-
+                return {'min': totmins, 'fs': int(str(tdelta).split(":")[0]) * 60 + int(str(tdelta).split(":")[1]),
+                        'ss': int(str(tdelta1).split(":")[0]) * 60 + int(str(tdelta1).split(":")[1])}
                 # fshf = emp.man_works_fhour * 60 + emp.man_works_fmins
                 # sshft = emp.man_works_shour * 60 + emp.man_works_smins
                 # return fshf + sshft

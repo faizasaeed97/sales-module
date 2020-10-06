@@ -41,7 +41,7 @@ class Employee(models.Model):
     @api.model
     def get_ot_125(self, employee_id, basic_salary, from_date, to_date):
         attendance_rec = self.env['attendance.custom'].search(
-            [('employee_id', '=', employee_id), ('attendance_date', '>=', from_date),
+            [('employee_id', '=', employee_id), ('attendance_date', '>=', from_date),('allow_viewoto','=',True),
              ('attendance_date', '<=', to_date), ('ot_125', '!=', None)])
         attendance_rec_minutes = 0
         if attendance_rec:
@@ -57,7 +57,7 @@ class Employee(models.Model):
     @api.model
     def get_ot_15(self, employee_id, basic_salary, from_date, to_date):
         attendance_rec = self.env['attendance.custom'].search(
-            [('employee_id', '=', employee_id), ('attendance_date', '>=', from_date),
+            [('employee_id', '=', employee_id), ('attendance_date', '>=', from_date),('allow_viewotf','=',True),
              ('attendance_date', '<=', to_date), ('ot_125', '!=', None)])
         attendance_rec_minutes = 0
         if attendance_rec:

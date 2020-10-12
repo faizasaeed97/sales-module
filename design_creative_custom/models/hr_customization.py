@@ -12,13 +12,13 @@ class inherithremploye(models.Model):
     bahrain_expact = fields.Selection([('Bahraini', 'Bahraini'), ('Expats', 'Expats')], string='Bahranis/Expacts', )
     muslim = fields.Selection([('Yes', 'Yes'), ('No', 'No')], string='Muslim', )
     age = fields.Char(string="Age", compute='set_age_computed')
-    no_depend = fields.Integer(string='Dependant#' )
+    no_depend = fields.Integer(string='Dependant#')
     cpr_no = fields.Char(string="CPR NO")
     cpr_exp_date = fields.Date(string="CPR Expiry")
     passport_exp_date = fields.Date(string="Passport Expiry")
     rp_exp_date = fields.Date(string="RP Expiry")
     veh_alloted = fields.Selection([('Yes', 'Yes'), ('No', 'No')], string='Vehicle Alloted')
-    veh_number =  fields.Char(string="Vehicle#",help="Vehicle Number")
+    veh_number = fields.Char(string="Vehicle#", help="Vehicle Number")
     accomodation = fields.Selection([('YES', 'YES'), ('NO', 'NO')], string='Acomodation')
 
     ot_eligible = fields.Boolean(string="OT Eligible?", default=False)
@@ -404,19 +404,22 @@ class hr_gradeclass(models.Model):
         if self.department:
             get_contr = self.env['hr.contract'].search([('grade', '=', self.id)], limit=1)
             if get_contr:
-                get_contr.employee_id.department_id=self.department.id
+                get_contr.employee_id.department_id = self.department.id
+                print("ahahahahahahahaah--> ", get_contr.employee_id.name)
+
         if self.designation:
             get_contr = self.env['hr.contract'].search([('grade', '=', self.id)], limit=1)
             if get_contr:
-                get_contr.employee_id.job_title=self.designation.name
-                get_contr.employee_id.job_id=self.designation.id
+                print("ahahahahahahahaah--> ", get_contr.employee_id.name)
 
+                get_contr.employee_id.job_title = self.designation.name
+                get_contr.employee_id.job_id = self.designation.id
 
     @api.depends('grade', 'department', 'designation')
     def comp_name(self):
         for rec in self:
             if rec.grade and rec.department and rec.designation:
-                rec.name = rec.grade + '-' + rec.designation.name +'-'+rec.department.name
+                rec.name = rec.grade + '-' + rec.designation.name + '-' + rec.department.name
 
     # @api.constrains('grade','department','designation')
     # def _check_name(self):

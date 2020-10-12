@@ -470,7 +470,7 @@ class Attendance(models.Model):
                     raise ValidationError(_("Follow Correct Format 00:00"))
 
             if rec.second_check_in and rec.second_check_out:
-                yesterday = (datetime.now().date() - timedelta(1)).strftime('%Y-%m-%d')
+                yesterday = (datetime.datetime.now().date() - timedelta(1)).strftime('%Y-%m-%d')
                 check_prev = rec.env['attendance.custom'].search(
                     [('employee_id', '=', rec.employee_id.id), ('attendance_date', '=', yesterday)])
                 if check_prev:

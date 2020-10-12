@@ -97,7 +97,7 @@ class Attendance(models.Model):
     status = fields.Char(string='Status')
     custom_ID = fields.Char(string='ID')
     title = fields.Char(string='Title')
-    a_stat = fields.Char(string='Status', default="B")
+    a_stat = fields.Char(string='Status', default="A")
 
     first_check_in = fields.Char(string='Check In(1st)')
     first_check_out = fields.Char(string='Check Out(1st)')

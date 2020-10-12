@@ -109,27 +109,27 @@
                                             </td>
                                             <td>
                                             </td>
-                                            <td>
+                                            <td align="center">
                                                 <strong><span t-esc="line.get('waget')"/></strong>
 
                                             </td>
-                                            <td>
+                                            <td align="center">
                                                 <strong><span t-esc="line.get('hallowt')"/></strong>
 
 
                                             </td>
-                                            <td>
+                                            <td align="center">
                                                 <strong><span t-esc="line.get('tallowt')"/></strong>
 
 
                                             </td>
-                                            <td>
+                                            <td align="center">
                                                 <strong><span t-esc="line.get('netst')"/></strong>
 
 
                                             </td>
-                                            <td>
-                                                <strong><span t-esc="line.get('gosi_deduct')"/></strong>
+                                            <td align="center">
+                                                <strong><span t-esc="line.get('gosit')"/></strong>
 
                                             </td>
                                         </tr>

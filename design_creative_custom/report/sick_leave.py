@@ -13,9 +13,24 @@ class absentsrdetDetails(models.TransientModel):
     # start_date = fields.Date(string='Start Date', required=True)
     # end_date = fields.Date(string='End Date', required=True)
     # stage_id = fields.Many2one('project.task.type', string="Stage", required=True)
+    def get_tot_val(self, emps):
+        dix = {}
+        tot = 0
+
+        for rec in emps:
+            attends = self.env['attendance.custom'].search_count(
+                [('employee_id', '=', dec.id), '|', ('absent', '=', True),
+                 ('sick_leave', '=', True), ('attendance_date', '>=', self.date_from),
+                 ('attendance_date', '<=', self.date_to),
+                 ])
+            tot += attends
+
+        dix['totl'] = tot
+
+        return dix
 
     def print_report(self):
-        plist=[]
+        plist = []
 
         dept = self.env['hr.department'].search(
             [('name', '!=', 'Management')])
@@ -24,10 +39,13 @@ class absentsrdetDetails(models.TransientModel):
             dix = {}
             dix['data'] = 'd'
             dix['div'] = rec.name
-            plist.append(dix)
 
             emps = self.env['hr.employee'].search(
                 [('contract_id.grade.department', '=', rec.id)])
+            gettot = self.get_tot_val(emps)
+
+            dix['tot'] =gettot.get('totl')
+            plist.append(dix)
             for dec in emps:
                 attends = self.env['attendance.custom'].search_count(
                     [('employee_id', '=', dec.id), '|', ('absent', '=', True),

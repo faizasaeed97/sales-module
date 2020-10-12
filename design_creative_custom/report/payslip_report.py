@@ -20,12 +20,32 @@ class pyslippytDetails(models.TransientModel):
     # start_date = fields.Date(string='Start Date', required=True)
     # end_date = fields.Date(string='End Date', required=True)
     # stage_id = fields.Many2one('project.task.type', string="Stage", required=True)
+    def get_tot_val(self, emps):
+        dix = {}
+        wage = 0
+        tallow = 0
+        hallow = 0
+        gosi = 0
+        net = 0
+        for rec in emps:
+            wage += rec.contract_id.wage
+            tallow += rec.contract_id.travel_allowance
+            hallow += rec.contract_id.housing_allowance
+            gosi += rec.contract_id.gosi_salery
+            net += rec.contract_id.housing_allowance + rec.contract_id.wage + rec.contract_id.travel_allowance
+        dix['wage']=wage
+        dix['tallow']=tallow
+        dix['hallow']=hallow
+        dix['gosi']=gosi
+        dix['nets']=net
+        return dix
+
 
     def print_report(self):
         plist = []
         month = self.month
         year = self.year
-        grand=0.0
+        grand = 0.0
 
         dept = self.env['hr.department'].search(
             [])
@@ -38,6 +58,13 @@ class pyslippytDetails(models.TransientModel):
 
             emps = self.env['hr.employee'].search(
                 [('contract_id.grade.department', '=', rec.id)])
+            # gettot = self.get_tot_val(emps)
+            # dix['wage'] = gettot.get('wage')
+            # dix['tallow'] = gettot.get('tallow')
+            # dix['hallow'] = gettot.get('hallow')
+            # dix['gosi'] = gettot.get('gosi')
+            # dix['nets'] = gettot.get('nets')
+            # plist.append(dix)
             for dec in emps:
                 slip = self.env['hr.payslip'].search(
                     [('contract_id', '=', dec.contract_id.id)])
@@ -58,14 +85,13 @@ class pyslippytDetails(models.TransientModel):
                             dix['absent'] = slp.absents
                             dix['desig'] = dec.contract_id.grade.designation.name
 
-
                             for nep in slp.line_ids:
                                 if nep.category_id.name == "Deduction":
                                     deduc += nep.total
                                 if nep.name in ["OT(1.5) Allowance", "OT (125) Allowance"]:
                                     ot_tot += nep.total
                                 if nep.name == 'Net Salary':
-                                    grand+=nep.total
+                                    grand += nep.total
 
                                 dix[nep.name] = nep.total
                             dix['deduc'] = deduc
@@ -159,18 +185,16 @@ class pylsiprelipReportExcel(models.AbstractModel):
         sheet.merge_range(2, 3, 2, 4, month, std_heading)
         sheet.merge_range(3, 3, 3, 4, year, std_heading)
 
-
-
         row = 4
         col = 0
-        sheet.set_column(row, col , 30)
+        sheet.set_column(row, col, 30)
         sheet.write(row, col, "Roll#", sign_head)
 
-        sheet.set_column(row, col+1, 40)
+        sheet.set_column(row, col + 1, 40)
         sheet.write(row, col + 1, "Name", sign_head)
-        sheet.set_column(row, col+2, 30)
+        sheet.set_column(row, col + 2, 30)
         sheet.write(row, col + 2, "Date of Join", sign_head)
-        sheet.set_column(row, col+3, 30)
+        sheet.set_column(row, col + 3, 30)
 
         sheet.write(row, col + 3, "Designation", sign_head)
 
@@ -199,64 +223,64 @@ class pylsiprelipReportExcel(models.AbstractModel):
         for rec in dta:
 
             if rec.get('data') == 'd':
-                sheet.set_column(row+1, col, 20)
-                sheet.write(row+1, col, rec.get('div'), sign_head)
+                sheet.set_column(row + 1, col, 20)
+                sheet.write(row + 1, col, rec.get('div'), sign_head)
                 # sheet.write(row + 1, col + 1, rec.get('ID'), std_heading)
                 # sheet.write(row + 1, col + 2, rec.get('ID'), std_heading)
                 # sheet.write(row + 1, col + 3, rec.get('ID'), std_heading)
-                row+=1
+                row += 1
 
             if rec.get('data') == 'n':
-                sheet.write(row+1, 0, "Grand Total", sign_head_grand)
+                sheet.write(row + 1, 0, "Grand Total", sign_head_grand)
 
                 sheet.set_column(row + 1, col, 20)
-                sheet.write(row + 1, col+17, rec.get('grand'), sign_head_grand)
+                sheet.write(row + 1, col + 17, rec.get('grand'), sign_head_grand)
 
             if rec.get('data') == 'nd':
-                sheet.set_column(row , col, 10)
+                sheet.set_column(row, col, 10)
                 sheet.write(row, col, rec.get('id'), std_heading)
 
-                sheet.set_column(row, col+1, 40)
+                sheet.set_column(row, col + 1, 40)
                 sheet.write(row, col + 1, rec.get('emp'), std_heading)
 
-                sheet.set_column(row, col+2, 15)
+                sheet.set_column(row, col + 2, 15)
                 sheet.write(row, col + 2, rec.get('date'), std_heading)
 
                 sheet.set_column(row, col + 3, 15)
                 sheet.write(row, col + 3, rec.get('desig'), std_heading)
 
-                sheet.set_column(row, col+4, 10)
+                sheet.set_column(row, col + 4, 10)
                 sheet.write(row, col + 4, rec.get('worked'), std_heading)
 
-                sheet.set_column(row, col+5, 10)
+                sheet.set_column(row, col + 5, 10)
                 sheet.write(row, col + 5, rec.get('absent'), std_heading)
 
-                sheet.set_column(row, col+6, 10)
+                sheet.set_column(row, col + 6, 10)
                 sheet.write(row, col + 6, rec.get('Basic Salary'), std_heading)
-                sheet.set_column(row, col+7, 10)
+                sheet.set_column(row, col + 7, 10)
                 sheet.write(row, col + 7, rec.get('Travel Allowance'), std_heading)
-                sheet.set_column(row, col+8, 10)
+                sheet.set_column(row, col + 8, 10)
                 sheet.write(row, col + 8, rec.get('Housing Allowance'), std_heading)
 
-                sheet.set_column(row, col+9, 15)
+                sheet.set_column(row, col + 9, 15)
                 sheet.write(row, col + 9, rec.get('OT (125) Allowance'), std_heading)
-                sheet.set_column(row, col+10, 15)
+                sheet.set_column(row, col + 10, 15)
                 sheet.write(row, col + 10, rec.get('OT(1.5) Allowance'), std_heading)
-                sheet.set_column(row, col+11, 10)
+                sheet.set_column(row, col + 11, 10)
                 sheet.write(row, col + 11, rec.get('ot_tot'), std_heading)
 
-                sheet.set_column(row, col+12, 10)
+                sheet.set_column(row, col + 12, 10)
                 sheet.write(row, col + 12, rec.get('Loan Earning'), std_heading)
-                sheet.set_column(row, col+13, 15)
+                sheet.set_column(row, col + 13, 15)
                 sheet.write(row, col + 13, rec.get('Late In Deduction'), std_heading)
-                sheet.set_column(row, col+14, 15)
+                sheet.set_column(row, col + 14, 15)
 
                 sheet.write(row, col + 14, rec.get('Gosi Deduction'), std_heading)
-                sheet.set_column(row, col+15, 10)
+                sheet.set_column(row, col + 15, 10)
                 sheet.write(row, col + 15, rec.get('Gross'), std_heading)
-                sheet.set_column(row, col+16, 10)
+                sheet.set_column(row, col + 16, 10)
                 sheet.write(row, col + 16, rec.get('deduc'), std_heading)
-                sheet.set_column(row, col+17, 10)
+                sheet.set_column(row, col + 17, 10)
 
                 sheet.write(row, col + 17, rec.get('Net Salary'), std_heading)
 

@@ -11,6 +11,26 @@ class logsrdetDetails(models.TransientModel):
     # end_date = fields.Date(string='End Date', required=True)
     # stage_id = fields.Many2one('project.task.type', string="Stage", required=True)
 
+    def get_tot_val(self, emps):
+        dix = {}
+        wage = 0
+        tallow = 0
+        hallow = 0
+        gosi = 0
+        net = 0
+        for rec in emps:
+            wage += rec.contract_id.wage
+            tallow += rec.contract_id.travel_allowance
+            hallow += rec.contract_id.housing_allowance
+            gosi += rec.contract_id.gosi_salery
+            net += rec.contract_id.housing_allowance + rec.contract_id.wage + rec.contract_id.travel_allowance
+        dix['wage']=wage
+        dix['tallow']=tallow
+        dix['hallow']=hallow
+        dix['gosi']=gosi
+        dix['nets']=net
+        return dix
+
     def print_report(self):
         plist = []
 
@@ -21,23 +41,33 @@ class logsrdetDetails(models.TransientModel):
             dix = {}
             dix['data'] = 'd'
             dix['div'] = dpt.name
-            plist.append(dix)
+
 
             emps = self.env['hr.employee'].search(
                 [('contract_id.grade.department', '=', dpt.id)])
+            gettot = self.get_tot_val(emps)
+            dix['waget'] = gettot.get('wage')
+            dix['tallowt'] = gettot.get('tallow')
+            dix['hallowt'] = gettot.get('hallow')
+            dix['gosit'] = gettot.get('gosi')
+            dix['netst'] = gettot.get('nets')
+            plist.append(dix)
+
+
             for rec in emps:
                 dix = {}
 
                 dix['emp'] = rec.name
                 dix['roll'] = rec.identification_id
-                dix['wphone'] = rec.work_phone
+                dix['doj'] = rec.date_of_join
                 dix['div'] = rec.contract_id.grade.department.name
                 dix['wage'] = rec.contract_id.wage
                 dix['hallow'] = rec.contract_id.housing_allowance
                 dix['tallow'] = rec.contract_id.travel_allowance
                 dix['gosi_deduc'] = rec.contract_id.gosi_salery
 
-                dix['nets'] = rec.contract_id.housing_allowance+ rec.contract_id.wage + rec.contract_id.travel_allowance
+                dix[
+                    'nets'] = rec.contract_id.housing_allowance + rec.contract_id.wage + rec.contract_id.travel_allowance
 
                 dix['data'] = 'nd'
 

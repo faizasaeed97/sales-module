@@ -10,7 +10,9 @@
 
 
             <xpath expr="//field[@name='job_title']" position="attributes">
-                <attribute name="invisible">1</attribute>
+                <attribute name="readonly">1</attribute>
+                                <attribute name="force_save">1</attribute>
+
             </xpath>
 
             <xpath expr="//field[@name='department_id']" position="attributes">
@@ -45,6 +47,9 @@
                     <field name="cpr_exp_date"></field>
                     <field name="rp_exp_date"></field>
                     <field name="veh_alloted"></field>
+                    <field name="veh_number" attrs="{'invisible': [('veh_alloted', '=', 'No')]}"></field>
+
+
                     <field name="accomodation"></field>
                     <field name="iban"></field>
                 </group>
@@ -206,17 +211,18 @@
                                            groups="hr.group_hr_user"/>
                                 </group>
                                 <group string="Dependant">
+                                    <field name="no_depend"/>
                                     <field name="children"/>
                                 </group>
                                 <group string="Emergency">
                                     <field name="emergency_contact"/>
                                     <field name="emergency_phone"/>
                                 </group>
-                                <group string="Work Permit" name="work_permit">
-                                    <field name="visa_no"/>
-                                    <field name="permit_no"/>
-                                    <field name="visa_expire"/>
-                                </group>
+<!--                                <group string="Work Permit" name="work_permit">-->
+<!--                                    <field name="visa_no"/>-->
+<!--                                    <field name="permit_no"/>-->
+<!--                                    <field name="visa_expire"/>-->
+<!--                                </group>-->
                                 <group string="Education">
                                     <field name="certificate"/>
                                     <field name="study_field"/>

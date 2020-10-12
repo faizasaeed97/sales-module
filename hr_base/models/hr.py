@@ -20,7 +20,7 @@ class HrEmployee(models.Model):
     terminate = fields.Boolean(default=False, string="Terminate?")
     runaway = fields.Boolean(default=False, string="Runaway?")
 
-    manager_log = fields.Many2one('res.users',string="Manager")
+    manager_log = fields.Many2one('res.users', string="Manager")
 
     date_of_leave = fields.Date('Leave/Terminate Date')
     bank_name = fields.Char(string="Bank Name")
@@ -51,15 +51,13 @@ class HrEmployee(models.Model):
             else:
                 dta.consider_days = 0
 
-    @api.onchange('resign','terminate','runaway')
+    @api.onchange('resign', 'terminate', 'runaway')
     def resign_lv(self):
         if self.resign or self.terminate or self.runaway:
-            self.manager_log=self.env.user.id
+            self.manager_log = self.env.user.id
             self.active = False
         else:
-            self.active=True
-
-
+            self.active = True
 
 
 class HrPayslip_inherits(models.Model):

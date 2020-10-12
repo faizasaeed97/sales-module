@@ -81,15 +81,16 @@
                                     <td>
                                         <div class="col-auto mw-100 mb-2"
                                              color="#17a2b8">
-                                            <strong>Gosi Salery</strong>
-                                        </div>
-                                    </td>
-                                             <td>
-                                        <div class="col-auto mw-100 mb-2"
-                                             color="#17a2b8">
                                             <strong>Net salery</strong>
                                         </div>
                                     </td>
+                                    <td>
+                                        <div class="col-auto mw-100 mb-2"
+                                             color="#17a2b8">
+                                            <strong>Gosi Salery</strong>
+                                        </div>
+                                    </td>
+
 
                                 </tr>
                             </thead>
@@ -109,14 +110,27 @@
                                             <td>
                                             </td>
                                             <td>
+                                                <strong><span t-esc="line.get('waget')"/></strong>
+
                                             </td>
                                             <td>
+                                                <strong><span t-esc="line.get('hallowt')"/></strong>
+
+
                                             </td>
                                             <td>
+                                                <strong><span t-esc="line.get('tallowt')"/></strong>
+
+
                                             </td>
-                                               <td>
+                                            <td>
+                                                <strong><span t-esc="line.get('netst')"/></strong>
+
+
                                             </td>
-                                                  <td>
+                                            <td>
+                                                <strong><span t-esc="line.get('gosi_deduct')"/></strong>
+
                                             </td>
                                         </tr>
                                     </t>
@@ -133,7 +147,7 @@
                                                 <span t-esc="line.get('div')"/>
                                             </td>
                                             <td align="center">
-                                                <span t-esc="line.get('wphone')"/>
+                                                <span t-esc="line.get('doj')"/>
 
                                             </td>
                                             <td align="center">
@@ -151,11 +165,11 @@
 
                                             </td>
                                             <td align="center">
-                                                <span t-esc="line.get('gosi_deduc')"/>
+                                                <span t-esc="line.get('nets')"/>
 
                                             </td>
-                                                   <td align="center">
-                                                <span t-esc="line.get('nets')"/>
+                                            <td align="center">
+                                                <span t-esc="line.get('gosi_deduc')"/>
 
                                             </td>
 

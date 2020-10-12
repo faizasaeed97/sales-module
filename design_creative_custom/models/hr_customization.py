@@ -12,12 +12,13 @@ class inherithremploye(models.Model):
     bahrain_expact = fields.Selection([('Bahraini', 'Bahraini'), ('Expats', 'Expats')], string='Bahranis/Expacts', )
     muslim = fields.Selection([('Yes', 'Yes'), ('No', 'No')], string='Muslim', )
     age = fields.Char(string="Age", compute='set_age_computed')
-    dependent = fields.Selection([('Yes', 'Yes'), ('No', 'No')], string='Dependent', )
+    no_depend = fields.Integer(string='Dependant#' )
     cpr_no = fields.Char(string="CPR NO")
     cpr_exp_date = fields.Date(string="CPR Expiry")
     passport_exp_date = fields.Date(string="Passport Expiry")
     rp_exp_date = fields.Date(string="RP Expiry")
     veh_alloted = fields.Selection([('Yes', 'Yes'), ('No', 'No')], string='Vehicle Alloted')
+    veh_number =  fields.Char(string="Vehicle#",help="Vehicle Number")
     accomodation = fields.Selection([('YES', 'YES'), ('NO', 'NO')], string='Acomodation')
 
     ot_eligible = fields.Boolean(string="OT Eligible?", default=False)
@@ -42,7 +43,7 @@ class inherithremploye(models.Model):
 
     man_works_shour = fields.Char("Second shift start")
     man_works_smins = fields.Char("second shift end")
-    iban=fields.Char(string="IBAN")
+    iban = fields.Char(string="IBAN")
 
     @api.onchange('man_works_fhour', 'man_works_fmins', 'man_works_shour', 'man_works_smins')
     def onchangmanul_work(self):
@@ -86,8 +87,8 @@ class inherithremploye(models.Model):
     @api.onchange('ot_ramzan')
     def oncrnana_work(self):
         if self.ot_ramzan:
-            self.manual_schedule=False
-            self.workschedule='08:30|03:00'
+            self.manual_schedule = False
+            self.workschedule = '08:30|03:00'
 
     def calculateAge(self, dob):
         today = date.today()
@@ -398,14 +399,17 @@ class hr_gradeclass(models.Model):
     department = fields.Many2one('hr.department', string='Department', required=1)
     designation = fields.Many2one('hr.job', string='Designations', required=1)
 
-
-    @api.constrains('department')
+    @api.constrains('department', 'designation')
     def change_department(self):
         if self.department:
-            get_contr=self.env['hr.contract'].search([('grade','=',self.id)],limit=1)
+            get_contr = self.env['hr.contract'].search([('grade', '=', self.id)], limit=1)
             if get_contr:
-                get_contr.employee_id.write({'department_id' :self.department.id})
-
+                get_contr.employee_id.department_id=self.department.id
+        if self.designation:
+            get_contr = self.env['hr.contract'].search([('grade', '=', self.id)], limit=1)
+            if get_contr:
+                get_contr.employee_id.job_title=self.designation.name
+                get_contr.employee_id.job_id==self.designation.id
 
 
     @api.depends('grade', 'department', 'designation')

@@ -89,7 +89,9 @@
                                             </td>
                                             <td>
                                             </td>
-                                            <td>
+                                            <td align="center">
+                                                <strong><span t-esc="line.get('tot')"/></strong>
+
                                             </td>
                                         </tr>
                                     </t>

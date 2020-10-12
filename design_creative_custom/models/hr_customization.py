@@ -183,6 +183,14 @@ class inheritcontracts(models.Model):
     do_incrmnt = fields.Boolean('Will Increment?', default=False)
     do_decre = fields.Boolean('Will Decrement?', default=False)
 
+
+    @api.onchange('grade')
+    def onchange_departmentgrx(self):
+        if self.grade:
+            self.employee_id.department_id=self.grade.department.id
+            self.employee_id.job_id=self.grade.designation.id
+
+
     @api.onchange('increment_Amount')
     def onchange_select_incrmnt(self):
         if self.do_incrmnt:
@@ -403,7 +411,7 @@ class hr_gradeclass(models.Model):
     def onchange_department(self):
         self.designation=None
 
-    @api.constrains('department', 'designation')
+    @api.constrains('department')
     def change_department(self):
         if self.department:
             self.designation.department_id=self.department.id

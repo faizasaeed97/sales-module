@@ -189,6 +189,8 @@ class inheritcontracts(models.Model):
         if self.grade:
             self.employee_id.department_id=self.grade.department.id
             self.employee_id.job_id=self.grade.designation.id
+            self.employee_id.job_title=self.grade.designation.name
+
 
 
     @api.onchange('increment_Amount')

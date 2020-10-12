@@ -4,6 +4,9 @@ from odoo import models, fields, api, _
 from calendar import isleap
 from odoo.exceptions import UserError, ValidationError
 from datetime import date, datetime
+import logging
+
+_logger = logging.getLogger(__name__)
 
 
 class inherithremploye(models.Model):
@@ -405,12 +408,13 @@ class hr_gradeclass(models.Model):
             get_contr = self.env['hr.contract'].search([('grade', '=', self.id)], limit=1)
             if get_contr:
                 get_contr.employee_id.department_id = self.department.id
-                print("ahahahahahahahaah--> ", get_contr.employee_id.name)
+                _logger.warning("asnajsjkajskajks -->  '" + str(get_contr.employee_id.name) + "'")
+
 
         if self.designation:
             get_contr = self.env['hr.contract'].search([('grade', '=', self.id)], limit=1)
             if get_contr:
-                print("ahahahahahahahaah--> ", get_contr.employee_id.name)
+                _logger.warning("asnajsjkajskajks -->  '" + str(get_contr.employee_id.name) + "'")
 
                 get_contr.employee_id.job_title = self.designation.name
                 get_contr.employee_id.job_id = self.designation.id

@@ -399,7 +399,7 @@ class hr_gradeclass(models.Model):
     department = fields.Many2one('hr.department', string='Department', required=1)
     designation = fields.Many2one('hr.job', string='Designations', required=1)
 
-    @api.constrains('department', 'designation')
+    @api.onchange('department', 'designation')
     def change_department(self):
         if self.department:
             get_contr = self.env['hr.contract'].search([('grade', '=', self.id)], limit=1)
@@ -409,14 +409,14 @@ class hr_gradeclass(models.Model):
             get_contr = self.env['hr.contract'].search([('grade', '=', self.id)], limit=1)
             if get_contr:
                 get_contr.employee_id.job_title=self.designation.name
-                get_contr.employee_id.job_id==self.designation.id
+                get_contr.employee_id.job_id=self.designation.id
 
 
     @api.depends('grade', 'department', 'designation')
     def comp_name(self):
         for rec in self:
             if rec.grade and rec.department and rec.designation:
-                rec.name = rec.grade + '-' + rec.designation.name
+                rec.name = rec.grade + '-' + rec.designation.name +'-'+rec.department.name
 
     # @api.constrains('grade','department','designation')
     # def _check_name(self):

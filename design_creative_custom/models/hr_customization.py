@@ -403,17 +403,24 @@ class hr_gradeclass(models.Model):
     designation = fields.Many2one('hr.job', string='Designations', required=1)
 
     @api.onchange('department', 'designation')
-    def change_department(self):
-        if self.department:
-            get_contr = self.env['hr.contract'].search([('grade', '=', self.id)], limit=1)
-            if get_contr:
+    def changex_department(self):
+        _logger.warning("asnajsjkajskajks -->")
+
+        get_contr = self.env['hr.contract'].search([('grade', '=', self.id)], limit=1)
+        _logger.warning("asnajsjkajskajks -->  '" + str(get_contr.employee_id.name) + "'")
+
+        if get_contr:
+            if self.department:
                 get_contr.employee_id.department_id = self.department.id
                 _logger.warning("asnajsjkajskajks -->  '" + str(get_contr.employee_id.name) + "'")
 
 
-        if self.designation:
-            get_contr = self.env['hr.contract'].search([('grade', '=', self.id)], limit=1)
-            if get_contr:
+
+        get_contr = self.env['hr.contract'].search([('grade', '=', self.id)], limit=1)
+        if get_contr:
+            _logger.warning("fux -->")
+
+            if self.designation:
                 _logger.warning("asnajsjkajskajks -->  '" + str(get_contr.employee_id.name) + "'")
 
                 get_contr.employee_id.job_title = self.designation.name

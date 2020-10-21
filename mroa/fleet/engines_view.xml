@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record model="ir.ui.view" id="mroa_engines_form">
+        <field name="name">Aircraft Engines Form</field>
+        <field name="model">mroa.fleet.engines</field>
+        <field name="arch" type="xml">
+            <form string="Systems Form">
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name" class="oe_edit_only" string="Engine Serial Number"/>
+                        <h1>
+                            <field name="name" />
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="manufacturing_date" />
+                            <field name="first_use_date" />
+                        </group>
+                    </group>
+                    <group string="Since New">
+                        <group>
+                            <label for="time_since_new" />
+                            <div class="o_row">
+                                <field name="time_since_new" /><span>Hours</span>
+                            </div>
+                            <label for="calendar_total_life_hours" string="Calendar Total Life"/>
+                            <div class="o_row">
+                                <field name="calendar_total_life_hours"/><span>Years</span>
+                                <field name="calendar_total_life_months"/><span>Months</span>
+                            </div>
+                            <field name="total_engine_cycles"/>
+                        </group>
+                    </group>
+                    <group string="Since Overhaul">
+                        <group>
+                            <label for="time_since_last_overhaul" />
+                            <div class="o_row">
+                                <field name="time_since_last_overhaul"/><span>Hours</span>
+                            </div>
+                            <label for="calendar_life_last_overhaul_hour" string="Calendar Life Since Last OverHaul"/>
+                            <div class="o_row">
+                                <field name="calendar_life_last_overhaul_hour"/><span>Years</span>
+                                <field name="calendar_life_last_overhaul_month"/><span>Months</span>
+                            </div>
+                            <field name="engine_cycle_life_last_overhaul_hour" />
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record model="ir.ui.view" id="mroa_engines_tree">
+        <field name="name">Aircraft Engines</field>
+        <field name="model">mroa.fleet.engines</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name" />
+                <field name="manufacturing_date" />
+                <field name="first_use_date" />
+                <field name="total_engine_cycles" />
+                <field name="time_since_last_overhaul" />
+            </tree>
+        </field>
+    </record>
+    <record id='mroa_engines_action' model='ir.actions.act_window'>
+        <field name="name">Aircraft Engines</field>
+        <field name="res_model">mroa.fleet.engines</field>
+        <field name="view_mode">tree,form</field>
+        <field name="context">{}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+            Create a new AirCraft Engine
+            </p>
+        </field>
+    </record>
+</odoo>

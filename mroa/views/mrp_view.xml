@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record model="ir.ui.view" id="mroa_mrp_manufacture_xpath">
+        <field name="model">mrp.bom</field>
+        <field name="inherit_id" ref='mrp.mrp_bom_form_view'/>
+        <field name="arch" type="xml">
+            <field name="type" position="after">
+                <field name="bom_type"/>
+            </field>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="mroa_mrp_manufacture_order_xpath">
+        <field name="model">mrp.production</field>
+        <field name="inherit_id" ref='mrp.mrp_production_form_view'/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//field[@name='bom_id']" position="after">
+                <field name="aircraft_fleet" required="1"/>
+                <field name="Shop_Name"/>
+            </xpath>
+
+
+            <xpath expr="//notebook" position="inside">
+                <page string="Information">
+                    <group>
+                        <group>
+                            <field name="Unit"/>
+                            <field name="Reason"/>
+                            <field name="Manufacturer"/>
+                            <field name="Manufacturing"/>
+                            <field name="inspection_manufacturing_date"/>
+                            <field name="Time_Sine_New"/>
+
+
+                        </group>
+                        <group>
+                            <field name="Time_Since_Overhaul"/>
+                            <!--                            <field name="Calender_Life"/>-->
+                            <field name="Last_Repair_At"/>
+                            <field name="Last_Repair_Date"/>
+                            <label for="Removed_from_Helicopter" style="width:190px"/>
+                            <div class="o_row">
+                                <field name="Removed_from_Helicopter"/>
+                            </div>
+
+                            <label for="calendar_life_months"/>
+                            <div class="o_row">
+                                <field name="calendar_life_years"/>
+                                <span>Years</span>
+                                <field name="calendar_life_months"/>
+                                <span>Months</span>
+                            </div>
+
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+
+    <record model="ir.ui.view" id="mroa_fleet_odometer_inherit_xpath">
+        <field name="model">fleet.vehicle.odometer</field>
+        <field name="inherit_id" ref='fleet.fleet_vehicle_odometer_view_form'/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="replace">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="vehicle_id"/>
+                            <field name="value" string="Flying hours of day"/>
+                            <field name="unit"/>
+                            <field name="driver_id" string="Pilot"/>
+                            <field name="date"/>
+                        </group>
+                        <group>
+                            <field name="Faults_in_Flying" widget="many2many_tags"/>
+                            <field name="Fault_Rectification"/>
+                            <field name="expendables_Used" widget="many2many_tags"/>
+                            <field name="flying_hours"/>
+                            <field name="total_Hours"/>
+                        </group>
+                    </group>
+
+                    <group>
+                        <field name="Spares_Used" nolabel="1">
+                            <tree>
+                                <field name="name" width="10"/>
+                                <field name="qty" width="10"/>
+                            </tree>
+                            <form>
+                                <group>
+                                    <group>
+                                        <field name="name" width="10"/>
+                                        <field name="qty" readonly="1" width="10"/>
+
+                                    </group>
+                                </group>
+                            </form>
+                        </field>
+
+                    </group>
+                </sheet>
+            </xpath>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="mroa_fleet_mrpworkorder_xpath">
+        <field name="model">mrp.workorder</field>
+        <field name="inherit_id" ref='mrp.mrp_production_workorder_form_view_inherit'/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="Information">
+                    <group>
+                        <group>
+                            <field name="inspection_unit"/>
+                            <field name="inspection_reason"/>
+                            <field name="inspection_manufacturer"/>
+                            <field name="inspection_manufacturing_date"/>
+                        </group>
+                        <group>
+                            <label for="removed_heli" style="width:200px"/>
+                            <div class="o_row">
+                                <field name="removed_heli"/>
+                            </div>
+                            <field name="tsn"/>
+                            <field name="tso"/>
+                            <field name="total_repairs"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group>
+                            <label for="calendar_life_months"/>
+                            <div class="o_row">
+                                <field name="calendar_life_years"/>
+                                <span>Years</span>
+                                <field name="calendar_life_months"/>
+                                <span>Months</span>
+                            </div>
+                            <field name="starts_number"/>
+                            <field name="airbleeds_number"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group>
+                            <field name="last_repair_at"/>
+                            <field name="last_repair_date"/>
+                        </group>
+                    </group>
+                </page>
+
+
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

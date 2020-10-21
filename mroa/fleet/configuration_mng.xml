@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record model="ir.ui.view" id="mroa_configuration_management_form">
+        <field name="name">Configuration Management</field>
+        <field name="model">mroa.fleet.configuration.mng</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="aircraft_type" widget="many2many_tags" />
+                        </group>
+                        <group>
+                            <field name="book_reference" />
+                        </group>
+                    </group>
+                    <group string="Required Systems">
+                        <field name="aricraft_systems" nolabel="1">
+                            <tree>
+                                <field name="system_selection" />
+                                <field name="qty" />
+                                <field name="criticallity" />
+                                <field name="obsolescence" />
+                                <field name="obsolescence_ref" width="2" />
+                                <field name="llc_repairable" />
+                                <field name="if_overhaul" string="Overhaul" width="1" />
+                            </tree>
+                            <form>
+                                <div class="oe_title">
+                                    <label for="system_selection" class="oe_edit_only" string="System Name"/>
+                                    <h1><field name="system_selection" /></h1>
+                                </div>
+                                <group>
+                                    <group col="2">
+                                        <label for="qty" style="width: 180px" />
+                                        <div class="o_row">
+                                            <field name="qty" />
+                                        </div>
+                                        <label for="criticallity" style="width: 180px" />
+                                        <div class="o_row">
+                                            <field name="criticallity" />
+                                        </div>
+                                        <label for="obsolescence" style="width: 180px" />
+                                        <div class="o_row">
+                                            <field name="obsolescence" />
+                                        </div>
+                                        <label for="obsolescence_ref" style="width: 180px" />
+                                        <div class="o_row">
+                                            <field name="obsolescence_ref" />
+                                        </div>
+                                        <field name="obsolescence_ref_doc"
+                                               attrs="{'invisible':['|',('obsolescence_ref','=',False),('obsolescence_ref','=','')]}" />
+                                    </group>
+                                    <group col="2">
+                                        <field name="llc_repairable" />
+                                        <field name="if_overhaul" />
+                                        <field name="overhaul_life_value" attrs="{'invisible':[('if_overhaul','=',False)]}" />
+                                    </group>
+                                    <group col="2">
+                                        <label for="slife_since_new"/>
+                                        <div class="o_row">
+                                            <field name="slife_since_new" /><span>Hours</span>
+                                        </div>
+                                    </group>
+                                    <group col="2">
+                                        <label for="service_life_years" string="Calander Life" />
+                                        <div class="o_row">
+                                            <field name="service_life_years" /><span>Years</span>
+                                            <field name="service_life_months" /><span>Months</span>
+                                        </div>
+                                    </group>
+                                </group>
+                                <notebook>
+                                    <page string="Cycles">
+                                        <group>
+                                            <group>
+                                                <field name="cycle_since_new_one" />
+                                                <field name="cycle_since_new_two" />
+                                                <field name="cycle_since_new_three" />
+                                            </group>
+                                            <group>
+                                                <field name="cycle_since_new_four" />
+                                                <field name="cycle_since_new_five" />
+                                            </group>
+                                        </group>
+                                    </page>
+                                    <page string="Service Life">
+                                        <group>
+                                            <label for="service_life_emergency_one" style="width: 250px" />
+                                            <div class="o_row">
+                                                <field name="service_life_emergency_one" />
+                                            </div>
+                                            <label for="service_life_emergency_two" />
+                                            <div class="o_row">
+                                                <field name="service_life_emergency_two" />
+                                            </div>
+                                            <label for="service_life_continous_operation" />
+                                            <div class="o_row">
+                                                <field name="service_life_continous_operation" />
+                                            </div>
+                                        </group>
+                                    </page>
+                                </notebook>
+                            </form>
+                        </field>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record model="ir.ui.view" id="mroa_configuration_management_tree">
+        <field name="name">Configuration Management List</field>
+        <field name="model">mroa.fleet.configuration.mng</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="aircraft_type" />
+                <field name="book_reference" />
+            </tree>
+        </field>
+    </record>
+    <record id='mroa_configuration_management_action' model='ir.actions.act_window'>
+        <field name="name">Configuration Management List</field>
+        <field name="res_model">mroa.fleet.configuration.mng</field>
+        <field name="view_mode">tree,form</field>
+        <field name="context"></field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face"></p>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,904 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record model="ir.ui.view" id="mroa_aircraft_tree_xpaths">
+        <field name="name">mroa.fleet.vehicle.tree</field>
+        <field name="model">mroa.fleet.vehicle</field>
+        <field name="inherit_id" ref="fleet.fleet_vehicle_view_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//tree" position="replace">
+                <tree>
+                    <field name="aircraft_name"/>
+                    <field name="model_id"/>
+                    <field name="driver_id" string="Pilot"/>
+                    <field name="license_plate" string="Tail Number"/>
+                    <field name="acquisition_date" string="Registration/Induction Date"/>
+                    <field name="vin_sn" string="Airframe Serial Number"/>
+                    <field name="time_since_new"/>
+                    <field name="landing_numbers"/>
+                </tree>
+            </xpath>
+        </field>
+    </record>
+    <record id='mroa_aircraft_menu_action' model='ir.actions.act_window'>
+        <field name="name">Aircrafts</field>
+        <field name="res_model">mroa.fleet.vehicle</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref=""/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Create a new AirCraft</p>
+        </field>
+    </record>
+    <record model="ir.ui.view" id="mroa_aircraft_fleet_form">
+        <field name="name">mroa.fleet.vehicle.form</field>
+        <field name="model">mroa.fleet.vehicle</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <field name="state_id" widget="statusbar" options="{'clickable': '1'}" invisible="1"/>
+                </header>
+                <sheet>
+                    <field name="currency_id" invisible="1"/>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="open_assignation_logs" type="object" class="oe_stat_button" icon="fa-history">
+                            <field name="history_count" widget="statinfo" string="Pilots History"/>
+                        </button>
+                        <button name="return_action_to_open" type="object" class="oe_stat_button" icon="fa-book"
+                                context="{'xml_id':'fleet_vehicle_log_contract_action'}"
+                                help="show the contract for this Aircraft">
+                            <field name="contract_count" widget="statinfo" string="Contracts"/>
+                        </button>
+                        <button name="act_show_log_cost" type="object" class="oe_stat_button" icon="fa-usd"
+                                help="show all the costs for this Aircraft" groups="fleet.fleet_group_manager">
+                            <field name="cost_count" widget="statinfo" string="Costs"/>
+                        </button>
+                        <button name="return_action_to_open" type="object" class="oe_stat_button" icon="fa-wrench"
+                                context="{'xml_id':'fleet_vehicle_log_services_action'}"
+                                help="show the services logs for this Aircraft">
+                            <field name="service_count" widget="statinfo" string="Services"/>
+                        </button>
+                        <button name="return_action_to_open" type="object" class="oe_stat_button" icon="fa-flask"
+                                context="{'xml_id':'fleet_vehicle_log_fuel_action'}"
+                                help="show the fuel logs for this Aircraft">
+                            <field name="fuel_logs_count" widget="statinfo" string="Fuel"/>
+                        </button>
+                        <button name="mroa_return_action_to_open" type="object" class="oe_stat_button"
+                                icon="fa-tachometer" context="{'xml_id':'fleet_vehicle_odometer_action'}"
+                                help="show the Flying Metere logs for this Aircraft">
+                            <field name="odometer_count" widget="statinfo" string="Flying Meter"/>
+                        </button>
+                    </div>
+                    <widget name="web_ribbon" text="Archived" bg_color="bg-danger"
+                            attrs="{'invisible': [('active', '=', True)]}"/>
+                    <field name="image_128" widget="image" class="oe_avatar"/>
+                    <div class="oe_title">
+                        <label for="aircraft_name" class="oe_edit_only" string="Aircraft Name"/>
+                        <h1>
+                            <field name="aircraft_name" required="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="model_id" string="Model"/>
+                            <field name="license_plate" class="oe_inline" placeholder="e.g. PAE 326"
+                                   string="Tail Number" help="Serial number of the Aircraft"/>
+                            <field name="tag_ids" widget="many2many_tags"
+                                   options="{'color_field': 'color', 'no_create_edit': True}"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page name="aircraft_details" string="Aircraft">
+                            <group>
+                                <group>
+                                    <label for="odometer" style="width:180px" string="Last Flying Meter"
+                                           help="Flying measure of the aircraft at the moment of this log"/>
+                                    <div class="o_row">
+                                        <field name="odometer"/><span>Hours</span>
+                                        <field name="odometer_unit" invisible="1"/>
+                                    </div>
+                                    <label for="acquisition_date" string="Registration/Induction Date"
+                                           style="width:180px"/>
+                                    <div class="row">
+                                        <field name="acquisition_date"/>
+                                    </div>
+                                    <label for="aircraft_owner" style="width:180px"/>
+                                    <div class="row">
+                                        <field name="aircraft_owner"/>
+                                    </div>
+                                    <field name="vin_sn" string="Airframe Serial Number"
+                                           help="Serial Number of the Aircraft"/>
+                                </group>
+                                <group>
+                                    <label for="car_value" style="width:180px"/>
+                                    <div class="row">
+                                        <field name="car_value" widget="monetary"/>
+                                    </div>
+                                    <label for="net_car_value" style="width:180px"/>
+                                    <div class="row">
+                                        <field name="net_car_value" widget="monetary"/>
+                                    </div>
+                                    <label for="residual_value" style="width:180px"/>
+                                    <div class="row">
+                                        <field name="residual_value" widget="monetary"/>
+                                    </div>
+                                    <field name="company_id" groups="base.group_multi_company" invisible="1"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page name="since_new_details" string="Since New">
+                            <group>
+                                <group>
+                                    <label for="time_since_new" string="Time Since New (TSN)" style="width: 150px"/>
+                                    <div class="o_row">
+                                        <field name="time_since_new"/><span>Hours</span>
+                                    </div>
+                                    <label for="calendar_total_life_hours" string="Calendar Life SInce New"/>
+                                    <div class="o_row">
+                                        <field name="calendar_total_life_hours"/><span>Years, </span>
+                                        <field name="calendar_total_life_months"/><span>Months</span>
+                                    </div>
+                                </group>
+                                <group>
+                                    <field name="landing_numbers"/>
+                                    <field name="manufacture_date"/>
+                                </group>
+                            </group>
+                            <group></group>
+                        </page>
+                        <page name="since_overhaul_details" string="Since Overhaul">
+                            <group>
+                                <group>
+                                    <label for="last_overhaul_date" style="width:190px"/>
+                                    <div class="o_row">
+                                        <field name="last_overhaul_date"/>
+                                    </div>
+                                    <label for="service_life_last_verhaul" style="width:190px"/>
+                                    <div class="o_row">
+                                        <field name="service_life_last_verhaul"/>
+                                    </div>
+                                    <label for="time_since_last_overhaul"/>
+                                    <div class="o_row">
+                                        <field name="time_since_last_overhaul"/><span>Hours</span>
+                                    </div>
+                                    <label for="calendar_life_last_overhaul_hour"/>
+                                    <div class="o_row">
+                                        <field name="calendar_life_last_overhaul_hour"/><span>Years, </span>
+                                        <field name="calendar_life_last_overhaul_month"/><span>Months</span>
+                                    </div>
+                                </group>
+                                <group>
+                                    <label for="landings_last_overhaul" string="No Of Landings Since OverHaul"
+                                           style="width:220px"/>
+                                    <div class="o_row">
+                                        <field name="landings_last_overhaul"/>
+                                    </div>
+                                    <label for="last_overhaul_workshop"/>
+                                    <div class="o_row">
+                                        <field name="last_overhaul_workshop"/>
+                                    </div>
+                                </group>
+                            </group>
+                            <group>
+                                <group></group>
+                                <group></group>
+                            </group>
+                        </page>
+                        <page name="pilot_fields" string="Pilot Details">
+                            <group>
+                                <group>
+                                    <field name="active" invisible="1"/>
+                                    <field name="driver_id" string="Pilot" help="Pilot Of the Aircraft"
+                                           domain="['|', ('company_id', '=', False ), ('company_id', '=', company_id)]"/>
+                                    <label for="future_driver_id" string="Future Pilot"
+                                           help="Next Pilot Of the Aircraft"/>
+                                    <div class="o_row">
+                                        <field name="future_driver_id"/>
+                                        <button string="Apply Change" class="btn btn-primary" type="object"
+                                                name="action_accept_driver_change"
+                                                attrs="{'invisible': [('future_driver_id', '=', False)]}"/>
+                                    </div>
+                                </group>
+                                <group>
+                                    <label for="plan_to_change_car" string="Plan To Change Aircraft"
+                                           help="Next Pilot Of the Aircraft" style="width: 170px"/>
+                                    <div class="row">
+                                        <field name="plan_to_change_car" groups="fleet.fleet_group_manager"/>
+                                    </div>
+                                    <label for="next_assignation_date" style="width: 170px"/>
+                                    <div class="row">
+                                        <field name="next_assignation_date"/>
+                                    </div>
+                                    <label for="location" style="width: 170px"/>
+                                    <div class="row">
+                                        <field name="location"/>
+                                    </div>
+                                </group>
+                            </group>
+                        </page>
+                        <page name="workshop_details" string="Workshop">
+                            <group>
+                                <group>
+                                    <field name="maintain_workshop"/>
+                                    <field name="concerned_depot"/>
+                                    <field name="mode_induction"/>
+                                    <field name="transmission" invisible="1"/>
+                                    <field name="fuel_type" invisible="1"/>
+                                    <field name="co2" invisible="1"/>
+                                    <field name="horsepower" invisible="1"/>
+                                    <field name="horsepower_tax" widget="monetary" invisible="1"/>
+                                    <field name="power" invisible="1"/>
+                                </group>
+                                <group>
+                                    <label for="purpose_visit_workshop" style="width:260px"/>
+                                    <div class="row">
+                                        <field name="purpose_visit_workshop"/>
+                                    </div>
+                                    <label for="date_last_overhaul_workshop" style="width:260px"/>
+                                    <div class="row">
+                                        <field name="date_last_overhaul_workshop"/>
+                                    </div>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Installed Assemblies">
+                            <field name="assembly_id" nolabel="1" domain="[('is_assembly', '=', True)]">
+                                <tree>
+                                    <field name="name"/>
+                                    <field name="categ_id"/>
+                                    <field name="serial_number"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Engines">
+                            <field name="engines_id" nolabel="1">
+                                <tree>
+                                    <field name="name" width="10"/>
+                                    <field name="manufacturing_date" width="10"/>
+                                    <field name="first_use_date" width="10"/>
+                                    <field name="total_engine_cycles" width="10"/>
+                                    <field name="time_since_last_overhaul" width="12"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="APU">
+                            <field name="apus_id" nolabel="1">
+                                <tree>
+                                    <field name="name" width="12"/>
+                                    <field name="manufacture_date" width="12"/>
+                                    <field name="first_use_date" width="12"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page name="contract_details" string="Contract">
+                            <group>
+                                <group>
+                                    <field name="manager_id"/>
+                                    <field name="first_contract_date"/>
+                                    <field name="seats" invisible="1"/>
+                                    <field name="doors" invisible="1"/>
+                                    <field name="color" invisible="1"/>
+                                    <field name="model_year" invisible="1"/>
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="activity_ids" widget="mail_activity"/>
+                    <field name="message_ids" widget="mail_thread" options="{&quot;thread_level&quot;: 1}"/>
+                </div>
+            </form>
+        </field>
+    </record>
+    <record model="ir.actions.act_window.view" id="action_mroa_aircraft_tree_xpaths">
+        <field name="sequence" eval="1"/>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="mroa_aircraft_tree_xpaths"/>
+        <field name="act_window_id" ref="mroa_aircraft_menu_action"/>
+    </record>
+    <record model="ir.actions.act_window.view" id="action_mroa_aircraft_fleet_form">
+        <field name="sequence" eval="2"/>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="mroa_aircraft_fleet_form"/>
+        <field name="act_window_id" ref="mroa_aircraft_menu_action"/>
+    </record>
+
+    <record model="ir.ui.view" id="mroa_system_groups_tree">
+        <field name="name">System Groups List</field>
+        <field name="model">mroa.system.groups</field>
+        <field name="arch" type="xml">
+            <tree editable="top">
+                <field name="name"/>
+            </tree>
+        </field>
+    </record>
+    <record model="ir.ui.view" id="mroa_system_groups_form">
+        <field name="name">System Groups Form</field>
+        <field name="model">mroa.system.groups</field>
+        <field name="arch" type="xml">
+            <form string="System Groups Form">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name='name'/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id='mroa_system_groups_action' model='ir.actions.act_window'>
+        <field name="name">System Groups</field>
+        <field name="res_model">mroa.system.groups</field>
+        <field name="view_mode">tree,form</field>
+        <field name="context"></field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Create a new System Groups</p>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="mroa_systems_tree">
+        <field name="name">System List</field>
+        <field name="model">mroa.system.required</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+            </tree>
+        </field>
+    </record>
+    <record model="ir.ui.view" id="mroa_systems_form">
+        <field name="name">System Groups Form</field>
+        <field name="model">mroa.system.required</field>
+        <field name="arch" type="xml">
+            <form string="Systems Form">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name='name'/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id='mroa_systems_action' model='ir.actions.act_window'>
+        <field name="name">Systems List</field>
+        <field name="res_model">mroa.system.required</field>
+        <field name="view_mode">tree,form</field>
+        <field name="context"></field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Create a new System</p>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="mroa_vehicle_log_contract_view_form">
+        <field name="name">fleet.vehicle.log_contract.form</field>
+        <field name="model">fleet.vehicle.log.contract</field>
+        <field name="inherit_id" ref='fleet.fleet_vehicle_log_contract_view_form'/>
+        <field name="arch" type="xml">
+            <xpath expr="//group[1]/group[2]" position='attributes'>
+                <attribute name='string'>Aircraft Information</attribute>
+            </xpath>
+            <field name='purchaser_id' position='attributes'>
+                <attribute name='string'>Pilot</attribute>
+            </field>
+            <label for='odometer' position='attributes'>
+                <attribute name='string'>Last Flying</attribute>
+                <attribute name='help'>Flying meter measure of the aircraft at the moment of the contract
+                    creation</attribute>
+            </label>
+            <field name='vehicle_id' position='after'>
+                <field name="aircraft_id" required="1"/>
+            </field>
+            <field name='vehicle_id' position='attributes'>
+                <attribute name='invisible'>1</attribute>
+            </field>
+        </field>
+    </record>
+    <record model="ir.ui.view" id="mroa_vehicle_log_contract_view_tree">
+        <field name="name">fleet.vehicle.log.contract.tree</field>
+        <field name="model">fleet.vehicle.log.contract</field>
+        <field name="inherit_id" ref='fleet.fleet_vehicle_log_contract_view_tree'/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='vehicle_id']" position='replace'>
+                <field name="vehicle_id" string="Aircrafts"/>
+            </xpath>
+        </field>
+    </record>
+    <record id='fleet.fleet_vehicle_log_contract_action' model='ir.actions.act_window'>
+        <field name="name">Aircrafts Contracts</field>
+        <field name="res_model">fleet.vehicle.log.contract</field>
+        <field name="view_mode">tree,kanban,form,graph,activity</field>
+        <field name="context">{'search_default_open': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a new contract
+            </p>
+            <p>
+                Manage all your contracts (leasing, insurances, etc.) with
+                their related services, costs. Odoo will automatically warn
+                you when some contracts have to be renewed.
+            </p>
+            <p>
+                Each contract (e.g.: leasing) may include several services
+                (reparation, insurances, periodic maintenance).
+            </p>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="mroa_vehicle_costs_view_form">
+        <field name="name">fleet.vehicle.cost.form</field>
+        <field name="model">fleet.vehicle.cost</field>
+        <field name="inherit_id" ref='fleet.fleet_vehicle_costs_view_form'/>
+        <field name="arch" type="xml">
+            <field name='vehicle_id' position='after'>
+                <field name="aircraft_id" required="1"/>
+            </field>
+            <field name='vehicle_id' position='attributes'>
+                <attribute name='invisible'>1</attribute>
+            </field>
+        </field>
+    </record>
+    <record model="ir.ui.view" id="mroa_vehicle_cost_view_tree">
+        <field name="name">fleet.vehicle.cost.tree</field>
+        <field name="model">fleet.vehicle.cost</field>
+        <field name="inherit_id" ref='fleet.fleet_vehicle_cost_view_tree'/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='vehicle_id']" position='replace'>
+                <field name="vehicle_id" string="Aircrafts"/>
+            </xpath>
+        </field>
+    </record>
+    <record id='fleet.fleet_vehicle_costs_action' model='ir.actions.act_window'>
+        <field name="name">Aircrafts Costs</field>
+        <field name="res_model">fleet.vehicle.cost</field>
+        <field name="view_mode">tree,kanban,form,graph</field>
+        <field name="context">{"search_default_parent_false": True, "search_default_groupby_vehicle_id": True, }</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a new cost
+            </p><p>
+            Manage the costs for your different vehicles.
+            Costs are created automatically from services, contracts and fuel logs.
+        </p>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="mroa_vehicle_assignation_log_view_list">
+        <field name="name">fleet.vehicle.assignation.log.view.tree</field>
+        <field name="model">fleet.vehicle.assignation.log</field>
+        <field name="inherit_id" ref='fleet.fleet_vehicle_assignation_log_view_list'/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='driver_id']" position='replace'>
+                <field name="driver_id" string="Pilot"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="mroa_vehicle_log_services_view_form">
+        <field name="name">fleet.vehicle.log.services.form</field>
+        <field name="model">fleet.vehicle.log.services</field>
+        <field name="inherit_id" ref='fleet.fleet_vehicle_log_services_view_form'/>
+        <field name="arch" type="xml">
+            <xpath expr='//group[1]/group[2]' position='attributes'>
+                <attribute name='string'>Flying Meter Details</attribute>
+            </xpath>
+            <label for='odometer' position='attributes'>
+                <attribute name='string'>Flying Meter Value</attribute>
+                <attribute name='help'>Flyinf meter measure of the aircraft at the moment of this log</attribute>
+            </label>
+            <field name='vehicle_id' position='after'>
+                <field name="aircraft_id" required="1"/>
+            </field>
+            <field name='vehicle_id' position='attributes'>
+                <attribute name='invisible'>1</attribute>
+            </field>
+        </field>
+    </record>
+    <record model="ir.ui.view" id="mroa_vehicle_log_services_view_tree">
+        <field name="name">fleet.vehicle.log.services.tree</field>
+        <field name="model">fleet.vehicle.log.services</field>
+        <field name="inherit_id" ref='fleet.fleet_vehicle_log_services_view_tree'/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='vehicle_id']" position='replace'>
+                <field name="vehicle_id" string="Aircraft"/>
+            </xpath>
+        </field>
+    </record>
+    <record id='fleet.fleet_vehicle_log_services_action' model='ir.actions.act_window'>
+        <field name="name">Aircrafts Services Logs</field>
+        <field name="res_model">fleet.vehicle.log.services</field>
+        <field name="view_mode">tree,kanban,form,graph</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a new service entry
+            </p><p>
+            Track all the services done on your vehicle.
+            Services can be of many types: occasional repair, fixed maintenance, etc.
+        </p>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="mroa_vehicle_log_fuel_view_form">
+        <field name="name">fleet.vehicle.log.fuel.form</field>
+        <field name="model">fleet.vehicle.log.fuel</field>
+        <field name="inherit_id" ref='fleet.fleet_vehicle_log_fuel_view_form'/>
+        <field name="arch" type="xml">
+            <xpath expr='//group[2]/group[1]' position='attributes'>
+                <attribute name='string'>Flying Meter Details</attribute>
+            </xpath>
+            <xpath expr='//group[1]/group[1]' position='attributes'>
+                <attribute name='string'>Aircraft Details</attribute>
+            </xpath>
+            <label for='odometer' position='attributes'>
+                <attribute name='string'>Flying Meter Value</attribute>
+                <attribute name='help'>Flyinf meter measure of the aircraft at the moment of this log</attribute>
+            </label>
+            <field name='vehicle_id' position='after'>
+                <field name="aircraft_id" required="1"/>
+            </field>
+            <field name='vehicle_id' position='attributes'>
+                <attribute name='invisible'>1</attribute>
+            </field>
+        </field>
+    </record>
+    <record model="ir.ui.view" id="mroa_vehicle_log_fuel_view_tree">
+        <field name="name">fleet.vehicle.log.fuel.tree</field>
+        <field name="model">fleet.vehicle.log.fuel</field>
+        <field name="inherit_id" ref='fleet.fleet_vehicle_log_fuel_view_tree'/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='odometer_unit']" position='replace'>
+                <field name="odometer_unit" string="Flying Meter Unit"/>
+            </xpath>
+            <xpath expr="//field[@name='odometer']" position='replace'>
+                <field name="odometer" string="Flying Meter"/>
+            </xpath>
+            <xpath expr="//field[@name='vehicle_id']" position='replace'>
+                <field name="vehicle_id" string="Aircraft"/>
+            </xpath>
+        </field>
+    </record>
+    <record id='fleet.fleet_vehicle_log_fuel_action' model='ir.actions.act_window'>
+        <field name="name">Aircraft Fuel Logs</field>
+        <field name="res_model">fleet.vehicle.log.fuel</field>
+        <field name="view_mode">tree,kanban,form,graph</field>
+        <field name="context">{"search_default_groupby_vehicle": True}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a new fuel log
+            </p><p>
+            Here you can add refuelling entries for all vehicles.
+        </p>
+        </field>
+    </record>
+
+    <record id='fleet.fleet_vehicle_odometer_view_tree' model='ir.ui.view'>
+        <field name="name">fleet.vehicle.odometer.tree</field>
+        <field name="model">fleet.vehicle.odometer</field>
+        <field name="arch" type="xml">
+            <tree string="Flying Meter Logs">
+                <field name="date"/>
+                <field name="aircraft_id"/>
+                <field name="vehicle_id" invisible="1"/>
+                <field name="driver_id" string="Pilot"/>
+                <field name="number_landings"/>
+                <field name="starts_number"/>
+                <field name="value" string="Flying hours of day"/>
+                <field name="unit"/>
+            </tree>
+        </field>
+    </record>
+    <record id='fleet.fleet_vehicle_odometer_action' model='ir.actions.act_window'>
+        <field name="name">Aircraft Flying Meter</field>
+        <field name="res_model">fleet.vehicle.odometer</field>
+        <field name="view_mode">tree,kanban,form,graph</field>
+        <field name="context">{"search_default_groupby_vehicle": True}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a new Flying Meter log
+            </p><p>
+            You can add various Flying Meter entries for all Aircrafts.
+        </p>
+        </field>
+    </record>
+    <record id='fleet.fleet_vehicle_state_action' model='ir.actions.act_window'>
+        <field name="name">Aircraft Status</field>
+        <field name="res_model">fleet.vehicle.state</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a new aircraft status
+            </p><p>
+            You can customize available status to track the evolution of
+            each aircraft. Example: active, being repaired, sold.
+        </p>
+        </field>
+    </record>
+    <record model="ir.ui.view" id="mroa_fleet_vehicle_model_view_tree">
+        <field name="name">fleet.vehicle.model.tree</field>
+        <field name="model">fleet.vehicle.model</field>
+        <field name="inherit_id" ref='fleet.fleet_vehicle_model_view_tree'/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='brand_id']" position="attributes">
+                <attribute name='string'>Original Equipment Manufacturer (OEM)</attribute>
+            </xpath>
+            <xpath expr="//field[@name='name']" position="after">
+                <field name="nomenclature_name"/>
+                <field name="aircraft_alias"/>
+                <field name="manufacture_origin"/>
+                <field name="aircraft_type"/>
+                <field name="aircraft_category"/>
+            </xpath>
+        </field>
+    </record>
+    <record model="ir.ui.view" id="mroa_fleet_vehicle_model_view_form">
+        <field name="name">fleet.vehicle.model.form</field>
+        <field name="model">fleet.vehicle.model</field>
+        <field name="inherit_id" ref='fleet.fleet_vehicle_model_view_form'/>
+        <field name="arch" type="xml">
+            <label for="name" position="replace">
+                <label for="nomenclature_name"/>
+            </label>
+            <field name="name" position="replace">
+                <field name="nomenclature_name"/>
+            </field>
+            <field name='manager_id' position='before'>
+                <field name="aircraft_alias"/>
+                <label for="manufacture_origin" style="width: 170px"/>
+                <div class="o_row">
+                    <field name="manufacture_origin"/>
+                </div>
+            </field>
+            <page name="vendors" position="after">
+                <page name="since_new" string="Since New">
+                    <group>
+                        <group>
+                            <label for="total_service_life"/>
+                            <div class="o_row">
+                                <field name="total_service_life"/><span>Hours</span>
+                            </div>
+                            <label for="total_calendar_life_months"/>
+                            <div class="o_row">
+                                <field name="total_calendar_life_years"/><span>Years, </span>
+                                <field name="total_calendar_life_months"/><span>Months</span>
+                            </div>
+                        </group>
+                        <group>
+                            <label for="total_landing_numbers" style="width:180px"/>
+                            <div class="o_row">
+                                <field name="total_landing_numbers"/>
+                            </div>
+                        </group>
+                    </group>
+                </page>
+                <page name="since_overhaul" string="Since Overhaul">
+                    <group>
+                        <group>
+                            <label for="overhaul_service_life"/>
+                            <div class="o_row">
+                                <field name="overhaul_service_life"/><span>Hours</span>
+                            </div>
+                            <label for="overhaul_calendar_life_months"/>
+                            <div class="o_row">
+                                <field name="overhaul_calendar_life_years"/><span>Years, </span>
+                                <field name="overhaul_calendar_life_months"/><span>Months</span>
+                            </div>
+                        </group>
+                        <group>
+                            <label for="overhaul_landing_numbers" style="width:200px"/>
+                            <div class="o_row">
+                                <field name="overhaul_landing_numbers"/>
+                            </div>
+                        </group>
+                    </group>
+                </page>
+            </page>
+            <xpath expr="//group[1]/group[1]" position="after">
+                <group>
+                    <field name="aircraft_type"/>
+                    <field name="aircraft_category"/>
+                    <field name="part_numbers"/>
+                </group>
+            </xpath>
+            <field name='name' position='attributes'>
+                <attribute name='placeholder'>e.g. Nomenclature Of Aircraft</attribute>
+            </field>
+            <label for='brand_id' position='attributes'>
+                <attribute name='string'>Original Equipment Manufacturer (OEM)</attribute>
+            </label>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="aircraft_types_list_form">
+        <field name="name">Aircraft Types</field>
+        <field name="model">mroa.aircraft.types</field>
+        <field name="arch" type="xml">
+            <tree editable="top">
+                <field name="name"/>
+            </tree>
+        </field>
+    </record>
+    <record id='aircraft_types_list_action' model='ir.actions.act_window'>
+        <field name="name">Aircraft Types</field>
+        <field name="res_model">mroa.aircraft.types</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a new aircraft Types
+            </p>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="aircraft_categories_list_form">
+        <field name="name">Aircraft Categories</field>
+        <field name="model">mroa.aircraft.categories</field>
+        <field name="arch" type="xml">
+            <tree editable="top">
+                <field name="name"/>
+            </tree>
+        </field>
+    </record>
+    <record id='aircraft_types_categories_action' model='ir.actions.act_window'>
+        <field name="name">Aircraft Categories</field>
+        <field name="res_model">mroa.aircraft.categories</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a new aircraft Categories
+            </p>
+        </field>
+    </record>
+
+    <record id='mroa_fleet_vehicle_model_action' model='ir.actions.act_window'>
+        <field name="name">Aircraft Master Data</field>
+        <field name="res_model">fleet.vehicle.model</field>
+        <field name="view_mode">tree,form</field>
+        <field name="context">{}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a new Aircraft Model
+            </p><p>
+            You can define several models for each make.
+        </p>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="aircraft_indection_mode_form">
+        <field name="name">Induction Mode</field>
+        <field name="model">mroa.aircraft.mode.induction</field>
+        <field name="arch" type="xml">
+            <tree editable="top">
+                <field name="name"/>
+            </tree>
+        </field>
+    </record>
+    <record id='aircraft_indection_mode_action' model='ir.actions.act_window'>
+        <field name="name">Indection Mode List</field>
+        <field name="res_model">mroa.aircraft.mode.induction</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a new Induction Mode
+            </p>
+        </field>
+    </record>
+    <record id="fleet.fleet_vehicle_log_contract_view_search" model="ir.ui.view">
+        <field name="name">fleet.vehicle.log.contract.search</field>
+        <field name="model">fleet.vehicle.log.contract</field>
+        <field name="arch" type="xml">
+            <search string="Aircraft Contracts">
+                <field name="aircraft_id" string="Aircraft"
+                       filter_domain="[('aircraft_id.vehicle_id.name', 'ilike', self)]"/>
+                <field name="purchaser_id" string="Pilot" filter_domain="[('purchaser_id', 'child_of', self)]"/>
+                <field name="insurer_id" string="Vendor" filter_domain="[('insurer_id', 'child_of', self)]"/>
+                <field name="cost_subtype_id" string="Service Type"
+                       filter_domain="[('cost_ids.cost_subtype_id', 'ilike', self)]"/>
+                <filter string="In Progress" name="open" domain="[('state', 'in', ['open', 'diesoon'])]"/>
+                <filter string="Expired" name="expired" domain="[('state', '=', 'expired')]"/>
+                <filter string="Expiring Soon" name="expire_soon" domain="[('state', '=', 'diesoon')]"/>
+                <separator/>
+                <filter string="Archived" name="inactive" domain="[('active', '=', False)]"/>
+                <separator/>
+                <filter invisible="1" string="Late Activities" name="activities_overdue"
+                        domain="[('activity_ids.date_deadline', '&lt;', context_today().strftime('%Y-%m-%d'))]"
+                        help="Show all records which has next action date is before today"/>
+                <filter invisible="1" string="Today Activities" name="activities_today"
+                        domain="[('activity_ids.date_deadline', '=', context_today().strftime('%Y-%m-%d'))]"/>
+                <filter invisible="1" string="Future Activities" name="activities_upcoming_all"
+                        domain="[('activity_ids.date_deadline', '&gt;', context_today().strftime('%Y-%m-%d'))]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Aircraft" name="vehicle" context="{'group_by': 'aircraft_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+    <record id='fleet.fleet_vehicle_costs_view_search' model='ir.ui.view'>
+        <field name="name">fleet.vehicle.cost.search</field>
+        <field name="model">fleet.vehicle.cost</field>
+        <field name="arch" type="xml">
+            <search string="Aircraft costs">
+                <field name="aircraft_id" string="Aircraft"/>
+                <field name="cost_subtype_id"/>
+                <field name="date"/>
+                <field name="parent_id"/>
+                <filter name="parent_false" domain="[('parent_id','=',False)]" string="Effective Costs"/>
+                <filter name="parent_true" domain="[('parent_id','!=',False)]" string="Indicative Costs"/>
+                <group expand="1" string="Group By">
+                    <filter name="groupby_cost_type" context="{'group_by': 'cost_type'}" string="Cost Type"/>
+                    <filter name="groupby_cost_subtype_id" context="{'group_by': 'cost_subtype_id'}"
+                            string="Cost Subtype"/>
+                    <filter name="groupby_aircraft_id" context="{'group_by': 'aircraft_id'}" string="Aircraft"/>
+                    <filter name="groupby_parent_id" context="{'group_by': 'parent_id'}" string="Parent"/>
+                    <separator/>
+                    <filter name="groupby_date" context="{'group_by': 'date:month'}" string="Date"
+                            help="Aircraft Costs by Date"/>
+                </group>
+            </search>
+        </field>
+    </record>
+    <record id='fleet.fleet_vehicle_log_services_view_search' model='ir.ui.view'>
+        <field name="name">fleet.vehicle.log.services.search</field>
+        <field name="model">fleet.vehicle.log.services</field>
+        <field name="arch" type="xml">
+            <search string="Services Logs">
+                <field name="aircraft_id" string="Aircraft"/>
+                <field name="cost_subtype_id"/>
+            </search>
+        </field>
+    </record>
+    <record id='fleet.fleet_vehicle_log_fuel_view_search' model='ir.ui.view'>
+        <field name="name">fleet.vehicle.log.fuel.search</field>
+        <field name="model">fleet.vehicle.log.fuel</field>
+        <field name="arch" type="xml">
+            <search string="Aircraft Fuel Logs">
+                <field name="vehicle_id" string="Aircraft"/>
+                <field name="date"/>
+                <field name="purchaser_id"/>
+                <field name="liter"/>
+                <field name="amount" sum="Price"/>
+                <group expand="0" string="Group By">
+                    <filter name="groupby_vehicle" context="{'group_by' : 'aircraft_id'}" string="Aircraft"/>
+                </group>
+            </search>
+        </field>
+    </record>
+    <record id='fleet.fleet_vehicle_odometer_view_search' model='ir.ui.view'>
+        <field name="name">fleet.vehicle.odometer.search</field>
+        <field name="model">fleet.vehicle.odometer</field>
+        <field name="arch" type="xml">
+            <search string="Aircraft odometers">
+                <field name="aircraft_id" string="Aircraft"/>
+                <field name="driver_id" string="Pilot"/>
+                <field name="value"/>
+                <field name="date"/>
+                <group expand="0" string="Group By">
+                    <filter name="groupby_vehicle" context="{'group_by': 'aircraft_id'}" string="Aircraft"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id='fleet.fleet_vehicle_odometer_view_form' model='ir.ui.view'>
+        <field name="name">fleet.vehicle.odometer.form</field>
+        <field name="model">fleet.vehicle.odometer</field>
+        <field name="arch" type="xml">
+            <form string="Odoo meter log for the
+Aircraft">
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <span>Odoo meter log for the
+                                Aircraft</span>
+                        </h1>
+                    </div>
+                    <group>
+                        <field name="vehicle_id"/>
+                        <field name="value" class="oe_inline"/>
+                        <field name="unit" class="oe_inline"/>
+                        <field name="date"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+</odoo>

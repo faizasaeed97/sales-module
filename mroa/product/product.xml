@@ -1,0 +1,760 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record model="ir.ui.view" id="mroa_product_template_only_form_view_xpath">
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref='product.product_template_only_form_view'/>
+        <field name="arch" type="xml">
+            <field name="default_code" position="attributes">
+                <attribute name='invisible'>1</attribute>
+            </field>
+        </field>
+    </record>
+    <record model="ir.ui.view" id="mroa_product_form_xpaths">
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref='product.product_template_form_view'/>
+        <field name="arch" type="xml">
+            <field name="type" position='before'>
+                <field name="alias"/>
+                <field name="is_assembly"/>
+                <field name="serial_number" attrs="{'invisible':[('is_assembly','=',False)]}"/>
+            </field>
+            <label for="name" position="attributes">
+                <attribute name='string'>Nomenclature</attribute>
+            </label>
+            <field name="type" position="after">
+                <field name="required_ref" string="Internal Reference"/>
+                <field name="part_number"/>
+                <field name="alter_part_number"/>
+                <field name="nsn_number"/>
+                <field name="manufacturer_number"/>
+                <field name="trade_code"/>
+                <field name="manufacturer_name"/>
+            </field>
+            <field name="company_id" position="after">
+                <field name="relation_code" invisible="1"/>
+                <field name="serviceability"/>
+            </field>
+            <div name="options" position="inside">
+                <div>
+                    <field name="can_purchase_locally"/>
+                    <label for="can_purchase_locally"/>
+                </div>
+                <div>
+                    <field name="can_make_order"/>
+                    <label for="can_make_order"/>
+                </div>
+            </div>
+            <page name="inventory" position="before">
+                <page string="Cross Reference" name="cross_reference">
+                    <group>
+                        <field name="cross_reference" nolabel="1">
+                            <tree>
+                                <field name="name" string="Nomenclature"/>
+                                <field name="alias"/>
+                                <field name="type"/>
+                                <field name="categ_id"/>
+                                <field name="required_ref"/>
+                                <field name="relation_code"/>
+                                <field name="serviceability"/>
+                            </tree>
+                        </field>
+                    </group>
+                </page>
+            </page>
+        </field>
+    </record>
+    <record model="ir.ui.view" id="mroa_product_template_tree_view">
+        <field name="name">product.template.product.tree</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref='product.product_template_tree_view'/>
+        <field name="arch" type="xml">
+            <field name="default_code" position="replace">
+                <field name="header_number_show"/>
+            </field>
+        </field>
+    </record>
+    <record id="mroa_product_template_kanban_view" model="ir.ui.view">
+        <field name="name">Product.template.product.kanban</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref='product.product_template_kanban_view'/>
+        <field name="arch" type="xml">
+            <div class="oe_kanban_details" position="replace">
+                <div class="oe_kanban_details">
+                    <strong class="o_kanban_record_title">
+                        <field name="name"/>
+                    </strong>
+                    <div t-if="record.tail_reference.value">
+                        <field name="tail_reference"/>
+                    </div>
+                    <div t-if="record.product_variant_count.value &gt; 1" groups="product.group_product_variant">
+                        <strong>
+                            <t t-esc="record.product_variant_count.value"/> Variants
+                        </strong>
+                    </div>
+                    <div name="tags"/>
+                    <ul>
+                        <li>Price: <field name="lst_price" widget="monetary"
+                                          options="{'currency_field': 'currency_id', 'field_digits': True}"></field></li>
+                    </ul>
+                    <div name="tags"/>
+                </div>
+            </div>
+        </field>
+    </record>
+    <record id="mroa_product_form_xpaths_two" model="ir.ui.view">
+        <field name="name">product.template.inherit</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_form_view"/>
+        <field name="arch" type="xml">
+            <field name="type" position="after">
+                <field name="specific_type"/>
+            </field>
+            <label for="name" position="before">
+                <h4><field name="header_number_show" readonly="1"/></h4>
+            </label>
+            <xpath expr="//sheet/notebook" position="inside">
+                <page string="Serialized Inventory">
+                    <group>
+                        <group>
+                            <label for="repair_condition"/>
+                            <div class="o_row">
+                                <field name="repair_condition"/>
+                                <field name="repair_condition_value" invisible="1"/>
+                            </div>
+                        </group>
+                        <group>
+                            <field name="repair_Code" attrs="{'invisible':[('repair_condition_value','=','NoShow')]}"
+                                   widget="many2many_tags"/>
+                            <field name="select_mroa" widget="many2many_tags"/>
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+            <xpath expr="//sheet/notebook" position="inside">
+                <page string="Tools-Testbenches-GSE"
+                      attrs="{'invisible': [('specific_type', '!=', 'Tools, Testbenches, GSE')]}">
+                    <field name="tools_testbenches" nolabel="1">
+                        <tree>
+                            <field name="TTG" width="7"/>
+                            <field name="Purpose_and_Description" width="15"/>
+                            <field name="Dimensions" width="10"/>
+                            <field name="measuring_value" width="15"/>
+                            <field name="aircraft_type" width="10" widget="many2many_tags"/>
+                            <field name="test_conducted" width="10"/>
+                        </tree>
+                        <form string="Tools Test Benches GSE">
+                            <group>
+                                <group>
+                                    <label for="TTG"/>
+                                    <div class="o_row">
+                                        <field name="TTG"/>
+                                    </div>
+                                    <label for="Purpose_and_Description" style="width:160px"/>
+                                    <div class="o_row">
+                                        <field name="Purpose_and_Description"/>
+                                    </div>
+                                    <label for="Dimensions"/>
+                                    <div class="o_row">
+                                        <field name="Dimensions"/>
+                                    </div>
+                                    <field name="measuring_value"
+                                           attrs="{'invisible':[('what_ttg','=','General Tools')]}"/>
+                                </group>
+                                <group>
+                                    <label for="measurement_ranges_with_tolerances" style="width:240px"
+                                           attrs="{'invisible':[('what_ttg','=','General Tools')]}"/>
+                                    <div class="o_row">
+                                        <field name="measurement_ranges_with_tolerances"
+                                               attrs="{'invisible':[('what_ttg','=','General Tools')]}"/>
+                                    </div>
+                                    <field name="used_for_assemblies" widget="many2many_tags"
+                                           attrs="{'invisible':[('what_ttg','in',['Special Tools','Ground Support Equipment, GSE'])]}"/>
+                                    <field name="aircraft_type" widget="many2many_tags"
+                                           attrs="{'invisible':[('what_ttg','in',['General Tools','Testbenches','Test measuring and digonastic Equioment, TMDEs'])]}"/>
+                                    <field name="test_conducted"
+                                           attrs="{'invisible':[('what_ttg','in',['General Tools'])]}"/>
+                                    <field name="what_ttg" invisible="1"/>
+                                </group>
+                            </group>
+                            <group string="Specifications">
+                                <field name="tools_specification" nolabel="1">
+                                    <tree editable="bottom">
+                                        <field name="name"/>
+                                        <field name="description"/>
+                                    </tree>
+                                </field>
+                            </group>
+                        </form>
+                    </field>
+                </page>
+            </xpath>
+            <xpath expr="//sheet/notebook" position="inside">
+                <page string="Consumables" attrs="{'invisible': [('type', '!=', 'consu')]}">
+                    <group>
+                        <group>
+                            <field name="type_prod"/>
+                        </group>
+                        <group>
+                            <field name="local_manufacturer_multiple_selection" widget="many2many_tags"/>
+                            <field name="local_vendors_multiple_selection" widget="many2many_tags"/>
+                        </group>
+                    </group>
+                    <group string="Specification">
+                        <field name="specification_prod" nolabel="1">
+                            <tree editable="bottom">
+                                <field name="name"/>
+                                <field name="unit"/>
+                                <field name="con_prod_tmp_id" invisible="1"/>
+                            </tree>
+                        </field>
+                    </group>
+                </page>
+                <page string="Standard Parts" attrs="{'invisible': [('specific_type', '!=', 'Standard Parts')]}">
+                    <group>
+                        <group>
+                            <field name="sparts_type_prod"/>
+                        </group>
+                        <group>
+                            <field name="spart_manufacturer_multiple_selection" widget="many2many_tags"/>
+                        </group>
+                    </group>
+                    <group string="Specification">
+                        <field name="spart_specification_prod" nolabel="1">
+                            <tree editable="bottom">
+                                <field name="name"/>
+                                <field name="unit"/>
+                                <field name="spart_prod_tmp_id" invisible="1"/>
+                            </tree>
+                        </field>
+                    </group>
+                </page>
+                <page string="Expendables" attrs="{'invisible': [('specific_type', '!=', 'Expendables')]}">
+                    <group>
+                        <group>
+                            <field name="expand_type_prod"/>
+                        </group>
+                        <group>
+                            <field name="expand_manufacturer_multiple_selection" widget="many2many_tags"/>
+                        </group>
+                    </group>
+                    <group string="Specification">
+                        <field name="expand_specification_prod" nolabel="1">
+                            <tree editable="bottom">
+                                <field name="name"/>
+                                <field name="unit"/>
+                                <field name="expand_prod_tmp_id" invisible="1"/>
+                            </tree>
+                        </field>
+                    </group>
+                </page>
+                <page string="Tail Nowise Aircraft Inventory">
+                    <group>
+                        <group>
+                            <label for="aircraft_type" style="width:200px"/>
+                            <div class="o_row">
+                                <field name="aircraft_type"/>
+                            </div>
+                            <label for="tail_reference" style="width:200px"/>
+                            <div class="o_row">
+                                <field name="tail_reference"/>
+                            </div>
+                            <label for="tbo_expendables_serial_number" style="width:200px"/>
+                            <div class="o_row">
+                                <field name="tbo_expendables_serial_number"/>
+                            </div>
+                            <label for="manufacture_date" style="width:200px"/>
+                            <div class="o_row">
+                                <field name="manufacture_date"/>
+                            </div>
+                            <label for="date_induction_purchase" style="width:200px"/>
+                            <div class="o_row">
+                                <field name="date_induction_purchase"/>
+                            </div>
+                            <field name="tail_internal_reference" invisible="1"/>
+                        </group>
+                        <group>
+                            <field name="tail_number" domain="[('model_id','=',aircraft_type)]"/>
+                            <field name="installation_date"/>
+                            <field name="removal_date"/>
+                            <field name="removal_reason"/>
+                            <field name="last_visit"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group>
+                            <label for="date_last_visit_workshop_depot" style="width:250px"/>
+                            <div class="o_row">
+                                <field name="date_last_visit_workshop_depot"/>
+                            </div>
+                        </group>
+                        <group>
+                            <label for="fault_details_authority" style="width:250px"/>
+                            <div class="o_row">
+                                <field name="fault_details_authority"/>
+                            </div>
+                        </group>
+                    </group>
+                </page>
+                <page name="forecasting_page" string="Forecasting &amp; LSP">
+                    <field name="forecasting_ids">
+                        <tree>
+                            <field name="lsp_designer" width="15"/>
+                            <field name="project_quantity" width="20"/>
+                            <field name="edp_quantity" width="20"/>
+                            <field name="un_quantity" width="20"/>
+                        </tree>
+                        <form>
+                            <group>
+                                <group>
+                                    <field name="lsp_designer"/>
+                                </group>
+                                <group>
+                                    <label for="project_quantity" style="width: 190px"/>
+                                    <div class="o_row">
+                                        <field name="project_quantity"/>
+                                    </div>
+                                    <label for="edp_quantity"/>
+                                    <div class="o_row">
+                                        <field name="edp_quantity"/>
+                                    </div>
+                                    <label for="un_quantity"/>
+                                    <div class="o_row">
+                                        <field name="un_quantity"/>
+                                    </div>
+                                </group>
+                            </group>
+                            <notebook>
+                                <page string="Forecasted Quantity">
+                                    <field name="forecasted_quantity">
+                                        <tree>
+                                            <field name="f_quantity_sch"/>
+                                            <field name="f_quantity_unf"/>
+                                            <field name="f_quantity_tot"/>
+                                        </tree>
+                                        <form>
+                                            <group>
+                                                <label for="f_quantity_sch" style="width:320px"/>
+                                                <div class="o_row">
+                                                    <field name="f_quantity_sch"/>
+                                                </div>
+                                                <field name="f_quantity_unf"/>
+                                                <field name="f_quantity_tot"/>
+                                            </group>
+                                        </form>
+                                    </field>
+                                </page>
+                                <page string="LSP Quantity">
+                                    <field name="lsp_quantity">
+                                        <tree>
+                                            <field name="lsp_quantity_sch"/>
+                                            <field name="lsp_quantity_unf"/>
+                                            <field name="lsp_quantity_tot"/>
+                                        </tree>
+                                        <form>
+                                            <group>
+                                                <label for="lsp_quantity_sch" style="width:300px"/>
+                                                <div class="o_row">
+                                                    <field name="lsp_quantity_sch"/>
+                                                </div>
+                                                <field name="lsp_quantity_unf"/>
+                                                <field name="lsp_quantity_tot"/>
+                                            </group>
+                                        </form>
+                                    </field>
+                                </page>
+                            </notebook>
+                        </form>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+    <record id="mroa_product_form_xpaths_three" model="ir.ui.view">
+        <field name="name">product.lot.inherit</field>
+        <field name="model">stock.production.lot</field>
+        <field name="inherit_id" ref="stock.view_production_lot_form"/>
+        <field name="arch" type="xml">
+            <group name="main_group" position="after">
+                <group>
+                    <group>
+                        <label for="expiry_date" style="width:200px"/>
+                        <div class="o_row">
+                            <field name="expiry_date"/>
+                        </div>
+                        <label for="max_storage_temp" style="width:200px"/>
+                        <div class="o_row">
+                            <field name="max_storage_temp"/>
+                        </div>
+                        <label for="max_storage_humidity" style="width:200px"/>
+                        <div class="o_row">
+                            <field name="max_storage_humidity"/>
+                        </div>
+                        <label for="max_calendar_life" style="width:200px"/>
+                        <div class="o_row">
+                            <field name="max_calendar_life"/><span>Years</span>
+                            <field name="max_calendar_life_months"/><span>Months</span>
+                        </div>
+                    </group>
+                    <group>
+                        <label for="manufacture_date"/>
+                        <div class="o_row">
+                            <field name="manufacture_date"/>
+                        </div>
+                        <label for="retest_date"/>
+                        <div class="o_row">
+                            <field name="retest_date"/>
+                        </div>
+                    </group>
+                </group>
+            </group>
+        </field>
+    </record>
+    <record id="mrp.mrp_production_action" model="ir.actions.act_window">
+        <field name="name">Overhaul Orders</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">mrp.production</field>
+        <field name="view_mode">tree,kanban,form,calendar,pivot,graph</field>
+        <field name="view_id" eval="False"/>
+        <field name="search_view_id" ref="mrp.view_mrp_production_filter"/>
+        <field name="context">{'search_default_todo': True, 'default_company_id': allowed_company_ids[0]}</field>
+        <field name="domain">[('picking_type_id.active', '=', True)]</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a new manufacturing order <br/>
+            </p><p>
+            Consume components and build finished products using bills of materials
+        </p>
+        </field>
+    </record>
+    <record model="ir.ui.view" id="mroa_procurmenttail_condition_tree">
+        <field name="name">Procurement List</field>
+        <field name="model">product.tail.procurement.condition</field>
+        <field name="arch" type="xml">
+            <tree editable="top">
+                <field name="name"/>
+            </tree>
+        </field>
+    </record>
+    <record model="ir.ui.view" id="mroa_ttg_typex_tree">
+        <field name="name">TTG type List</field>
+        <field name="model">ttg.type</field>
+        <field name="arch" type="xml">
+            <tree editable="top">
+                <field name="name"/>
+            </tree>
+        </field>
+    </record>
+    <record model="ir.ui.view" id="mroa_testbench_specification_tree">
+        <field name="name">Testbench Specification List</field>
+        <field name="model">tool.testbench.specification.names</field>
+        <field name="arch" type="xml">
+            <tree editable="top">
+                <field name="name"/>
+            </tree>
+        </field>
+    </record>
+    <record model="ir.ui.view" id="mroa_tool_testbench_options_tree">
+        <field name="name">Testbench Tool List</field>
+        <field name="model">tool.testbench.options</field>
+        <field name="arch" type="xml">
+            <tree editable="top">
+                <field name="name"/>
+            </tree>
+        </field>
+    </record>
+    <record model="ir.ui.view" id="mroa_stype_consumeable_xmodel_tree">
+        <field name="name">Consumeable Type List</field>
+        <field name="model">type.consumeable.model</field>
+        <field name="arch" type="xml">
+            <tree editable="top">
+                <field name="name"/>
+            </tree>
+        </field>
+    </record>
+    <record model="ir.ui.view" id="mroa_product_tbo_serial_numberx_tree">
+        <field name="name">Product Serial TBO List</field>
+        <field name="model">product.tbo.serial.number</field>
+        <field name="arch" type="xml">
+            <tree editable="top">
+                <field name="name"/>
+            </tree>
+        </field>
+    </record>
+    <record model="ir.ui.view" id="mroa_type_spart_modelxs_tree">
+        <field name="name">Type Spart Groups List</field>
+        <field name="model">type.spart.model</field>
+        <field name="arch" type="xml">
+            <tree editable="top">
+                <field name="name"/>
+            </tree>
+        </field>
+    </record>
+    <record model="ir.ui.view" id="mroa_type_expendable_modelx_tree">
+        <field name="name">Expendable Type List</field>
+        <field name="model">type.expendable.model</field>
+        <field name="arch" type="xml">
+            <tree editable="top">
+                <field name="name"/>
+            </tree>
+        </field>
+    </record>
+    <record model="ir.ui.view" id="mroa_specification_modelx_tree">
+        <field name="name">Specification List</field>
+        <field name="model">specification.model</field>
+        <field name="arch" type="xml">
+            <tree editable="top">
+                <field name="name"/>
+            </tree>
+        </field>
+    </record>
+    <record model="ir.ui.view" id="mroa_specification_unitxs_tree">
+        <field name="name">Specification Unit List</field>
+        <field name="model">specification.unit</field>
+        <field name="arch" type="xml">
+            <tree editable="top">
+                <field name="name"/>
+            </tree>
+        </field>
+    </record>
+    <record model="ir.ui.view" id="mroa_local_manufacturerx_tree">
+        <field name="name">Local Manufacturer List</field>
+        <field name="model">local.manufacturer</field>
+        <field name="arch" type="xml">
+            <tree editable="top">
+                <field name="name"/>
+            </tree>
+        </field>
+    </record>
+    <record model="ir.ui.view" id="mroa_local_vendorsx_tree">
+        <field name="name">Local Vendors List</field>
+        <field name="model">local.vendors</field>
+        <field name="arch" type="xml">
+            <tree editable="top">
+                <field name="name"/>
+            </tree>
+        </field>
+    </record>
+    <record model="ir.ui.view" id="mroa_tail_product_removal_reasonx_tree">
+        <field name="name">Tail Product Removal Reason List</field>
+        <field name="model">tail.product.removal.reason</field>
+        <field name="arch" type="xml">
+            <tree editable="top">
+                <field name="name"/>
+            </tree>
+        </field>
+    </record>
+    <record model="ir.ui.view" id="mroa_mroa_product_trade_codex_tree">
+        <field name="name">Product Trade Code List</field>
+        <field name="model">mroa.product.trade.code</field>
+        <field name="arch" type="xml">
+            <tree editable="top">
+                <field name="name"/>
+            </tree>
+        </field>
+    </record>
+    <record model="ir.ui.view" id="mroa_mroa_product_relation_codexs_tree">
+        <field name="name">Product Relation Code List</field>
+        <field name="model">mroa.product.relation.code</field>
+        <field name="arch" type="xml">
+            <tree editable="top">
+                <field name="name"/>
+            </tree>
+        </field>
+    </record>
+    <record model="ir.ui.view" id="mroa_mroa_product_service_codexs_tree">
+        <field name="name">Product Service Code List</field>
+        <field name="model">mroa.product.service.code</field>
+        <field name="arch" type="xml">
+            <tree editable="top">
+                <field name="name"/>
+            </tree>
+        </field>
+    </record>
+    <record model="ir.ui.view" id="mroa_mroa_repair_condition_modelxs_tree">
+        <field name="name">Repair Condition List</field>
+        <field name="model">mroa.repair.condition.model</field>
+        <field name="arch" type="xml">
+            <tree editable="top">
+                <field name="name"/>
+            </tree>
+        </field>
+    </record>
+    <record model="ir.ui.view" id="mroa_product_lsp_designerx_tree">
+        <field name="name">Product LSP Designer List</field>
+        <field name="model">product.lsp.designer</field>
+        <field name="arch" type="xml">
+            <tree editable="top">
+                <field name="name"/>
+            </tree>
+        </field>
+    </record>
+    <record model="ir.ui.view" id="mroa_specification_prod_models_namess_tree">
+        <field name="name">Specification Names List</field>
+        <field name="model">specification.prod.models.names</field>
+        <field name="arch" type="xml">
+            <tree editable="top">
+                <field name="name"/>
+            </tree>
+        </field>
+    </record>
+    <record id='mroa_product_xtail_procurementx_menu_action' model='ir.actions.act_window'>
+        <field name="name">Product Tail Procurement Condition</field>
+        <field name="res_model">product.tail.procurement.condition</field>
+        <field name="view_mode">tree</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Create</p>
+        </field>
+    </record>
+    <record id='mroa_product_ttg_type_menu_action' model='ir.actions.act_window'>
+        <field name="name">TTG Type</field>
+        <field name="res_model">ttg.type</field>
+        <field name="view_mode">tree</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Create</p>
+        </field>
+    </record>
+    <record id='mroa_tool_testbench_specification_menu_action' model='ir.actions.act_window'>
+        <field name="name">Tool Testbench Specification</field>
+        <field name="res_model">tool.testbench.specification</field>
+        <field name="view_mode">tree</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Create</p>
+        </field>
+    </record>
+    <record id='mroa_tool_testbench_specificationx_menu_action' model='ir.actions.act_window'>
+        <field name="name">Tool Testbench Specification Names</field>
+        <field name="res_model">tool.testbench.specification.names</field>
+        <field name="view_mode">tree</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Create</p>
+        </field>
+    </record>
+    <record id='mroa_tool_testbench_options_menu_action' model='ir.actions.act_window'>
+        <field name="name">Tool Testbench Options</field>
+        <field name="res_model">tool.testbench.options</field>
+        <field name="view_mode">tree</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Create</p>
+        </field>
+    </record>
+    <record id='mroa_type_consumeable_model_menu_action' model='ir.actions.act_window'>
+        <field name="name">Type Consumeable Model Condition</field>
+        <field name="res_model">type.consumeable.model</field>
+        <field name="view_mode">tree</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Create</p>
+        </field>
+    </record>
+    <record id='mroa_product_tbo_serialx_number_menu_action' model='ir.actions.act_window'>
+        <field name="name">Product TBO Serial Number</field>
+        <field name="res_model">product.tbo.serial.number</field>
+        <field name="view_mode">tree</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Create</p>
+        </field>
+    </record>
+    <record id='mroa_type_spart_model_menu_action' model='ir.actions.act_window'>
+        <field name="name">Type Spart Model</field>
+        <field name="res_model">type.spart.model</field>
+        <field name="view_mode">tree</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Create</p>
+        </field>
+    </record>
+    <record id='mroa_type_expendable_modelx_menu_action' model='ir.actions.act_window'>
+        <field name="name">Type Expendable Model</field>
+        <field name="res_model">type.expendable.model</field>
+        <field name="view_mode">tree</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Create</p>
+        </field>
+    </record>
+    <record id='mroa_specification_xmodel_menu_action' model='ir.actions.act_window'>
+        <field name="name">Specification Model</field>
+        <field name="res_model">specification.model</field>
+        <field name="view_mode">tree</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Create</p>
+        </field>
+    </record>
+    <record id='mroa_specification_unix_menu_action' model='ir.actions.act_window'>
+        <field name="name">Specification Unit</field>
+        <field name="res_model">specification.unit</field>
+        <field name="view_mode">tree</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Create</p>
+        </field>
+    </record>
+    <record id='mroa_local_manufacturer_menu_action' model='ir.actions.act_window'>
+        <field name="name">Local Manufacturer</field>
+        <field name="res_model">local.manufacturer</field>
+        <field name="view_mode">tree</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Create</p>
+        </field>
+    </record>
+    <record id='mroa_local_xvendors_menu_action' model='ir.actions.act_window'>
+        <field name="name">Local Vendors</field>
+        <field name="res_model">local.vendors</field>
+        <field name="view_mode">tree</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Create</p>
+        </field>
+    </record>
+    <record id='mroa_tail_product_removal_xreason_menu_action' model='ir.actions.act_window'>
+        <field name="name">Tail Product Removal Reason</field>
+        <field name="res_model">tail.product.removal.reason</field>
+        <field name="view_mode">tree</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Create</p>
+        </field>
+    </record>
+    <record id='mroa_mroa_product_trade_xcode_menu_action' model='ir.actions.act_window'>
+        <field name="name">Product Trade Code</field>
+        <field name="res_model">mroa.product.trade.code</field>
+        <field name="view_mode">tree</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Create</p>
+        </field>
+    </record>
+    <record id='mroa_mroa_product_xrelation_code_menu_action' model='ir.actions.act_window'>
+        <field name="name">Product Relation Code</field>
+        <field name="res_model">mroa.product.relation.code</field>
+        <field name="view_mode">tree</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Create</p>
+        </field>
+    </record>
+    <record id='mroa_mroa_product_xservice_code_code_menu_action' model='ir.actions.act_window'>
+        <field name="name">Product Service Code</field>
+        <field name="res_model">mroa.product.service.code</field>
+        <field name="view_mode">tree</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Create</p>
+        </field>
+    </record>
+    <record id='mroa_mroa_repair_xcondition_model_menu_action' model='ir.actions.act_window'>
+        <field name="name">MROA Repair Condition</field>
+        <field name="res_model">mroa.repair.condition.model</field>
+        <field name="view_mode">tree</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Create</p>
+        </field>
+    </record>
+    <record id='mroa_product_lsp_designer_code_menu_action' model='ir.actions.act_window'>
+        <field name="name">Product LSP Designer</field>
+        <field name="res_model">product.lsp.designer</field>
+        <field name="view_mode">tree</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Create</p>
+        </field>
+    </record>
+    <record id='mroa_specification_prod_xnamese_menu_action' model='ir.actions.act_window'>
+        <field name="name">Specification Models</field>
+        <field name="res_model">specification.prod.models.names</field>
+        <field name="view_mode">tree</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Create</p>
+        </field>
+    </record>
+</odoo>

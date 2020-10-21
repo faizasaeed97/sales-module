@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <menuitem name="Aircrafts Parts" id="mroa_parts_menu_root" sequence="116"
+              web_icon="mroa,static/description/aircraft-parts.png"/>
+    <menuitem name="Aircraft Parts" id="mroa_aircraft_parts_submenu_root" parent="mroa_parts_menu_root" sequence="1"/>
+    <menuitem name="Aircraft Parts" id="mroa_aircraft_parts_submenu_submenu_root"
+              parent="mroa_aircraft_parts_submenu_root" action="stock.product_template_action_product" sequence="1"/>
+    <menuitem name="Lot Inventory" id="mroa_aircraft_lot_serial_submenu_root" parent="mroa_aircraft_parts_submenu_root"
+              action="stock.action_production_lot_form" sequence="2"/>
+    <menuitem name="Configuration Management" id="mroa_configuration_mng_menu" parent="mroa_parts_menu_root"
+              sequence="7"/>
+    <menuitem name="Configuration Management" action="mroa_configuration_management_action" id="mroa_configuration_mng_menu_child"
+              parent="mroa_configuration_mng_menu" sequence="1"/>
+    <menuitem name="Reference Price" action="product_reference_price_action" id="mroa_configuration_reference_price"
+              parent="mroa_configuration_mng_menu" sequence="2"/>
+    <menuitem name="Product Tail procurement" action="mroa_product_xtail_procurementx_menu_action"
+              id="mroa_product_xtail_procurementx_menux" parent="mroa_configuration_mng_menu" sequence="3"/>
+    <menuitem name="TTG Type" action="mroa_product_ttg_type_menu_action" id="mroa_mroa_product_ttg_type_menu_menux"
+              parent="mroa_configuration_mng_menu" sequence="4"/>
+
+    <menuitem name="Tool Testbench Spec" action="mroa_tool_testbench_specification_menu_action"
+              id="mmroa_tool_testbench_specification_menu_menux" parent="mroa_configuration_mng_menu" sequence="5"/>
+
+    <menuitem name="Tool Testbench Spec Names" action="mroa_tool_testbench_specificationx_menu_action"
+              id="mroa_tool_testbench_specificationx_menu_menux" parent="mroa_configuration_mng_menu" sequence="6"/>
+
+    <menuitem name="Tool Testbench Options" action="mroa_tool_testbench_options_menu_action"
+              id="mroa_tool_testbench_options_menux_menux" parent="mroa_configuration_mng_menu" sequence="7"/>
+
+    <menuitem name="Type Consumeable Condition" action="mroa_type_consumeable_model_menu_action"
+              id="mroa_type_consumeable_model_menu_actionx_menux" parent="mroa_configuration_mng_menu" sequence="8"/>
+
+    <menuitem name="Product TBO Serial Number" action="mroa_product_tbo_serialx_number_menu_action"
+              id="mroa_product_tbo_serialx_number_menux_menux" parent="mroa_configuration_mng_menu" sequence="9"/>
+
+    <menuitem name="Type Spart" action="mroa_type_spart_model_menu_action"
+              id="mroa_type_spart_modelx_menux_menux" parent="mroa_configuration_mng_menu" sequence="10"/>
+
+    <menuitem name="Type Expendable" action="mroa_type_expendable_modelx_menu_action"
+              id="mroa_type_expendable_modelx_menux_menux" parent="mroa_configuration_mng_menu" sequence="11"/>
+
+    <menuitem name="Specification Model" action="mroa_specification_xmodel_menu_action"
+              id="mroa_specification_xmodel_menux_menux" parent="mroa_configuration_mng_menu" sequence="12"/>
+
+    <menuitem name="Specification Unit" action="mroa_specification_unix_menu_action"
+              id="mroa_specification_unix_menu_actionxmenux" parent="mroa_configuration_mng_menu" sequence="13"/>
+
+    <menuitem name="Local Manufacturer" action="mroa_local_manufacturer_menu_action"
+              id="mroa_local_manufacturer_menuxxmenux" parent="mroa_configuration_mng_menu" sequence="14"/>
+
+    <menuitem name="Local Vendors" action="mroa_local_xvendors_menu_action"
+              id="mroa_local_xvendors_menu_actioxxmenux" parent="mroa_configuration_mng_menu" sequence="15"/>
+
+    <menuitem name="Tail Product Removal Reason" action="mroa_tail_product_removal_xreason_menu_action"
+              id="mroa_tail_product_removal_xreason_actionxmenux" parent="mroa_configuration_mng_menu" sequence="16"/>
+
+    <menuitem name="Product Trade Code" action="mroa_mroa_product_trade_xcode_menu_action"
+              id="mroa_mroa_product_trade_xcode_menu_actonxmenux" parent="mroa_configuration_mng_menu" sequence="17"/>
+
+    <menuitem name="Product Relation Code" action="mroa_mroa_product_xrelation_code_menu_action"
+              id="mroa_mroa_product_xrelation_code_menu_actonxmenux" parent="mroa_configuration_mng_menu" sequence="18"/>
+
+    <menuitem name="Product Service Code" action="mroa_mroa_product_xservice_code_code_menu_action"
+              id="mroa_mroa_product_xservice_code_xmxenu_actionx" parent="mroa_configuration_mng_menu" sequence="19"/>
+
+    <menuitem name="MROA Repair Condition" action="mroa_mroa_repair_xcondition_model_menu_action"
+              id="mroamroa_mroa_repair_xcondition_model_menu_action" parent="mroa_configuration_mng_menu" sequence="20"/>
+
+    <menuitem name="Product LSP Designer" action="mroa_product_lsp_designer_code_menu_action"
+              id="mmroa_product_lsp_designer_code_menu_actionon" parent="mroa_configuration_mng_menu" sequence="21"/>
+
+    <menuitem name="Specification Models" action="mroa_specification_prod_xnamese_menu_action"
+              id="mmroa_specification_prod_xnamese_menu_actionnon" parent="mroa_configuration_mng_menu" sequence="22"/>
+
+    <menuitem name="Aircrafts Fleet" id="mroa_menu_root" sequence="116" web_icon="mroa,static/description/aircraft-logo.jpg"/>
+    <menuitem name="Aircrafts" id="mroa_aircraft_menu" parent="mroa_menu_root" sequence="1"/>
+    <menuitem name="Aircrafts" action="mroa_aircraft_menu_action" id="mroa_aircraft_fleet_menu" parent="mroa_aircraft_menu" sequence="1"/>
+    <menuitem name="Aircrafts Fleet Master Data" action="mroa_fleet_vehicle_model_action" id="mroa_aircraft_master_data_menu" parent="mroa_aircraft_menu" sequence="2"/>
+    <menuitem name="Engines" id="mroa_engines_menu" action="mroa_engines_action" parent="mroa_menu_root" sequence="2"/>
+    <menuitem name="APU" id="mroa_engines_apu_menu" action="mroa_engines_apu_action" parent="mroa_menu_root" sequence="3"/>
+    <menuitem name="Configuration" id="mroa_configuration_menu" parent="mroa_menu_root" sequence="10"/>
+    <menuitem name="Aircrafts System Groups" action="mroa_system_groups_action" id="mroa_configuration_sysem_group_menu"
+              parent="mroa_configuration_menu" sequence="1"/>
+    <menuitem name="Aircrafts System" action="mroa_systems_action" id="mroa_configuration_sysem_menu"
+              parent="mroa_configuration_menu" sequence="2"/>
+    <menuitem name="Aircrafts Status List" action="fleet.fleet_vehicle_state_action"
+              id="mroa_configuration_sysem_status_menu"
+              parent="mroa_configuration_menu" sequence="3"/>
+    <menuitem name="Aircrafts Types List" action="aircraft_types_list_action"
+              id="mroa_configuration_aircraft_types_menu"
+              parent="mroa_configuration_menu" sequence="4"/>
+    <menuitem name="Aircrafts Categories List" action="aircraft_types_categories_action"
+              id="mroa_configuration_aircraft_categories_menu"
+              parent="mroa_configuration_menu" sequence="5"/>
+    <menuitem name="Induction Mode List" action="aircraft_indection_mode_action"
+              id="mroa_configuration_indection_mode_menu" parent="mroa_configuration_menu" sequence="6"/>
+    <menuitem name="Process Sheets" id="mroa_process_sheet_menu_root" sequence="116"/>
+    <menuitem name="Process Sheets" id="mroa_process_sheet_menu_root_child" parent="mroa_process_sheet_menu_root"
+              sequence="1" action="mroa_process_sheets_action"/>
+
+    <record id="mrp.mrp_production_action" model="ir.actions.act_window">
+        <field name="name">Work Orders</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">mrp.production</field>
+        <field name="view_mode">tree,kanban,form,calendar,pivot,graph</field>
+        <field name="view_id" eval="False"/>
+        <field name="search_view_id" ref="mrp.view_mrp_production_filter"/>
+        <field name="context">{'search_default_todo': True, 'default_company_id': allowed_company_ids[0]}</field>
+        <field name="domain">[('picking_type_id.active', '=', True)]</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+            Create a new manufacturing order <br/>
+            </p><p>
+            Consume components and build finished products using bills of materials
+            </p>
+        </field>
+    </record>
+    <record id="mrp.action_work_orders" model="ir.actions.act_window">
+        <field name="name">Job Cards</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">mrp.workorder</field>
+        <field name="view_mode">tree,form,gantt,pivot,graph,calendar</field>
+        <field name="search_view_id" ref="mrp.view_mrp_production_work_order_search"/>
+        <field name="domain">[('state', 'not in', ('done', 'cancel'))]</field>
+        <field name="context">{'search_default_workcenter_id': active_id}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+            Add a work center
+            </p><p>
+            Work Centers allow you to create and manage manufacturing
+            units. They consist of workers and/or machines, which are
+            considered as units for task assignation as well as capacity
+            and planning forecast.
+            </p>
+        </field>
+    </record>
+</odoo>

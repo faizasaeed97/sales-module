@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<data>
+		<record id="sequence_process_sheet" model="ir.sequence">
+			<field name="name">MROA Process Sheets Sequence</field>
+			<field name="code">mroa.process.sheets</field>
+			<field name="prefix">POCESS-SHEET-%(y)s-</field>
+			<field name="padding">5</field>
+		</record>
+    </data>
+</odoo>

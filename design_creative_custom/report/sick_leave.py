@@ -19,7 +19,7 @@ class absentsrdetDetails(models.TransientModel):
 
         for rec in emps:
             attends = self.env['attendance.custom'].search_count(
-                [('employee_id', '=', dec.id), '|', ('absent', '=', True),
+                [('employee_id', '=', rec.id), '|', ('absent', '=', True),
                  ('sick_leave', '=', True), ('attendance_date', '>=', self.date_from),
                  ('attendance_date', '<=', self.date_to),
                  ])

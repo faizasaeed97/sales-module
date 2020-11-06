@@ -132,213 +132,213 @@ class empcostytDetails(models.TransientModel):
         return self.env.ref('attendance_customization.empcost_payslip_report_xlsx_id').report_action(self, data=data)
 
 
-# class empcostipReportExcel(models.AbstractModel):
-#     _name = 'report.attendance_customization.report_xlsx_csot'
-#     _inherit = 'report.odoo_report_xlsx.abstract'
-#
-#     def generate_xlsx_report(self, workbook, lines, data=None):
-#
-#         datef = lines['form']['date']
-#         datet = lines['form']['dateto']
-#         emp = lines['form']['emp']
-#
-#         dta = lines['form']['dta']
-#
-#         sign_head = workbook.add_format({
-#             "bold": 1,
-#             "border": 0,
-#             "align": 'center',
-#             "valign": 'vcenter',
-#             "font_color": 'black',
-#             'font_size': '12',
-#
-#         })
-#
-#         sign_head_sick = workbook.add_format({
-#             "bold": 1,
-#             "border": 0,
-#             "align": 'center',
-#             "valign": 'vcenter',
-#             "font_color": 'blue',
-#             'font_size': '12',
-#
-#         })
-#         sign_head_vaca = workbook.add_format({
-#             "bold": 1,
-#             "border": 0,
-#             "align": 'center',
-#             "valign": 'vcenter',
-#             "font_color": 'red',
-#             'font_size': '12',
-#
-#         })
-#         sign_head_holi = workbook.add_format({
-#             "bold": 1,
-#             "border": 0,
-#             "align": 'center',
-#             "valign": 'vcenter',
-#             "font_color": 'green',
-#             'font_size': '12',
-#
-#         })
-#
-#         std_heading = workbook.add_format({
-#             "bold": 0,
-#             "border": 1,
-#             "align": 'center',
-#             "valign": 'vcenter',
-#             "font_color": 'navy',
-#             'font_size': '10',
-#         })
-#
-#         format2 = workbook.add_format({
-#             "bold": 1,
-#             "border": 1,
-#             "align": 'center',
-#             "valign": 'vcenter',
-#             "text_wrap":True,
-#             "font_color": 'blue',
-#             'font_size': '30',
-#         })
-#
-#         sign_head_pay = workbook.add_format({
-#             "bold": 1,
-#             "border": 1,
-#             "align": 'center',
-#             "valign": 'vcenter',
-#             "font_color": 'navy blue',
-#             'font_size': '14',
-#
-#         })
-#
-#
-#
-#         sheet = workbook.add_worksheet('MasterSheet')
-#
-#         # style = xlwt.easyxf('pattern: pattern solid, fore_colour custom_colour')
-#
-#
-#         sheet.merge_range(1, 3, 2, 6, "Employee Cost report", format2)
-#
-#         sheet.merge_range(3, 1, 3, 2, "Employee", sign_head)
-#         # sheet.merge_range(1, 3, 2, 9, "Employee Cost report", format2)
-#         sheet.merge_range(4, 1, 4, 2, "Date from:", sign_head)
-#         sheet.merge_range(5, 1, 5, 2, "Date To:", sign_head)
-#
-#         sheet.merge_range(3, 3, 3, 4,emp, std_heading)
-#         # sheet.merge_range(1, 3, 2, 9, "Employee Cost report", format2)
-#         sheet.merge_range(4, 3, 4, 4, datef, std_heading)
-#         sheet.merge_range(5, 3, 5, 4, datet, std_heading)
-#
-#
-#         row = 6
-#         col = 0
-#         sheet.set_column(row, col , 40)
-#         sheet.write(row, col, "Date", sign_head)
-#
-#
-#         sheet.write(row, col + 1, "START TIME", sign_head)
-#         sheet.write(row, col + 2, "FINISH TIME", sign_head)
-#         sheet.write(row, col + 3, "REGULAR HRS", sign_head)
-#         sheet.write(row, col + 4, "OVERTIME HRS", sign_head)
-#
-#         sheet.write(row, col + 5, "SICK", sign_head_sick)
-#         sheet.write(row, col + 6, "VACATION", sign_head_vaca)
-#         sheet.write(row, col + 7, "HOLIDAY", sign_head_holi)
-#
-#         sheet.write(row, col + 8, "TOTAL HOURS", sign_head)
-#
-#
-#         row = 8
-#         col = 0
-#         for rec in dta:
-#
-#             if rec.get('data') == 'n':
-#                 sheet.set_column(row + 1, col, 20)
-#                 if rec.get('pay')=='f':
-#                     sheet.write(row + 1, col+2, "Total Hours", sign_head)
-#
-#                 elif rec.get('pay')=='x':
-#                     sheet.write(row + 1, col + 2, "Total", sign_head)
-#
-#
-#                 else:
-#                     sheet.write(row + 1, col+2, "Total Payment", sign_head_pay)
-#
-#
-#
-#                 sheet.write(row + 1, col+3, rec.get('reg'), sign_head)
-#                 sheet.write(row + 1, col+4, rec.get('ot'), sign_head)
-#
-#                 sheet.write(row + 1, col+5, rec.get('sik'), sign_head)
-#                 sheet.write(row + 1, col+6, rec.get('voc'), sign_head)
-#                 sheet.write(row + 1, col+7, rec.get('holi'), sign_head)
-#
-#
-#                 if 'totx' in rec:
-#
-#                     sheet.write(row + 1, col+8, rec.get('totx'), sign_head)
-#
-#
-#                 # sheet.write(row + 1, col + 1, rec.get('ID'), std_heading)
-#                 # sheet.write(row + 1, col + 2, rec.get('ID'), std_heading)
-#                 # sheet.write(row + 1, col + 3, rec.get('ID'), std_heading)
-#                 row += 1
-#
-#             if rec.get('data') == 'y':
-#                 sheet.set_column(row, col, 40)
-#                 sheet.write(row, col, rec.get('date'), std_heading)
-#
-#                 sheet.set_column(row, col + 1, 40)
-#                 sheet.write(row, col + 1, rec.get('stime'), std_heading)
-#
-#                 sheet.set_column(row, col + 2, 15)
-#                 sheet.write(row, col + 2, rec.get('etime'), std_heading)
-#
-#                 sheet.set_column(row, col + 3, 10)
-#                 sheet.write(row, col + 3, rec.get('rhours'), std_heading)
-#
-#                 sheet.set_column(row, col + 4, 10)
-#                 sheet.write(row, col + 4, rec.get('OT'), std_heading)
-#
-#                 sheet.set_column(row, col + 5, 10)
-#                 sheet.write(row, col + 5, rec.get('sick'), std_heading)
-#                 sheet.set_column(row, col + 6, 10)
-#                 sheet.write(row, col + 6, rec.get('vacation'), std_heading)
-#                 sheet.set_column(row, col + 7, 10)
-#                 sheet.write(row, col + 7, rec.get('holi'), std_heading)
-#
-#                 sheet.set_column(row, col + 8, 15)
-#                 sheet.write(row, col + 8, rec.get('total'), std_heading)
-#
-#             row += 1
-#
-#         # sheet.merge_range(row1, col, row1+4, col+4,sign_admin , std_heading2)
-#
-#         # for rec in data.employee_id:
-#         #     sheet.write(row, col, 'Employee ID', main_heading)
-#         #     sheet.write_string(row, col + 1, str(rec.employee_code), main_heading)
-#         #     sheet.write(row, col + 2, 'Employee Name', main_heading)
-#         #     sheet.write_string(row, col + 3, str(rec.name), main_heading)
-#         #     sheet.write(row + 1, col, 'Job Position', main_heading)
-#         #     sheet.write_string(row + 1, col + 1, str(rec.job_id.name), main_heading)
-#         #     sheet.write(row + 1, col + 2, 'Joining Date', main_heading)
-#         #     sheet.write_string(row + 1, col + 3, rec.bsgjoining_date.strftime("%m/%d/%Y"))
-#         #     emp_payslip = self.env['hr.payslip'].search(
-#         #         [('employee_id', '=', rec.id), ('date_from', '<=', data.to_date),
-#         #          ('date_to', '>', data.from_date)])
-#         #     row += 3
-#         #     list_dict = []
-#         #     if emp_payslip:
-#         #         rule_dict = OrderedDict.fromkeys((rule.name for payslip in emp_payslip for rule in payslip.line_ids),
-#         #                                          0.0)
-#         #         rule_dict.move_to_end('Net Salary')
-#         #         sheet.write(row, col, 'Payslip Name', main_heading2)
-#         #         col += 1
-#         #         for rule_name in rule_dict:
-#         #             sheet.write_string(row, col, rule_name, main_heading2)
-#         #             col += 1
-#         #         row += 1
-#         #         col = 0
+class empcostipReportExcel(models.AbstractModel):
+    _name = 'report.attendance_customization.report_xlsx_csot'
+    _inherit = 'report.odoo_report_xlsx.abstract'
+
+    def generate_xlsx_report(self, workbook, lines, data=None):
+
+        datef = lines['form']['date']
+        datet = lines['form']['dateto']
+        emp = lines['form']['emp']
+
+        dta = lines['form']['dta']
+
+        sign_head = workbook.add_format({
+            "bold": 1,
+            "border": 0,
+            "align": 'center',
+            "valign": 'vcenter',
+            "font_color": 'black',
+            'font_size': '12',
+
+        })
+
+        sign_head_sick = workbook.add_format({
+            "bold": 1,
+            "border": 0,
+            "align": 'center',
+            "valign": 'vcenter',
+            "font_color": 'blue',
+            'font_size': '12',
+
+        })
+        sign_head_vaca = workbook.add_format({
+            "bold": 1,
+            "border": 0,
+            "align": 'center',
+            "valign": 'vcenter',
+            "font_color": 'red',
+            'font_size': '12',
+
+        })
+        sign_head_holi = workbook.add_format({
+            "bold": 1,
+            "border": 0,
+            "align": 'center',
+            "valign": 'vcenter',
+            "font_color": 'green',
+            'font_size': '12',
+
+        })
+
+        std_heading = workbook.add_format({
+            "bold": 0,
+            "border": 1,
+            "align": 'center',
+            "valign": 'vcenter',
+            "font_color": 'navy',
+            'font_size': '10',
+        })
+
+        format2 = workbook.add_format({
+            "bold": 1,
+            "border": 1,
+            "align": 'center',
+            "valign": 'vcenter',
+            "text_wrap":True,
+            "font_color": 'blue',
+            'font_size': '30',
+        })
+
+        sign_head_pay = workbook.add_format({
+            "bold": 1,
+            "border": 1,
+            "align": 'center',
+            "valign": 'vcenter',
+            "font_color": 'navy blue',
+            'font_size': '14',
+
+        })
+
+
+
+        sheet = workbook.add_worksheet('MasterSheet')
+
+        # style = xlwt.easyxf('pattern: pattern solid, fore_colour custom_colour')
+
+
+        sheet.merge_range(1, 3, 2, 6, "Employee Cost report", format2)
+
+        sheet.merge_range(3, 1, 3, 2, "Employee", sign_head)
+        # sheet.merge_range(1, 3, 2, 9, "Employee Cost report", format2)
+        sheet.merge_range(4, 1, 4, 2, "Date from:", sign_head)
+        sheet.merge_range(5, 1, 5, 2, "Date To:", sign_head)
+
+        sheet.merge_range(3, 3, 3, 4,emp, std_heading)
+        # sheet.merge_range(1, 3, 2, 9, "Employee Cost report", format2)
+        sheet.merge_range(4, 3, 4, 4, datef, std_heading)
+        sheet.merge_range(5, 3, 5, 4, datet, std_heading)
+
+
+        row = 6
+        col = 0
+        sheet.set_column(row, col , 40)
+        sheet.write(row, col, "Date", sign_head)
+
+
+        sheet.write(row, col + 1, "START TIME", sign_head)
+        sheet.write(row, col + 2, "FINISH TIME", sign_head)
+        sheet.write(row, col + 3, "REGULAR HRS", sign_head)
+        sheet.write(row, col + 4, "OVERTIME HRS", sign_head)
+
+        sheet.write(row, col + 5, "SICK", sign_head_sick)
+        sheet.write(row, col + 6, "VACATION", sign_head_vaca)
+        sheet.write(row, col + 7, "HOLIDAY", sign_head_holi)
+
+        sheet.write(row, col + 8, "TOTAL HOURS", sign_head)
+
+
+        row = 8
+        col = 0
+        for rec in dta:
+
+            if rec.get('data') == 'n':
+                sheet.set_column(row + 1, col, 20)
+                if rec.get('pay')=='f':
+                    sheet.write(row + 1, col+2, "Total Hours", sign_head)
+
+                elif rec.get('pay')=='x':
+                    sheet.write(row + 1, col + 2, "Total", sign_head)
+
+
+                else:
+                    sheet.write(row + 1, col+2, "Total Payment", sign_head_pay)
+
+
+
+                sheet.write(row + 1, col+3, rec.get('reg'), sign_head)
+                sheet.write(row + 1, col+4, rec.get('ot'), sign_head)
+
+                sheet.write(row + 1, col+5, rec.get('sik'), sign_head)
+                sheet.write(row + 1, col+6, rec.get('voc'), sign_head)
+                sheet.write(row + 1, col+7, rec.get('holi'), sign_head)
+
+
+                if 'totx' in rec:
+
+                    sheet.write(row + 1, col+8, rec.get('totx'), sign_head)
+
+
+                # sheet.write(row + 1, col + 1, rec.get('ID'), std_heading)
+                # sheet.write(row + 1, col + 2, rec.get('ID'), std_heading)
+                # sheet.write(row + 1, col + 3, rec.get('ID'), std_heading)
+                row += 1
+
+            if rec.get('data') == 'y':
+                sheet.set_column(row, col, 40)
+                sheet.write(row, col, rec.get('date'), std_heading)
+
+                sheet.set_column(row, col + 1, 40)
+                sheet.write(row, col + 1, rec.get('stime'), std_heading)
+
+                sheet.set_column(row, col + 2, 15)
+                sheet.write(row, col + 2, rec.get('etime'), std_heading)
+
+                sheet.set_column(row, col + 3, 10)
+                sheet.write(row, col + 3, rec.get('rhours'), std_heading)
+
+                sheet.set_column(row, col + 4, 10)
+                sheet.write(row, col + 4, rec.get('OT'), std_heading)
+
+                sheet.set_column(row, col + 5, 10)
+                sheet.write(row, col + 5, rec.get('sick'), std_heading)
+                sheet.set_column(row, col + 6, 10)
+                sheet.write(row, col + 6, rec.get('vacation'), std_heading)
+                sheet.set_column(row, col + 7, 10)
+                sheet.write(row, col + 7, rec.get('holi'), std_heading)
+
+                sheet.set_column(row, col + 8, 15)
+                sheet.write(row, col + 8, rec.get('total'), std_heading)
+
+            row += 1
+
+        # sheet.merge_range(row1, col, row1+4, col+4,sign_admin , std_heading2)
+
+        # for rec in data.employee_id:
+        #     sheet.write(row, col, 'Employee ID', main_heading)
+        #     sheet.write_string(row, col + 1, str(rec.employee_code), main_heading)
+        #     sheet.write(row, col + 2, 'Employee Name', main_heading)
+        #     sheet.write_string(row, col + 3, str(rec.name), main_heading)
+        #     sheet.write(row + 1, col, 'Job Position', main_heading)
+        #     sheet.write_string(row + 1, col + 1, str(rec.job_id.name), main_heading)
+        #     sheet.write(row + 1, col + 2, 'Joining Date', main_heading)
+        #     sheet.write_string(row + 1, col + 3, rec.bsgjoining_date.strftime("%m/%d/%Y"))
+        #     emp_payslip = self.env['hr.payslip'].search(
+        #         [('employee_id', '=', rec.id), ('date_from', '<=', data.to_date),
+        #          ('date_to', '>', data.from_date)])
+        #     row += 3
+        #     list_dict = []
+        #     if emp_payslip:
+        #         rule_dict = OrderedDict.fromkeys((rule.name for payslip in emp_payslip for rule in payslip.line_ids),
+        #                                          0.0)
+        #         rule_dict.move_to_end('Net Salary')
+        #         sheet.write(row, col, 'Payslip Name', main_heading2)
+        #         col += 1
+        #         for rule_name in rule_dict:
+        #             sheet.write_string(row, col, rule_name, main_heading2)
+        #             col += 1
+        #         row += 1
+        #         col = 0
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

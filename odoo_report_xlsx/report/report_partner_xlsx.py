@@ -6,7 +6,7 @@ from odoo import models
 
 class PartnerXlsx(models.AbstractModel):
     _name = 'report.odoo_report_xlsx.partner_xlsx'
-    _inherit = 'report.odoo_report_xlsx.abstract'
+    # _inherit = 'report.odoo_report_xlsx.abstract'
 
     def generate_xlsx_report(self, workbook, data, partners):
         for obj in partners:

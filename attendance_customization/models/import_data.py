@@ -54,7 +54,7 @@ class ImportAttendance(models.TransientModel):
                         str(emp.name) + " with ID "+str(id_no) +" Does not exist as an employee")
                 else:
                     attendance_date = sheet.cell(row, 1).value
-                    if is_attendance_exist_sameday(emp.id,attendance_date):
+                    if self.is_attendance_exist_sameday(emp.id,attendance_date):
                         raise UserError(str(emp.name)+ " Attendance of date "+str(attendance_date)+" is already marked.")
                     first_in = sheet.cell(row, 7).value
                     first_out = sheet.cell(row, 8).value

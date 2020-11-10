@@ -36,7 +36,7 @@ class empcostytDetails(models.TransientModel):
                 [('attendance_date', '=', start_date),('employee_id', '=', self.employee_id.id)],limit=1)
             if attend:
                 day = attend.attendance_date.strftime('%A')
-                regular = (attend.get_schedule_ot(self.employee_id, day) / 60)
+                regular = (attend.get_schedule_ot(self.employee_id, day)['min'] / 60)
                 ot = 0.0
                 if attend.working:
                     temp1 = int(str(attend.working).split(":")[0])

@@ -22,6 +22,9 @@ class empcostytDetails(models.TransientModel):
     def print_report(self):
         plist = []
         regular_tot=0.0
+        display_regular_hrs = 0.0
+        display_regular_mins = 0.0
+        display_regular="00:00"
         ots_total=0.0
         totx=0.0
         sick=0
@@ -45,10 +48,17 @@ class empcostytDetails(models.TransientModel):
                     if (temp - regular) > 0:
                         ot = temp - regular
                         regular=temp
+                        display_regular_hrs+=float(str(attend.working).split(":")[0])
+                        display_regular_mins+=float(str(attend.working).split(":")[1])
+
                     else:
-                        regular=temp
+                        regular = temp
+                        display_regular_hrs += float(str(attend.working).split(":")[0])
+                        display_regular_mins += float(str(attend.working).split(":")[1])
                 else:
-                    regular=0.0
+                    regular = 0.0
+                    display_regular_hrs += 0
+                    display_regular_mins += 0
 
                 deduc = 0.0
                 ot_tot = 0.0
@@ -117,8 +127,8 @@ class empcostytDetails(models.TransientModel):
 
         plist.append({'data':'n','pay':'x','reg':0,'ot':0,'sik':sick,'voc':voca,'holi':hol,'totx':totx})
 
-
-        plist.append({'data':'n','pay':'f','reg':regular_tot,'ot':ots_total,'sik':sick,'voc':voca,'holi':hol,'totx':totx})
+        display_regular=str(int(display_regular_hrs))+":"+str(int(display_regular_mins))
+        plist.append({'data':'n','pay':'f','reg':display_regular,'ot':ots_total,'sik':sick,'voc':voca,'holi':hol,'totx':totx})
         plist.append({'data':'n','pay':'t','reg':regular_tot*self.employee_id.contract_id.p_salery_ph,'ot':ots_total*self.employee_id.contract_id.p_salery_ph
                       ,'totx':totx*self.employee_id.contract_id.p_salery_ph,'sik':sick,'voc':voca,'holi':hol,})
 

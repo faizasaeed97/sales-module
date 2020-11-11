@@ -44,6 +44,11 @@ class empcostytDetails(models.TransientModel):
                     temp = temp1 + temp2
                     if (temp - regular) > 0:
                         ot = temp - regular
+                        regular=temp
+                    else:
+                        regular=temp
+                else:
+                    regular=0.0
 
                 deduc = 0.0
                 ot_tot = 0.0

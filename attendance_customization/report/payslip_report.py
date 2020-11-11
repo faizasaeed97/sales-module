@@ -66,8 +66,8 @@ class empcostytDetails(models.TransientModel):
                 holi=0
                 dix = {}
                 dix['date'] = start_date
-                dix['stime'] = attend.first_check_in
-                dix['etime'] = attend.second_check_out
+                dix['stime'] = attend.first_check_in or " "
+                dix['etime'] = attend.second_check_out or " "
                 dix['rhours'] = regular
                 dix['OT'] = ot
 
@@ -134,8 +134,8 @@ class empcostytDetails(models.TransientModel):
 
         # ot_display=str(int(display_regular_hrs+ttoott))+":"+str(int(display_regular_mins+ttoottmin))
         plist.append({'data':'n','pay':'f','reg':display_regular,'ot':ots_total,'sik':sick,'voc':voca,'holi':hol,'totx':display_regular})
-        plist.append({'data':'n','pay':'t','reg':regular_tot*self.employee_id.contract_id.p_salery_ph,'ot':ots_total*self.employee_id.contract_id.p_salery_ph
-                      ,'totx':totx*self.employee_id.contract_id.p_salery_ph,'sik':sick,'voc':voca,'holi':hol,})
+        plist.append({'data':'n','pay':'t','reg':float(regular_tot*float(self.employee_id.contract_id.final_hourly_rate)),'ot':float(ots_total*self.employee_id.contract_id.final_hourly_rate)
+                      ,'totx':float(totx*self.employee_id.contract_id.final_hourly_rate),'sik':sick,'voc':voca,'holi':hol,})
 
 
         data = {

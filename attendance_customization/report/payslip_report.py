@@ -40,7 +40,7 @@ class empcostytDetails(models.TransientModel):
                 ot = 0.0
                 if attend.working:
                     temp1 = int(str(attend.working).split(":")[0])
-                    temp2 = int(str(attend.working).split(":")[1])
+                    temp2 = int(str(attend.working).split(":")[1])/60
                     temp = temp1 + temp2
                     if (temp - regular) > 0:
                         ot = temp - regular

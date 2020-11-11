@@ -39,8 +39,8 @@ class empcostytDetails(models.TransientModel):
                 regular = (attend.get_schedule_ot(self.employee_id, day)['min'] / 60)
                 ot = 0.0
                 if attend.working:
-                    temp1 = int(str(attend.working).split(":")[0])
-                    temp2 = int(str(attend.working).split(":")[1])/60
+                    temp1 = float(str(attend.working).split(":")[0])
+                    temp2 = float(str(attend.working).split(":")[1])/60
                     temp = temp1 + temp2
                     if (temp - regular) > 0:
                         ot = temp - regular

@@ -47,6 +47,7 @@ class empcostytDetails(models.TransientModel):
                     temp = temp1 + temp2
                     if (temp - regular) > 0:
                         ot = temp - regular
+
                         regular=temp
                         display_regular_hrs+=float(str(attend.working).split(":")[0])
                         display_regular_mins+=float(str(attend.working).split(":")[1])
@@ -128,7 +129,11 @@ class empcostytDetails(models.TransientModel):
         plist.append({'data':'n','pay':'x','reg':0,'ot':0,'sik':sick,'voc':voca,'holi':hol,'totx':totx})
 
         display_regular=str(int(display_regular_hrs))+":"+str(int(display_regular_mins))
-        plist.append({'data':'n','pay':'f','reg':display_regular,'ot':ots_total,'sik':sick,'voc':voca,'holi':hol,'totx':totx})
+        # ttoott= str(totx).split(".")[0]
+        # ttoottmin= int(str(totx).split(".")[1])*10
+
+        # ot_display=str(int(display_regular_hrs+ttoott))+":"+str(int(display_regular_mins+ttoottmin))
+        plist.append({'data':'n','pay':'f','reg':display_regular,'ot':ots_total,'sik':sick,'voc':voca,'holi':hol,'totx':display_regular})
         plist.append({'data':'n','pay':'t','reg':regular_tot*self.employee_id.contract_id.p_salery_ph,'ot':ots_total*self.employee_id.contract_id.p_salery_ph
                       ,'totx':totx*self.employee_id.contract_id.p_salery_ph,'sik':sick,'voc':voca,'holi':hol,})
 

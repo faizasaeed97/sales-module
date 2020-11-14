@@ -53,7 +53,7 @@ class attsummerytDetails(models.TransientModel):
                 if stax:
                     dix[start_date.day] = stax.a_stat
                 else:
-                    dix[start_date.day] = " "
+                    dix[start_date.day] = "AB"
                 # ddic['empp'] = dec.name
                 # list_day.append(ddic)
 

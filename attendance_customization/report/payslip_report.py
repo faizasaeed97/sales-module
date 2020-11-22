@@ -24,6 +24,10 @@ class empcostytDetails(models.TransientModel):
         regular_tot=0.0
         display_regular_hrs = 0.0
         display_regular_mins = 0.0
+
+        display_ot_hrs = 0.0
+        display_ot_mins = 0.0
+
         display_regular="00:00"
         ots_total=0.0
         totx=0.0
@@ -50,7 +54,15 @@ class empcostytDetails(models.TransientModel):
 
                         regular=temp
                         display_regular_hrs+=float(str(attend.working).split(":")[0])
-                        display_regular_mins+=float(str(attend.working).split(":")[1])
+                        display_regular_mins+=round(float(str(attend.working).split(":")[1]),2)
+
+                        display_ot_hrs += float(str(attend.ot_125).split(":")[0])
+                        display_ot_mins += round(float(str(attend.ot_125).split(":")[1]),2)
+
+                        if attend.ot_15:
+                            display_ot_hrs += float(str(attend.ot_15).split(":")[0])
+                            display_ot_mins += round(float(str(attend.ot_15).split(":")[1]),2)
+
 
                     else:
                         regular = temp
@@ -68,8 +80,9 @@ class empcostytDetails(models.TransientModel):
                 dix['date'] = start_date
                 dix['stime'] = attend.first_check_in or " "
                 dix['etime'] = attend.second_check_out or " "
-                dix['rhours'] = regular
-                dix['OT'] = ot
+                dix['rhours'] = attend.working
+
+                dix['OT'] = attend.ot_125
 
                 leave_sick = self.env['attendance.custom'].search_count(
                     [('employee_id', '=', self.employee_id.id), ('sick_leave', '=', True)
@@ -125,15 +138,44 @@ class empcostytDetails(models.TransientModel):
 
 
             start_date += delta
+        adhr=0
+        minad=0
+        if display_ot_mins>=60:
+            nep=round(display_ot_mins/60,2)
+            adhr=int(str(nep).split(".")[0])
+            minad = float(str(nep).split(".")[1])
 
-        plist.append({'data':'n','pay':'x','reg':0,'ot':0,'sik':sick,'voc':voca,'holi':hol,'totx':totx})
+        adhrr = 0
+        minadr = 0
 
-        display_regular=str(int(display_regular_hrs))+":"+str(int(display_regular_mins))
+        if display_regular_mins>=60:
+            nepr = round(display_regular_mins / 60, 2)
+            adhrr = int(str(nepr).split(".")[0])
+            minadr = float(str(nepr).split(".")[1])
+
+
+        display_ots=str(int(display_ot_hrs+adhr))+":"+str(int(minad))
+        display_regular=str(int(display_regular_hrs+adhrr))+":"+str(int(minadr))
+
+
+        totx_display_hrs= int(str(display_ots).split(":")[0])+int(str(display_regular).split(":")[0])
+        totx_display_mins= int(str(display_ots).split(":")[1])+int(str(display_regular).split(":")[1])
+        display_totx=  str(totx_display_hrs) +":"+str(totx_display_mins)
+
+
+
+
+        plist.append({'data':'n','pay':'x','reg':display_regular,'ot':display_ots,'sik':sick,'voc':voca,'holi':hol,'totx':display_totx})
+
+
+
+
+
         # ttoott= str(totx).split(".")[0]
         # ttoottmin= int(str(totx).split(".")[1])*10
 
         # ot_display=str(int(display_regular_hrs+ttoott))+":"+str(int(display_regular_mins+ttoottmin))
-        plist.append({'data':'n','pay':'f','reg':display_regular,'ot':ots_total,'sik':sick,'voc':voca,'holi':hol,'totx':display_regular})
+        plist.append({'data':'n','pay':'f','reg':display_regular,'ot':display_ots,'sik':sick,'voc':voca,'holi':hol,'totx':display_totx})
         plist.append({'data':'n','pay':'t','reg':float(regular_tot*float(self.employee_id.contract_id.final_hourly_rate)),'ot':float(ots_total*self.employee_id.contract_id.final_hourly_rate)
                       ,'totx':float(totx*self.employee_id.contract_id.final_hourly_rate),'sik':sick,'voc':voca,'holi':hol,})
 

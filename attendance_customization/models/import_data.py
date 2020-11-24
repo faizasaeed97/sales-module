@@ -57,8 +57,8 @@ class ImportAttendance(models.TransientModel):
                     # attendance_date=datetime.datetime.strptime(str(attendance_date.replace('/', '-')), "%d-%m-%Y")
                     # attendance_date=attendance_date.strftime('%d-%m-%Y')
 
-                    if self.is_attendance_exist_sameday(emp.id,attendance_date):
-                        raise UserError(str(emp.name)+ " Attendance of date "+str(attendance_date)+" is already marked.")
+                    # if self.is_attendance_exist_sameday(emp.id,attendance_date):
+                    #     raise UserError(str(emp.name)+ " Attendance of date "+str(attendance_date)+" is already marked.")
                     first_in = sheet.cell(row, 7).value
                     first_out = sheet.cell(row, 8).value
                     second_in = sheet.cell(row, 12).value
